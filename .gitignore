@@ -1,3 +1,8 @@
+### Hytale Specific ###
+Assets/
+decompiled_API/
+Decompile_API/
+
 ### Gradle ###
 .gradle
 build/
