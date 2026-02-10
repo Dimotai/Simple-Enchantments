@@ -8,6 +8,8 @@ import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import org.bson.BsonDocument;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
@@ -90,6 +92,14 @@ public class EnchantmentManager {
     private final ConcurrentHashMap<String, Boolean> oreOrCrystalCache = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Boolean> manaConsumingCache = new ConcurrentHashMap<>();
     // shieldCache removed - delegated to ItemCategoryManager
+
+    /**
+     * Cached set of disabled enchantment IDs.  Rebuilt lazily when the config
+     * changes (via {@link #invalidateEnabledCache()}).  Avoids repeated
+     * {@code getConfig().disabledEnchantments.getOrDefault()} lookups on every
+     * {@link #isEnchantmentEnabled} call.
+     */
+    private volatile Set<String> disabledEnchantmentIds = null;
 
     /**
      * Calculates the drop chance multiplier based on Looting level.
@@ -444,7 +454,7 @@ public class EnchantmentManager {
     @SuppressWarnings("deprecation")
     public EnchantmentData getEnchantmentsFromItem(@Nullable ItemStack item) {
         if (item == null || item.isEmpty()) {
-            return new EnchantmentData();
+            return EnchantmentData.EMPTY;
         }
         
         BsonDocument enchantmentsBson = item.getFromMetadataOrNull(
@@ -461,16 +471,67 @@ public class EnchantmentManager {
             return EnchantmentData.deserialize(legacyData);
         }
 
-        return new EnchantmentData();
+        return EnchantmentData.EMPTY;
     }
 
     /**
      * Checks if an enchantment is enabled in the configuration.
+     * Uses a cached set of disabled IDs for O(1) lookups.
      */
     public boolean isEnchantmentEnabled(EnchantmentType type) {
         if (type == null) return false;
-        // Config stores "disabled" state: true = disabled, false = enabled
-        return !getConfig().disabledEnchantments.getOrDefault(type.getId(), false);
+        Set<String> disabled = disabledEnchantmentIds;
+        if (disabled == null) {
+            disabled = rebuildDisabledSet();
+        }
+        return !disabled.contains(type.getId());
+    }
+
+    /**
+     * Rebuilds the cached set of disabled enchantment IDs from the current config.
+     */
+    private Set<String> rebuildDisabledSet() {
+        Set<String> disabled = new HashSet<>();
+        for (var entry : getConfig().disabledEnchantments.entrySet()) {
+            if (Boolean.TRUE.equals(entry.getValue())) {
+                disabled.add(entry.getKey());
+            }
+        }
+        this.disabledEnchantmentIds = disabled;
+        return disabled;
+    }
+
+    /**
+     * Invalidates the cached disabled-enchantment set.
+     * Must be called when the configuration is reloaded.
+     */
+    public void invalidateEnabledCache() {
+        this.disabledEnchantmentIds = null;
+    }
+
+    /**
+     * Fast check for whether an item has <em>any</em> enabled enchantment.
+     * Only reads the BSON document keys — does <b>not</b> deserialize the full
+     * {@link EnchantmentData}.  Used by the visuals system where we only need
+     * a boolean answer, not levels.
+     *
+     * @return {@code true} if at least one enabled enchantment is present
+     */
+    public boolean hasAnyEnabledEnchantment(@Nullable ItemStack item) {
+        if (item == null || item.isEmpty()) return false;
+
+        BsonDocument bson = item.getFromMetadataOrNull(
+                EnchantmentData.METADATA_KEY, Codec.BSON_DOCUMENT);
+        if (bson == null || bson.isEmpty()) return false;
+
+        for (String key : bson.keySet()) {
+            EnchantmentType type = EnchantmentType.findByDisplayName(key);
+            if (type == null) type = EnchantmentType.fromId(key);
+            if (type != null && isEnchantmentEnabled(type)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -559,27 +620,18 @@ public class EnchantmentManager {
 
     /**
      * Calculates the damage multiplier from all damage-related enchantments.
+     * Optimized to use direct BSON key lookup instead of full deserialization.
      * 
      * @param item The item being used to deal damage
      * @return The total damage multiplier (1.0 = no change, 1.1 = +10%, etc.)
      */
     public double calculateDamageMultiplier(@Nullable ItemStack item) {
-        EnchantmentData data = getEnchantmentsFromItem(item);
-        if (data.isEmpty()) {
-            return 1.0;
+        // Direct BSON read — avoids deserializing all enchantments just to check Sharpness
+        int sharpnessLevel = getEnchantmentLevel(item, EnchantmentType.SHARPNESS);
+        if (sharpnessLevel > 0) {
+            return 1.0 + sharpnessLevel * EnchantmentType.SHARPNESS.getEffectMultiplier();
         }
-        
-        double multiplier = 1.0;
-        
-        // Check for Sharpness
-        int sharpnessLevel = data.getLevel(EnchantmentType.SHARPNESS);
-        if (sharpnessLevel > 0 && isEnchantmentEnabled(EnchantmentType.SHARPNESS)) {
-            multiplier += sharpnessLevel * EnchantmentType.SHARPNESS.getEffectMultiplier();
-        }
-        
-        // Add more enchantment calculations here as they're added to the system
-        
-        return multiplier;
+        return 1.0;
     }
 
     /**
@@ -606,21 +658,17 @@ public class EnchantmentManager {
 
     /**
      * Calculates the mining speed multiplier from Efficiency enchantment.
+     * Optimized to use direct BSON key lookup instead of full deserialization.
      *
      * @param item The tool being used to mine
      * @return The mining speed multiplier (1.0 = normal, 1.2 = +20%, etc.)
      */
     public double calculateMiningSpeedMultiplier(@Nullable ItemStack item) {
-        EnchantmentData data = getEnchantmentsFromItem(item);
-        if (data.isEmpty()) {
-            return 1.0;
-        }
-
-        int efficiencyLevel = data.getLevel(EnchantmentType.EFFICIENCY);
-        if (efficiencyLevel > 0 && isEnchantmentEnabled(EnchantmentType.EFFICIENCY)) {
+        // Direct BSON read — avoids deserializing all enchantments just to check Efficiency
+        int efficiencyLevel = getEnchantmentLevel(item, EnchantmentType.EFFICIENCY);
+        if (efficiencyLevel > 0) {
             return 1.0 + (efficiencyLevel * EnchantmentType.EFFICIENCY.getEffectMultiplier());
         }
-
         return 1.0;
     }
 
@@ -713,6 +761,11 @@ public class EnchantmentManager {
             return 1.0;
         }
 
+        // Single check — if Protection is disabled globally, skip all armor slots.
+        if (!isEnchantmentEnabled(EnchantmentType.PROTECTION)) {
+            return 1.0;
+        }
+
         double multiplier = 1.0;
         for (short slot = 0; slot < armorContainer.getCapacity(); slot = (short) (slot + 1)) {
             ItemStack armorPiece = armorContainer.getItemStack(slot);
@@ -720,7 +773,18 @@ public class EnchantmentManager {
                 continue;
             }
 
-            int level = getEnchantmentLevel(armorPiece, EnchantmentType.PROTECTION);
+            // Read BSON directly — enabled check already done above.
+            BsonDocument enchBson = armorPiece.getFromMetadataOrNull(
+                    EnchantmentData.METADATA_KEY, Codec.BSON_DOCUMENT);
+            if (enchBson == null || enchBson.isEmpty()) continue;
+
+            int level = 0;
+            if (enchBson.containsKey(EnchantmentType.PROTECTION.getDisplayName())) {
+                level = parseBsonLevel(enchBson.get(EnchantmentType.PROTECTION.getDisplayName()));
+            } else if (enchBson.containsKey(EnchantmentType.PROTECTION.getId())) {
+                level = parseBsonLevel(enchBson.get(EnchantmentType.PROTECTION.getId()));
+            }
+
             if (level > 0) {
                 double pieceMultiplier = 1.0 - (level * EnchantmentType.PROTECTION.getEffectMultiplier());
                 multiplier *= Math.max(0.0, pieceMultiplier);

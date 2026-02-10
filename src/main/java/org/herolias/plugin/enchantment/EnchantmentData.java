@@ -6,7 +6,9 @@ import org.bson.BsonValue;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.Collections;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -22,8 +24,14 @@ public class EnchantmentData {
      * Usage: itemStack.withMetadata(METADATA_KEY, enchantmentData.toBson())
      */
     public static final String METADATA_KEY = "Enchantments";
+
+    /** Shared immutable empty instance — avoids allocations for items without enchantments. */
+    public static final EnchantmentData EMPTY = new EnchantmentData(Collections.emptyMap());
     
     private final Map<EnchantmentType, Integer> enchantments;
+
+    /** Lazily computed stable hash string.  {@code null} until first requested. */
+    private volatile String cachedHash;
     
     public EnchantmentData() {
         this.enchantments = new HashMap<>();
@@ -85,6 +93,46 @@ public class EnchantmentData {
      */
     public EnchantmentData copy() {
         return new EnchantmentData(this.enchantments);
+    }
+
+    // ========== Hash / Equality (for caching) ==========
+
+    /**
+     * Returns a deterministic 8-char hex hash string derived from the sorted
+     * enchantment IDs and levels.  Computed once and cached thereafter.
+     * <p>
+     * The hash is stable: the same set of enchantments always produces the
+     * same string regardless of internal map iteration order.
+     */
+    @Nonnull
+    public String computeStableHash() {
+        String h = cachedHash;
+        if (h == null) {
+            TreeMap<String, Integer> sorted = new TreeMap<>();
+            for (Map.Entry<EnchantmentType, Integer> entry : enchantments.entrySet()) {
+                sorted.put(entry.getKey().getId(), entry.getValue());
+            }
+            StringBuilder sb = new StringBuilder();
+            for (Map.Entry<String, Integer> entry : sorted.entrySet()) {
+                if (sb.length() > 0) sb.append('_');
+                sb.append(entry.getKey()).append(entry.getValue());
+            }
+            h = String.format("%08x", sb.toString().hashCode());
+            cachedHash = h;
+        }
+        return h;
+    }
+
+    @Override
+    public int hashCode() {
+        return enchantments.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof EnchantmentData other)) return false;
+        return enchantments.equals(other.enchantments);
     }
     
     // ========== BSON Serialization for ItemStack Metadata ==========

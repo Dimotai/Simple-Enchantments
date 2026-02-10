@@ -39,8 +39,6 @@ public class EnchantmentVisualsHelper {
                 return;
             }
 
-            // Optimize: Cache this boolean in ConfigManager or pass it down? 
-            // Accessing singleton -> ConfigManager -> Config object is relatively cheap but could be better.
             boolean isGlowEnabled = SimpleEnchanting.getInstance().getConfigManager().getConfig().enableEnchantmentGlow;
             
             Inventory inventory = player.getInventory();
@@ -50,7 +48,6 @@ public class EnchantmentVisualsHelper {
 
             if (!isGlowEnabled) {
                 setGlowStat(statMap, STAT_GLOW_PRIMARY, false);
-
                 setGlowStat(statMap, STAT_GLOW_SHIELD, false);
                 setGlowStat(statMap, STAT_GLOW_HEAD, false);
                 setGlowStat(statMap, STAT_GLOW_CHEST, false);
@@ -68,13 +65,14 @@ public class EnchantmentVisualsHelper {
             boolean shouldGlowShield = false;
 
             // Check Offhand for Shield
-            if (hasOffHand && hasEnchantments(offHandItem, enchantmentManager) && enchantmentManager.isShield(offHandItem)) {
+            if (hasOffHand && enchantmentManager.hasAnyEnabledEnchantment(offHandItem) && enchantmentManager.isShield(offHandItem)) {
                 shouldGlowShield = true;
             }
 
             // Check Mainhand for Shield (in case they hold shield in main hand)
+            // Cache the held item reference — reused for Primary Glow and Eternal Shot
             ItemStack heldItem = getPrimaryHeldItem(inventory);
-            boolean heldEnchanted = hasEnchantments(heldItem, enchantmentManager);
+            boolean heldEnchanted = enchantmentManager.hasAnyEnabledEnchantment(heldItem);
             boolean heldIsShield = enchantmentManager.isShield(heldItem);
 
             if (heldEnchanted && heldIsShield) {
@@ -98,10 +96,8 @@ public class EnchantmentVisualsHelper {
             }
             // GLOW LOGIC END
 
-            // 3. Update Eternal Shot Stat
-            // This stat governs whether ammo is consumed/refunded via JSON conditions
-            ItemStack primaryItem = getPrimaryHeldItem(inventory);
-            boolean hasEternalShot = !ItemStack.isEmpty(primaryItem) && enchantmentManager.hasEnchantment(primaryItem, org.herolias.plugin.enchantment.EnchantmentType.ETERNAL_SHOT);
+            // 3. Update Eternal Shot Stat — reuses cached heldItem
+            boolean hasEternalShot = !ItemStack.isEmpty(heldItem) && enchantmentManager.hasEnchantment(heldItem, EnchantmentType.ETERNAL_SHOT);
             setGlowStat(statMap, "eternal_shot_active", hasEternalShot);
             
             // Update armor glow for each slot
@@ -128,24 +124,12 @@ public class EnchantmentVisualsHelper {
         return utilityItem == null ? ItemStack.EMPTY : utilityItem;
     }
 
+    /**
+     * Checks if an item has any enabled enchantment.
+     * Delegates to the optimized BSON-only check in EnchantmentManager.
+     */
     private static boolean hasEnchantments(ItemStack item, EnchantmentManager manager) {
-        if (ItemStack.isEmpty(item)) {
-            return false;
-        }
-        
-        EnchantmentData data = manager.getEnchantmentsFromItem(item);
-        if (data.isEmpty()) {
-            return false;
-        }
-
-        // Check if ANY of the enchantments present are enabled
-        for (EnchantmentType type : data.getAllEnchantments().keySet()) {
-            if (manager.isEnchantmentEnabled(type)) {
-                return true;
-            }
-        }
-        
-        return false;
+        return manager.hasAnyEnabledEnchantment(item);
     }
 
     private static void setGlowStat(EntityStatMap statMap, String statId, boolean enabled) {

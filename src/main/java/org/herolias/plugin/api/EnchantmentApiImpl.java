@@ -199,7 +199,7 @@ public class EnchantmentApiImpl implements EnchantmentApi {
                 // Get enchantment data from the item
                 EnchantmentData enchData = manager.getEnchantmentsFromItem(item);
                 String originalDesc = registry.getOriginalDescription(baseItemId, language);
-                String enchantedDesc = registry.buildEnchantedDescription(originalDesc, enchData);
+                String enchantedDesc = registry.buildEnchantedDescription(originalDesc, enchData, itemId);
                 translations.put(descKey, enchantedDesc);
             }
         }

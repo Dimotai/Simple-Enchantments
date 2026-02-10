@@ -98,6 +98,19 @@ public class VirtualItemRegistry {
      */
     private final ConcurrentHashMap<String, String> descriptionKeyCache = new ConcurrentHashMap<>();
 
+    /**
+     * Cache: "language:baseItemId" → original description text.
+     * Avoids repeated i18n lookups for the same item type and language.
+     */
+    private final ConcurrentHashMap<String, String> originalDescriptionCache = new ConcurrentHashMap<>();
+
+    /**
+     * Cache: virtualId → built enriched description string.
+     * Each virtual ID uniquely identifies a (baseItem + enchantmentCombo) pair,
+     * making it a perfect cache key for the built description.
+     */
+    private final ConcurrentHashMap<String, String> builtDescriptionCache = new ConcurrentHashMap<>();
+
     private final EnchantmentManager enchantmentManager;
 
     public VirtualItemRegistry(@Nonnull EnchantmentManager enchantmentManager) {
@@ -119,7 +132,7 @@ public class VirtualItemRegistry {
      */
     @Nonnull
     public String generateVirtualId(@Nonnull String baseItemId, @Nonnull EnchantmentData data) {
-        String hash = computeEnchantmentHash(data);
+        String hash = data.computeStableHash();
         return baseItemId + VIRTUAL_SEPARATOR + hash;
     }
 
@@ -352,38 +365,41 @@ public class VirtualItemRegistry {
      * @return the enriched description string
      */
     @Nonnull
-    public String buildEnchantedDescription(@Nullable String originalDesc, @Nonnull EnchantmentData data) {
-        StringBuilder sb = new StringBuilder();
+    public String buildEnchantedDescription(@Nullable String originalDesc, @Nonnull EnchantmentData data,
+                                            @Nonnull String virtualId) {
+        return builtDescriptionCache.computeIfAbsent(virtualId, vId -> {
+            StringBuilder sb = new StringBuilder();
 
-        if (originalDesc != null && !originalDesc.isEmpty()) {
-            sb.append(originalDesc);
-            sb.append("\n\n");
-        }
-
-        sb.append("<color is=\"").append(HEADER_COLOR).append("\">Enchantments:</color>");
-
-        for (Map.Entry<EnchantmentType, Integer> entry : data.getAllEnchantments().entrySet()) {
-            EnchantmentType type = entry.getKey();
-            int level = entry.getValue();
-
-            if (!enchantmentManager.isEnchantmentEnabled(type)) continue;
-
-            sb.append('\n');
-            String color = type.isLegendary() ? LEGENDARY_COLOR : ENCHANTMENT_COLOR;
-            sb.append("<color is=\"").append(color).append("\">");
-            sb.append(ENCHANT_SYMBOL);
-            sb.append(type.getFormattedName(level));
-            sb.append("</color>");
-            
-            String bonus = type.getBonusDescription(level);
-            if (bonus != null && !bonus.isEmpty()) {
-                sb.append(" <color is=\"").append(BONUS_COLOR).append("\">");
-                sb.append(bonus);
-                sb.append("</color>");
+            if (originalDesc != null && !originalDesc.isEmpty()) {
+                sb.append(originalDesc);
+                sb.append("\n\n");
             }
-        }
 
-        return sb.toString();
+            sb.append("<color is=\"").append(HEADER_COLOR).append("\">Enchantments:</color>");
+
+            for (Map.Entry<EnchantmentType, Integer> entry : data.getAllEnchantments().entrySet()) {
+                EnchantmentType type = entry.getKey();
+                int level = entry.getValue();
+
+                if (!enchantmentManager.isEnchantmentEnabled(type)) continue;
+
+                sb.append('\n');
+                String color = type.isLegendary() ? LEGENDARY_COLOR : ENCHANTMENT_COLOR;
+                sb.append("<color is=\"").append(color).append("\">");
+                sb.append(ENCHANT_SYMBOL);
+                sb.append(type.getFormattedName(level));
+                sb.append("</color>");
+
+                String bonus = type.getBonusDescription(level);
+                if (bonus != null && !bonus.isEmpty()) {
+                    sb.append(" <color is=\"").append(BONUS_COLOR).append("\">");
+                    sb.append(bonus);
+                    sb.append("</color>");
+                }
+            }
+
+            return sb.toString();
+        });
     }
 
     /**
@@ -396,15 +412,18 @@ public class VirtualItemRegistry {
      */
     @Nonnull
     public String getOriginalDescription(@Nonnull String baseItemId, @Nullable String language) {
-        try {
-            String descKey = resolveDescriptionKey(baseItemId);
-            I18nModule i18n = I18nModule.get();
-            if (i18n == null) return "";
-            String msg = i18n.getMessage(language, descKey);
-            return msg != null ? msg : "";
-        } catch (Exception e) {
-            return "";
-        }
+        String cacheKey = (language != null ? language : "_default") + ":" + baseItemId;
+        return originalDescriptionCache.computeIfAbsent(cacheKey, k -> {
+            try {
+                String descKey = resolveDescriptionKey(baseItemId);
+                I18nModule i18n = I18nModule.get();
+                if (i18n == null) return "";
+                String msg = i18n.getMessage(language, descKey);
+                return msg != null ? msg : "";
+            } catch (Exception e) {
+                return "";
+            }
+        });
     }
 
     /**
@@ -449,25 +468,13 @@ public class VirtualItemRegistry {
 
     /**
      * Computes a deterministic hash string from enchantment data.
-     * Enchantments are sorted alphabetically by enchantment ID to ensure stability
-     * regardless of the internal map iteration order.
+     * Delegates to {@link EnchantmentData#computeStableHash()} which caches the result.
      *
      * @return an 8-character lowercase hex hash, e.g. {@code "a1b2c3d4"}
      */
     @Nonnull
     private String computeEnchantmentHash(@Nonnull EnchantmentData data) {
-        TreeMap<String, Integer> sorted = new TreeMap<>();
-        for (Map.Entry<EnchantmentType, Integer> entry : data.getAllEnchantments().entrySet()) {
-            sorted.put(entry.getKey().getId(), entry.getValue());
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, Integer> entry : sorted.entrySet()) {
-            if (sb.length() > 0) sb.append('_');
-            sb.append(entry.getKey()).append(entry.getValue());
-        }
-
-        return String.format("%08x", sb.toString().hashCode());
+        return data.computeStableHash();
     }
 
     // ─────────────────────────────────────────────────────────────────────
@@ -483,5 +490,7 @@ public class VirtualItemRegistry {
         playerSlotVirtualIds.clear();
         playerHotbarOverrides.clear();
         descriptionKeyCache.clear();
+        originalDescriptionCache.clear();
+        builtDescriptionCache.clear();
     }
 }

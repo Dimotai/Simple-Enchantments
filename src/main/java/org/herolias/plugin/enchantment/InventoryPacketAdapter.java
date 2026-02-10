@@ -117,6 +117,13 @@ public class InventoryPacketAdapter {
     private final ConcurrentHashMap<UUID, CachedHotbarData> hotbarCache = new ConcurrentHashMap<>();
 
     /**
+     * Per-player tracking of the last translations sent to the client.
+     * Used to compute a diff and skip sending {@code UpdateTranslations}
+     * packets when nothing changed.
+     */
+    private final ConcurrentHashMap<UUID, Map<String, String>> lastSentTranslations = new ConcurrentHashMap<>();
+
+    /**
      * Snapshot of the hotbar section at the time of the last
      * {@code UpdatePlayerInventory} processing.  Stores enough information
      * to reconstruct the hotbar with a different active slot without needing
@@ -181,6 +188,7 @@ public class InventoryPacketAdapter {
     public void onPlayerLeave(@Nonnull UUID playerUuid) {
         playerActiveHotbarSlot.remove(playerUuid);
         hotbarCache.remove(playerUuid);
+        lastSentTranslations.remove(playerUuid);
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -582,7 +590,7 @@ public class InventoryPacketAdapter {
                     EnchantmentData enchData = findEnchantmentDataForVirtualId(playerUuid, virtualId);
                     if (enchData != null) {
                         String originalDesc = virtualItemRegistry.getOriginalDescription(itemId, language);
-                        String enchantedDesc = virtualItemRegistry.buildEnchantedDescription(originalDesc, enchData);
+                        String enchantedDesc = virtualItemRegistry.buildEnchantedDescription(originalDesc, enchData, virtualId);
                         translations.put(descKey, enchantedDesc);
                     }
                 }
@@ -689,7 +697,7 @@ public class InventoryPacketAdapter {
             String descKey = VirtualItemRegistry.getVirtualDescriptionKey(virtualId);
             if (!translations.containsKey(descKey)) {
                 String originalDesc = virtualItemRegistry.getOriginalDescription(baseItemId, language);
-                String enchantedDesc = virtualItemRegistry.buildEnchantedDescription(originalDesc, enchData);
+                String enchantedDesc = virtualItemRegistry.buildEnchantedDescription(originalDesc, enchData, virtualId);
                 translations.put(descKey, enchantedDesc);
             }
 
@@ -765,6 +773,9 @@ public class InventoryPacketAdapter {
             EnchantmentData enchData = parseEnchantmentsFromPacket(itemPacket.metadata);
             if (enchData == null || enchData.isEmpty()) continue;
 
+            // Only cache enchanted items (non-enchanted items don't need corrective packets)
+            cache.originalItems.put(slot, itemPacket.clone());
+
             String baseItemId = itemPacket.itemId;
             String virtualId = virtualItemRegistry.generateVirtualId(baseItemId, enchData);
             cache.enchantedSlots.put(slot, enchData);
@@ -776,7 +787,7 @@ public class InventoryPacketAdapter {
                     overriddenTypes.add(baseItemId);
                     String descKey = virtualItemRegistry.getItemDescriptionKey(baseItemId);
                     String originalDesc = virtualItemRegistry.getOriginalDescription(baseItemId, language);
-                    String enchantedDesc = virtualItemRegistry.buildEnchantedDescription(originalDesc, enchData);
+                    String enchantedDesc = virtualItemRegistry.buildEnchantedDescription(originalDesc, enchData, virtualId);
                     translations.put(descKey, enchantedDesc);
                 }
             } else {
@@ -789,7 +800,7 @@ public class InventoryPacketAdapter {
                 String descKey = VirtualItemRegistry.getVirtualDescriptionKey(virtualId);
                 if (!translations.containsKey(descKey)) {
                     String originalDesc = virtualItemRegistry.getOriginalDescription(baseItemId, language);
-                    String enchantedDesc = virtualItemRegistry.buildEnchantedDescription(originalDesc, enchData);
+                    String enchantedDesc = virtualItemRegistry.buildEnchantedDescription(originalDesc, enchData, virtualId);
                     translations.put(descKey, enchantedDesc);
                 }
 
@@ -800,6 +811,7 @@ public class InventoryPacketAdapter {
             }
         }
 
+        // Remove original-item cache entries for non-enchanted slots (not needed for corrective packets)
         hotbarCache.put(playerUuid, cache);
     }
 
@@ -871,58 +883,30 @@ public class InventoryPacketAdapter {
 
         // ── Override new active slot's type description ──
         EnchantmentData newEnchData = cache.enchantedSlots.get(newActiveSlot);
-        if (newEnchData != null) {
+        String newVirtualId = cache.virtualIds.get(newActiveSlot);
+        if (newEnchData != null && newVirtualId != null) {
             ItemWithAllMetadata newOriginal = cache.originalItems.get(newActiveSlot);
             if (newOriginal != null) {
                 String descKey = virtualItemRegistry.getItemDescriptionKey(newOriginal.itemId);
                 String originalDesc = virtualItemRegistry.getOriginalDescription(newOriginal.itemId, language);
-                String enchantedDesc = virtualItemRegistry.buildEnchantedDescription(originalDesc, newEnchData);
+                String enchantedDesc = virtualItemRegistry.buildEnchantedDescription(originalDesc, newEnchData, newVirtualId);
                 // This overwrites the restoration if old and new are the same item type
                 translations.put(descKey, enchantedDesc);
             }
         }
 
-        // ── Build corrective hotbar section with ALL slots ──
+        // ── Build corrective hotbar section with ONLY affected slots ──
+        // The client treats missing slots as "no change", so we only need to include
+        // the old active slot (swap to virtual) and the new active slot (swap to real).
         InventorySection correctiveHotbar = new InventorySection();
         correctiveHotbar.capacity = cache.capacity;
         correctiveHotbar.items = new HashMap<>();
 
-        for (Map.Entry<Integer, ItemWithAllMetadata> entry : cache.originalItems.entrySet()) {
-            int slot = entry.getKey();
-            ItemWithAllMetadata original = entry.getValue();
-            EnchantmentData enchData = cache.enchantedSlots.get(slot);
-            String virtualId = cache.virtualIds.get(slot);
+        // Old active slot: if enchanted, swap to virtual ID
+        buildCorrectiveSlot(cache, oldActiveSlot, false, newVirtualItems, translations, language, correctiveHotbar);
 
-            if (enchData != null && virtualId != null) {
-                if (slot == newActiveSlot) {
-                    // New active slot → real ID
-                    correctiveHotbar.items.put(slot, original.clone());
-                } else {
-                    // Non-active enchanted slot → virtual ID
-                    String baseItemId = original.itemId;
-                    ItemBase virtualBase = virtualItemRegistry.getOrCreateVirtualItemBase(baseItemId, virtualId);
-                    if (virtualBase != null) {
-                        newVirtualItems.put(virtualId, virtualBase);
-
-                        String descKey = VirtualItemRegistry.getVirtualDescriptionKey(virtualId);
-                        if (!translations.containsKey(descKey)) {
-                            String origDesc = virtualItemRegistry.getOriginalDescription(baseItemId, language);
-                            String enchDesc = virtualItemRegistry.buildEnchantedDescription(origDesc, enchData);
-                            translations.put(descKey, enchDesc);
-                        }
-
-                        ItemWithAllMetadata cloned = original.clone();
-                        cloned.itemId = virtualId;
-                        correctiveHotbar.items.put(slot, cloned);
-                    } else {
-                        correctiveHotbar.items.put(slot, original.clone());
-                    }
-                }
-            } else {
-                // Non-enchanted → keep original
-                correctiveHotbar.items.put(slot, original.clone());
-            }
-        }
+        // New active slot: if enchanted, swap back to real ID
+        buildCorrectiveSlot(cache, newActiveSlot, true, newVirtualItems, translations, language, correctiveHotbar);
 
         // Send auxiliary packets (UpdateItems + UpdateTranslations) before the
         // corrective inventory packet.  Both go via writeNoCache, which triggers
@@ -988,7 +972,10 @@ public class InventoryPacketAdapter {
 
             String descKey = virtualItemRegistry.getItemDescriptionKey(baseItemId);
             String originalDesc = virtualItemRegistry.getOriginalDescription(baseItemId, language);
-            String enchantedDesc = virtualItemRegistry.buildEnchantedDescription(originalDesc, enchData);
+            // For interactive sections we override the real description key.
+            // Use a cache key based on the base item + enchantment combo.
+            String cacheKey = virtualItemRegistry.generateVirtualId(baseItemId, enchData);
+            String enchantedDesc = virtualItemRegistry.buildEnchantedDescription(originalDesc, enchData, cacheKey);
             translations.put(descKey, enchantedDesc);
         }
     }
@@ -1060,9 +1047,19 @@ public class InventoryPacketAdapter {
             }
         }
 
-        // Send translations (always, since descriptions may change)
+        // Send translations — only if they differ from what was last sent
         if (!translations.isEmpty()) {
-            sendTranslations(playerRef, translations);
+            Map<String, String> lastSent = lastSentTranslations.get(playerUuid);
+            Map<String, String> delta = computeTranslationDelta(lastSent, translations);
+            if (!delta.isEmpty()) {
+                sendTranslations(playerRef, delta);
+                // Update last-sent tracking (merge delta into existing)
+                if (lastSent == null) {
+                    lastSentTranslations.put(playerUuid, new ConcurrentHashMap<>(delta));
+                } else {
+                    lastSent.putAll(delta);
+                }
+            }
         }
     }
 
@@ -1098,5 +1095,96 @@ public class InventoryPacketAdapter {
         } catch (Exception e) {
             LOGGER.atWarning().log("Failed to send UpdateTranslations for virtual items: " + e.getMessage());
         }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    //  Helper: build a single corrective hotbar slot
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Builds one slot of the corrective hotbar packet.
+     *
+     * @param cache           the cached hotbar data
+     * @param slot            the slot index to process
+     * @param isNewActive     {@code true} if this slot is the NEW active slot
+     *                        (should use real ID); {@code false} if it is the
+     *                        OLD active slot (should swap to virtual ID)
+     * @param newVirtualItems accumulator for virtual item definitions
+     * @param translations    accumulator for translations
+     * @param language        the player's language
+     * @param section         the corrective inventory section to populate
+     */
+    private void buildCorrectiveSlot(
+            @Nonnull CachedHotbarData cache,
+            int slot,
+            boolean isNewActive,
+            @Nonnull Map<String, ItemBase> newVirtualItems,
+            @Nonnull Map<String, String> translations,
+            @Nullable String language,
+            @Nonnull InventorySection section) {
+
+        ItemWithAllMetadata original = cache.originalItems.get(slot);
+        if (original == null) return; // Slot is not enchanted (not in cache)
+
+        EnchantmentData enchData = cache.enchantedSlots.get(slot);
+        String virtualId = cache.virtualIds.get(slot);
+
+        if (enchData == null || virtualId == null) {
+            return;
+        }
+
+        if (isNewActive) {
+            // New active slot → restore to real ID
+            section.items.put(slot, original.clone());
+        } else {
+            // Old active slot → swap to virtual ID
+            String baseItemId = original.itemId;
+            ItemBase virtualBase = virtualItemRegistry.getOrCreateVirtualItemBase(baseItemId, virtualId);
+            if (virtualBase != null) {
+                newVirtualItems.put(virtualId, virtualBase);
+
+                String descKey = VirtualItemRegistry.getVirtualDescriptionKey(virtualId);
+                if (!translations.containsKey(descKey)) {
+                    String origDesc = virtualItemRegistry.getOriginalDescription(baseItemId, language);
+                    String enchDesc = virtualItemRegistry.buildEnchantedDescription(origDesc, enchData, virtualId);
+                    translations.put(descKey, enchDesc);
+                }
+
+                ItemWithAllMetadata cloned = original.clone();
+                cloned.itemId = virtualId;
+                section.items.put(slot, cloned);
+            } else {
+                section.items.put(slot, original.clone());
+            }
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    //  Helper: compute translation diff
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Computes the delta between previously sent translations and the new set.
+     * Returns only entries that are new or whose values have changed.
+     *
+     * @param lastSent  the previously sent translations (may be null)
+     * @param current   the current translations to send
+     * @return a map containing only new or changed entries
+     */
+    @Nonnull
+    private Map<String, String> computeTranslationDelta(
+            @Nullable Map<String, String> lastSent,
+            @Nonnull Map<String, String> current) {
+        if (lastSent == null || lastSent.isEmpty()) {
+            return current; // Everything is new
+        }
+        Map<String, String> delta = new LinkedHashMap<>();
+        for (Map.Entry<String, String> entry : current.entrySet()) {
+            String oldValue = lastSent.get(entry.getKey());
+            if (!entry.getValue().equals(oldValue)) {
+                delta.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return delta;
     }
 }
