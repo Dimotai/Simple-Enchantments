@@ -339,36 +339,55 @@ public class InventoryPacketAdapter {
         Map<String, ItemBase> newVirtualItems = new LinkedHashMap<>();
         Map<String, String> translations = new LinkedHashMap<>();
 
-        // ── Hotbar: virtual IDs for non-active slots, real ID for active slot ──
-        int activeSlot = playerActiveHotbarSlot.getOrDefault(playerUuid, 0);
-        Set<String> overriddenTypes = new HashSet<>();
-        processHotbarSection(playerUuid, activeSlot, packet.hotbar, language,
-                newVirtualItems, translations, overriddenTypes);
+        try {
+            // ── Hotbar: virtual IDs for non-active slots, real ID for active slot ──
+            int activeSlot = playerActiveHotbarSlot.getOrDefault(playerUuid, 0);
+            Set<String> overriddenTypes = new HashSet<>();
+            
+            try {
+                processHotbarSection(playerUuid, activeSlot, packet.hotbar, language,
+                        newVirtualItems, translations, overriddenTypes);
+            } catch (Exception e) {
+                LOGGER.atWarning().log("Error processing hotbar section for " + playerUuid + ": " + e.getMessage());
+            }
 
-        // ── Utility / Tools: translation overrides only (no virtual IDs) ──
-        collectInteractiveTranslations(packet.utility, language, translations, overriddenTypes);
-        collectInteractiveTranslations(packet.tools, language, translations, overriddenTypes);
+            // ── Utility / Tools: translation overrides only (no virtual IDs) ──
+            try {
+                collectInteractiveTranslations(packet.utility, language, translations, overriddenTypes);
+                collectInteractiveTranslations(packet.tools, language, translations, overriddenTypes);
+            } catch (Exception e) {
+                 LOGGER.atWarning().log("Error processing utility/tools sections for " + playerUuid + ": " + e.getMessage());
+            }
 
-        // Restore descriptions for item types that were overridden before but aren't now
-        Set<String> previousOverrides = virtualItemRegistry.getAndUpdateHotbarOverrides(
-                playerUuid, overriddenTypes);
-        if (previousOverrides != null) {
-            for (String prevType : previousOverrides) {
-                if (!overriddenTypes.contains(prevType)) {
-                    String descKey = virtualItemRegistry.getItemDescriptionKey(prevType);
-                    String originalDesc = virtualItemRegistry.getOriginalDescription(prevType, language);
-                    translations.put(descKey, originalDesc);
+            // Restore descriptions for item types that were overridden before but aren't now
+            Set<String> previousOverrides = virtualItemRegistry.getAndUpdateHotbarOverrides(
+                    playerUuid, overriddenTypes);
+            if (previousOverrides != null) {
+                for (String prevType : previousOverrides) {
+                    if (!overriddenTypes.contains(prevType)) {
+                        String descKey = virtualItemRegistry.getItemDescriptionKey(prevType);
+                        String originalDesc = virtualItemRegistry.getOriginalDescription(prevType, language);
+                        
+                        translations.put(descKey, originalDesc == null ? "" : originalDesc);
+                    }
                 }
             }
+
+            // ── Display-only sections: virtual item IDs ──
+            try {
+                processSection(playerUuid, "armor", packet.armor, language, newVirtualItems, translations);
+                processSection(playerUuid, "storage", packet.storage, language, newVirtualItems, translations);
+                processSection(playerUuid, "backpack", packet.backpack, language, newVirtualItems, translations);
+                processSection(playerUuid, "builderMaterial", packet.builderMaterial, language, newVirtualItems, translations);
+            } catch (Exception e) {
+                LOGGER.atWarning().log("Error processing display sections for " + playerUuid + ": " + e.getMessage());
+            }
+            
+        } catch (Exception e) {
+            LOGGER.atSevere().log("Trapped exception in processPlayerInventory for " + playerUuid + ": " + e.getMessage());
+        } finally {
+            sendAuxiliaryPackets(playerRef, newVirtualItems, translations);
         }
-
-        // ── Display-only sections: virtual item IDs ──
-        processSection(playerUuid, "armor", packet.armor, language, newVirtualItems, translations);
-        processSection(playerUuid, "storage", packet.storage, language, newVirtualItems, translations);
-        processSection(playerUuid, "backpack", packet.backpack, language, newVirtualItems, translations);
-        processSection(playerUuid, "builderMaterial", packet.builderMaterial, language, newVirtualItems, translations);
-
-        sendAuxiliaryPackets(playerRef, newVirtualItems, translations);
     }
 
     // ───────────────────────────────────────────────────────────────────────

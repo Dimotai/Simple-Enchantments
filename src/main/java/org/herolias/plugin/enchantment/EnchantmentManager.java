@@ -180,6 +180,15 @@ public class EnchantmentManager {
         
         // Get existing enchantments from item metadata
         EnchantmentData data = getEnchantmentsFromItem(item);
+        
+        // If the data is the immutable EMPTY instance (or we want to be safe), create a mutable copy
+        if (data == EnchantmentData.EMPTY || data.isEmpty()) {
+            data = new EnchantmentData();
+        } else {
+             // We can't easily check for immutability without try-catch or exposing a method, 
+             // but 'copy()' is always safe and cheap enough for an action that happens once per anvil use.
+             data = data.copy();
+        }
 
         // Check level limits (if not unsafe)
         int appliedLevel = level;

@@ -26,19 +26,31 @@ public class EnchantmentData {
     public static final String METADATA_KEY = "Enchantments";
 
     /** Shared immutable empty instance — avoids allocations for items without enchantments. */
-    public static final EnchantmentData EMPTY = new EnchantmentData(Collections.emptyMap());
+    /** Shared immutable empty instance — avoids allocations for items without enchantments. */
+    public static final EnchantmentData EMPTY = new EnchantmentData(Collections.emptyMap(), true);
     
     private final Map<EnchantmentType, Integer> enchantments;
+    private final boolean immutable;
 
     /** Lazily computed stable hash string.  {@code null} until first requested. */
     private volatile String cachedHash;
     
     public EnchantmentData() {
         this.enchantments = new HashMap<>();
+        this.immutable = false;
     }
     
     public EnchantmentData(Map<EnchantmentType, Integer> enchantments) {
         this.enchantments = new HashMap<>(enchantments);
+        this.immutable = false;
+    }
+
+    /**
+     * Private constructor for creating immutable instances.
+     */
+    private EnchantmentData(Map<EnchantmentType, Integer> enchantments, boolean immutable) {
+        this.enchantments = immutable ? Collections.unmodifiableMap(new HashMap<>(enchantments)) : new HashMap<>(enchantments);
+        this.immutable = immutable;
     }
     
     /**
@@ -46,15 +58,24 @@ public class EnchantmentData {
      * 
      * @param type The enchantment type
      * @param level The enchantment level (clamped to max level)
+     * @throws UnsupportedOperationException if this instance is immutable (e.g. EMPTY)
      */
     public void addEnchantment(EnchantmentType type, int level) {
+        if (immutable) {
+            throw new UnsupportedOperationException("Cannot modify immutable EnchantmentData");
+        }
         enchantments.put(type, level);
     }
     
     /**
      * Removes an enchantment from this item.
+     * 
+     * @throws UnsupportedOperationException if this instance is immutable (e.g. EMPTY)
      */
     public void removeEnchantment(EnchantmentType type) {
+        if (immutable) {
+            throw new UnsupportedOperationException("Cannot modify immutable EnchantmentData");
+        }
         enchantments.remove(type);
     }
     
