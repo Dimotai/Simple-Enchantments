@@ -14,7 +14,16 @@ import com.hypixel.hytale.server.core.inventory.transaction.ItemStackSlotTransac
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import org.herolias.plugin.util.ProcessingGuard;
 
+import com.hypixel.hytale.server.core.event.events.ecs.SwitchActiveSlotEvent;
+import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
+import com.hypixel.hytale.server.core.modules.entitystats.EntityStatValue;
+import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,14 +48,14 @@ public class EnchantmentEternalShotSystem extends AbstractRefundSystem {
     private final ProcessingGuard guard = new ProcessingGuard();
 
     /**
-     * Tracks recent Eternal Shot refunds per player to detect and cancel
-     * swap-from arrow duplication on modded crossbows.
-     * Key: Player UUID, Value: RefundRecord with timestamp and item info
+     * Tracks currently loaded crossbows to prevent duplication on swap-from.
+     * We don't need a time window anymore; we just need to know if we've refunded
+     * an arrow for a specific item, effectively marking it as "in a loaded state"
+     * from our system's perspective.
+     * 
+     * Key: Player UUID, Value: Item ID of the arrow that was refunded.
      */
-    private final Map<UUID, RefundRecord> recentRefunds = new ConcurrentHashMap<>();
-    private static final long REFUND_TRACKING_WINDOW_MS = 2000; // 2 second window for swap-from detection
-
-    private record RefundRecord(String itemId, long timestamp, short slot) {}
+    private final Map<UUID, String> loadedCrossbowAmmo = new ConcurrentHashMap<>();
 
     public EnchantmentEternalShotSystem(EnchantmentManager enchantmentManager) {
         this.enchantmentManager = enchantmentManager;
@@ -63,18 +72,62 @@ public class EnchantmentEternalShotSystem extends AbstractRefundSystem {
         ItemContainer container = event.getItemContainer();
         
         cleanupOldDropRecords(player);
-        cleanupOldRefundRecords();
         
         if (transaction instanceof ItemStackTransaction itemStackTransaction) {
+            // DEBUG: Log the entire transaction structure
+            if (loadedCrossbowAmmo.containsKey(player.getUuid())) {
+                LOGGER.atInfo().log("[DEBUG] Transaction for " + player.getUuid() + " (" + itemStackTransaction.getSlotTransactions().size() + " ops)");
+                for (ItemStackSlotTransaction slotTx : itemStackTransaction.getSlotTransactions()) {
+                    LOGGER.atInfo().log("   - Slot " + slotTx.getSlot() + ": " 
+                        + (slotTx.getSlotBefore() != null ? slotTx.getSlotBefore().getItemId() : "null") + " -> "
+                        + (slotTx.getSlotAfter() != null ? slotTx.getSlotAfter().getItemId() : "null"));
+                }
+            }
+
             for (ItemStackSlotTransaction slotTx : itemStackTransaction.getSlotTransactions()) {
-                processSlotTransaction(player, container, slotTx);
+                // Pass the full transaction context to allow checking other slots
+                processSlotTransaction(player, container, slotTx, itemStackTransaction);
             }
         } else if (transaction instanceof SlotTransaction slotTransaction) {
-            processSlotTransaction(player, container, slotTransaction);
+            processSlotTransaction(player, container, slotTransaction, null);
         }
     }
     
-    private void processSlotTransaction(Player player, ItemContainer container, SlotTransaction slotTransaction) {
+    /**
+     * Listens for slot switches to clear the "Loaded" record if the player
+     * switches away from a crossbow that is actually unloaded (Ammo == 0).
+     * This handles the "Fire -> Swap" case where the record would otherwise become stale.
+     * 
+     * Note: This method signature matches ComponentSystem.process() for SwitchActiveSlotEvent.
+     */
+    public void onSwitchActiveSlot(SwitchActiveSlotEvent event, Ref<EntityStore> ref, Store<EntityStore> store) {
+        Player player = store.getComponent(ref, Player.getComponentType());
+        if (player == null) return;
+
+        // Optimization: Only check if we are tracking a load for this player
+        if (!loadedCrossbowAmmo.containsKey(player.getUuid())) return;
+
+        EntityStatMap stats = store.getComponent(ref, EntityStatMap.getComponentType());
+        if (stats != null) {
+            EntityStatValue ammoStat = stats.get(DefaultEntityStatTypes.getAmmo());
+            float ammoValue = (ammoStat != null) ? ammoStat.get() : 0f;
+            
+            LOGGER.atInfo().log("[DEBUG] SwitchSlot for " + player.getUuid() + " | Ammo Stat: " + ammoValue);
+            
+            // If ammo is depleted (<= 0), then the crossbow is unloaded.
+            // If we still have a record, it's stale (from a previous shot). Clear it.
+            if (ammoValue < 1.0f) {
+                 loadedCrossbowAmmo.remove(player.getUuid());
+                 LOGGER.atInfo().log("[DEBUG] Cleared status for " + player.getUuid() + " (Ammo depleted)");
+            } else {
+                 LOGGER.atInfo().log("[DEBUG] Kept status for " + player.getUuid() + " (Ammo present)");
+            }
+        } else {
+             LOGGER.atInfo().log("[DEBUG] SwitchSlot: No stats found needed to check ammo.");
+        }
+    }
+    
+    private void processSlotTransaction(Player player, ItemContainer container, SlotTransaction slotTransaction, @Nullable ItemStackTransaction parentTransaction) {
         if (!slotTransaction.succeeded()) return;
         
         ItemStack slotBefore = slotTransaction.getSlotBefore();
@@ -89,7 +142,7 @@ public class EnchantmentEternalShotSystem extends AbstractRefundSystem {
             processAmmoConsumption(player, container, slotTransaction, slotBefore, slotAfter, beforeQty, afterQty, slot);
         } else if (afterQty > beforeQty) {
             // Ammo was ADDED (quantity increased) - check for swap-from duplication
-            processAmmoAddition(player, container, slotTransaction, slotBefore, slotAfter, beforeQty, afterQty, slot);
+            processAmmoAddition(player, container, slotTransaction, slotBefore, slotAfter, beforeQty, afterQty, slot, parentTransaction);
         }
     }
 
@@ -121,74 +174,97 @@ public class EnchantmentEternalShotSystem extends AbstractRefundSystem {
         guard.runGuarded(() -> container.replaceItemStackInSlot(slot, slotAfter, slotBefore));
 
         // Track this refund for crossbow swap-from duplication prevention.
-        // When a crossbow is loaded, ammo is consumed and we refund it. If the player
-        // then swaps away, the crossbow's swap-from interaction tries to return the ammo
-        // again (since the crossbow thinks it still has loaded ammo). We need to eat
-        // those returned arrows to prevent duplication.
         if (enchantmentManager.isCrossbow(weapon)) {
-            recentRefunds.put(player.getUuid(),
-                new RefundRecord(slotBefore.getItemId(), System.currentTimeMillis(), slot));
+            LOGGER.atInfo().log("[DEBUG] Recording load for " + player.getUuid() + " | Item: " + slotBefore.getItemId());
+            loadedCrossbowAmmo.put(player.getUuid(), slotBefore.getItemId());
         }
     }
 
     /**
      * Handles ammo being added back to inventory: detects swap-from duplication
      * on modded crossbows and cancels the addition by consuming the returned arrows.
-     * 
-     * This fixes the duplication exploit where:
-     * 1. Player loads a modded crossbow (ammo consumed -> refunded by Eternal Shot)
-     * 2. Player swaps away from crossbow (swap-from returns ammo -> duplication!)
      */
     private void processAmmoAddition(Player player, ItemContainer container, SlotTransaction slotTransaction,
                                       ItemStack slotBefore, ItemStack slotAfter,
-                                      int beforeQty, int afterQty, short slot) {
+                                      int beforeQty, int afterQty, short slot,
+                                      @Nullable ItemStackTransaction parentTransaction) {
         if (slotAfter == null || slotAfter.isEmpty()) return;
         if (!isAmmoItem(slotAfter)) return;
 
         UUID playerUuid = player.getUuid();
-        RefundRecord record = recentRefunds.get(playerUuid);
-        if (record == null) return;
+        String refundedAmmoId = loadedCrossbowAmmo.get(playerUuid);
+        
+        // If we haven't recorded a refund (load) for this player, ignore.
+        if (refundedAmmoId == null) return;
 
-        long elapsed = System.currentTimeMillis() - record.timestamp;
-        if (elapsed > REFUND_TRACKING_WINDOW_MS) {
-            recentRefunds.remove(playerUuid);
-            return;
-        }
+        // Check if the added ammo matches what we refunded/loaded
+        if (!refundedAmmoId.equals(slotAfter.getItemId())) return;
 
-        // Check if the added ammo matches what we recently refunded
-        if (!record.itemId.equals(slotAfter.getItemId())) return;
-
-        // The player is NOT currently holding the crossbow (they swapped away).
-        // Verify the player is no longer holding a crossbow with Eternal Shot,
-        // meaning this addition is from a swap-from interaction, not normal gameplay.
         Inventory inventory = player.getInventory();
         if (inventory == null) return;
 
         ItemStack currentWeapon = inventory.getItemInHand();
+        
         boolean stillHoldingEternalCrossbow = currentWeapon != null && !currentWeapon.isEmpty()
             && enchantmentManager.isCrossbow(currentWeapon)
             && enchantmentManager.getEnchantmentLevel(currentWeapon, EnchantmentType.ETERNAL_SHOT) > 0;
 
-        if (stillHoldingEternalCrossbow) {
-            // Player is still holding the crossbow - this is a normal reload, not a swap-from
+        // CRITICAL CHECK:
+        // Use the transaction context to distinguish between a "Swap/Unload Refund" and a "Legitimate Pickup".
+        // 1. Swap/Unload Refund: The Crossbow slot is modified (Loaded -> Unloaded) IN THE SAME transaction as the Arrow Add.
+        // 2. Legitimate Pickup: Only the Arrow slot is modified (Amount increases). The Crossbow slot is untouched.
+        
+        boolean isCrossbowBeingModified = false;
+        
+        if (parentTransaction != null) {
+            for (ItemStackSlotTransaction tx : parentTransaction.getSlotTransactions()) {
+                 ItemStack sBefore = tx.getSlotBefore();
+                 ItemStack sAfter = tx.getSlotAfter();
+                 
+                 // Force log for debugging
+                 if (sBefore != null && sAfter != null && sBefore.equals(sAfter)) {
+                     LOGGER.atInfo().log("[DEBUG] Identical Stacks detected. Logging diff anyway.");
+                 }
+
+                 // Check if this transaction involves the Eternal Shot crossbow (and isn't the arrow itself)
+                 if (sBefore != null && !sBefore.isEmpty() && enchantmentManager.isCrossbow(sBefore) 
+                     && enchantmentManager.getEnchantmentLevel(sBefore, EnchantmentType.ETERNAL_SHOT) > 0) {
+                     // We found the crossbow in the transaction! This means it's changing state.
+                     // A pure pickup wouldn't modify the crossbow.
+                     isCrossbowBeingModified = true;
+                     LOGGER.atInfo().log("[DEBUG] Detected Crossbow modification in slot " + tx.getSlot() + " - Assuming Swap/Unload event.");
+                     LOGGER.atInfo().log("[DEBUG] Crossbow Diff: Before=" + sBefore + " After=" + sAfter);
+                     break;
+                 }
+            }
+        }
+
+        if (stillHoldingEternalCrossbow && !isCrossbowBeingModified) {
+            // Player is holding the crossbow, and the crossbow itself is NOT being modified in this transaction.
+            // This is a legitimate pickup.
+            LOGGER.atInfo().log("[DEBUG] Allowed legitimate pickup of " + slotAfter.getItemId() + " (Crossbow not modified)");
             return;
         }
 
-        // This is a swap-from returning arrows that we already refunded -> cancel the duplication
+        // We are either:
+        // A) Not holding the crossbow anymore (swapped to something else)
+        // B) Holding it, but it is being modified (Unloading due to swap logic or fire logic logic?)
+        //    - Actually, firing logic doesn't add arrows. Only Swap/Unload logic adds arrows.
+        //    - So if Crossbow matches AND Arrow matches refund ID -> It is the Swap Refund.
+        
         int addedQty = afterQty - beforeQty;
-        LOGGER.atFine().log("Cancelling swap-from arrow duplication for " + player.getUuid() + 
+        LOGGER.atInfo().log("[DEBUG] Cancelling swap-from arrow duplication for " + player.getUuid() + 
             " (" + addedQty + "x " + slotAfter.getItemId() + ")");
-
+        
         // Restore the slot to its state before the arrows were added back
         guard.runGuarded(() -> container.replaceItemStackInSlot(slot, slotAfter, slotBefore));
 
-        // Clear the refund record since we handled it
-        recentRefunds.remove(playerUuid);
+        // Clear the record since we've handled the unload.
+        loadedCrossbowAmmo.remove(playerUuid);
     }
 
     /**
-     * Checks if an item is ammunition (arrows, bolts, or other projectile ammo).
-     * Broadened to support modded projectile types beyond just "arrow" and "bolt".
+     * Checks if an item is ammunition.
      */
     private boolean isAmmoItem(@Nonnull ItemStack itemStack) {
         String itemId = itemStack.getItemId();
@@ -196,12 +272,12 @@ public class EnchantmentEternalShotSystem extends AbstractRefundSystem {
 
         String lower = itemId.toLowerCase();
 
-        // Direct name matching for common ammo naming conventions
+        // Direct name matching
         if (lower.contains("arrow") || lower.contains("bolt") || lower.contains("ammo") || lower.contains("ammunition")) {
             return true;
         }
 
-        // Check item tags for ammunition classification
+        // Check item tags
         try {
             Item item = itemStack.getItem();
             if (item != null && item.getData() != null) {
@@ -225,18 +301,9 @@ public class EnchantmentEternalShotSystem extends AbstractRefundSystem {
                 }
             }
         } catch (Exception e) {
-            // Fallback to name-based check only
+            // Fallback
         }
 
         return false;
-    }
-
-    /**
-     * Removes expired refund records.
-     */
-    private void cleanupOldRefundRecords() {
-        long now = System.currentTimeMillis();
-        recentRefunds.entrySet().removeIf(entry -> 
-            now - entry.getValue().timestamp > REFUND_TRACKING_WINDOW_MS);
     }
 }

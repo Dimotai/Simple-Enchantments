@@ -42,6 +42,8 @@ import org.herolias.plugin.enchantment.EnchantmentFastSwimSystem;
 import org.herolias.plugin.listener.EnchantingTableListener;
 import org.herolias.plugin.ui.EnchantScrollPageSupplier;
 import com.hypixel.hytale.server.core.event.events.entity.LivingEntityInventoryChangeEvent;
+import com.hypixel.hytale.server.core.event.events.ecs.SwitchActiveSlotEvent;
+import com.hypixel.hytale.server.core.entity.entities.Player;
 
 import javax.annotation.Nonnull;
 
@@ -248,7 +250,11 @@ public class SimpleEnchanting extends JavaPlugin {
         // This intercepts arrow consumption and restores arrows when weapon has Eternal Shot enchantment
         EnchantmentEternalShotSystem eternalShotSystem = new EnchantmentEternalShotSystem(enchantmentManager);
         this.getEventRegistry().registerGlobal(LivingEntityInventoryChangeEvent.class, eternalShotSystem::onInventoryChange);
-        LOGGER.atInfo().log("Registered EnchantmentEternalShotSystem listener");
+        
+        // Register SwitchActiveSlot handler to clear stale records when switching from unloaded crossbows
+        // We use a dedicated System to ensure we get the EntityStore context
+        this.getEntityStoreRegistry().registerSystem(new org.herolias.plugin.enchantment.SwitchActiveSlotSystem(eternalShotSystem));
+        LOGGER.atInfo().log("Registered SwitchActiveSlotSystem");
         
         // Initialize and register Elemental Heart System (Essence Saver)
         EnchantmentElementalHeartSystem elementalHeartSystem = new EnchantmentElementalHeartSystem(enchantmentManager);
@@ -278,7 +284,6 @@ public class SimpleEnchanting extends JavaPlugin {
         EnchantmentVisualsListener visualsListener = new EnchantmentVisualsListener(enchantmentManager);
         this.getEventRegistry().registerGlobal(LivingEntityInventoryChangeEvent.class, visualsListener::onInventoryChange);
         LOGGER.atInfo().log("Registered EnchantmentVisualsListener");
-
 
 
         // ── Tooltip System (via DynamicTooltipsLib, optional) ──

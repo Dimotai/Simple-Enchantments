@@ -80,7 +80,7 @@ $C.@DecoratedContainer {
         Style: (
           FontSize: 12,
           VerticalAlignment: Center,
-          TextColor: #44ff44
+          TextColor: #48a72bff
         );
       }
 

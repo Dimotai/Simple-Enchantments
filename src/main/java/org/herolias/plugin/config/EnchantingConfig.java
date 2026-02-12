@@ -147,7 +147,7 @@ public class EnchantingConfig {
         addScrollRecipe("Scroll_FastSwim_II", 2, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Water_Essence", 2, "Ingredient_Crystal_Blue", 15, "Plant_Petals_Blue", 20);
         addScrollRecipe("Scroll_FastSwim_III", 3, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Water_Essence", 3, "Ingredient_Crystal_Blue", 20, "Plant_Petals_Blue", 30);
 
-        addScrollRecipe("Scroll_Night_Vision_I", 4, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Void_Essence", 30, "Ingredient_Life_Essence", 20, "Rock_Gem_Emerald", 1);
+        addScrollRecipe("Scroll_Night_Vision_I", 4, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Fire_Essence", 30, "Ingredient_Crystal_Yellow", 30, "Plant_Crop_Mushroom_Glowing_Orange", 20);
         addScrollRecipe("Scroll_Ranged_Protection_I", 1, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Life_Essence", 15, "Ingredient_Crystal_Purple", 10, "Ingredient_Feathers_Light", 10);
         addScrollRecipe("Scroll_Ranged_Protection_II", 2, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Life_Essence", 30, "Ingredient_Crystal_Purple", 15, "Ingredient_Feathers_Light", 15);
         addScrollRecipe("Scroll_Ranged_Protection_III", 3, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Life_Essence", 40, "Ingredient_Crystal_Purple", 25, "Ingredient_Feathers_Light", 20);
