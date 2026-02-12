@@ -9,25 +9,31 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import javax.annotation.Nonnull;
 import org.herolias.plugin.enchantment.EnchantmentType;
+import org.herolias.plugin.enchantment.EnchantmentManager;
+import org.herolias.plugin.enchantment.EnchantmentData;
+import java.util.Map;
 
 public class EnchantScrollElement extends ChoiceElement {
     private final ItemStack itemStack;
     private final EnchantmentType enchantmentType;
     private final int targetLevel;
     private final int currentLevel;
+    private final EnchantmentManager enchantmentManager;
 
     public EnchantScrollElement(
         ItemStack itemStack,
         EnchantmentType enchantmentType,
         int targetLevel,
         int currentLevel,
-        EnchantItemInteraction interaction
+        EnchantItemInteraction interaction,
+        EnchantmentManager enchantmentManager
     ) {
         this.itemStack = itemStack;
         this.enchantmentType = enchantmentType;
         this.targetLevel = targetLevel;
         this.currentLevel = currentLevel;
         this.interactions = new ChoiceInteraction[]{interaction};
+        this.enchantmentManager = enchantmentManager;
     }
 
     @Override
@@ -41,13 +47,30 @@ public class EnchantScrollElement extends ChoiceElement {
         commandBuilder.set(selector + " #Icon.ItemId", this.itemStack.getItemId().toString());
         commandBuilder.set(selector + " #Name.TextSpans", Message.translation(this.itemStack.getItem().getTranslationKey()));
 
-        String detail;
-        if (currentLevel > 0) {
-            detail = "Upgrade: " + enchantmentType.getFormattedName(currentLevel)
-                + " -> " + enchantmentType.getFormattedName(targetLevel);
-        } else {
-            detail = "Apply: " + enchantmentType.getFormattedName(targetLevel);
+        StringBuilder detailBuilder = new StringBuilder();
+        
+        // Display existing enchantments
+        EnchantmentData data = enchantmentManager.getEnchantmentsFromItem(itemStack);
+        if (data != null && !data.getAllEnchantments().isEmpty()) {
+            detailBuilder.append("Current: ");
+            boolean first = true;
+            for (Map.Entry<EnchantmentType, Integer> entry : data.getAllEnchantments().entrySet()) {
+                if (!first) {
+                    detailBuilder.append(", ");
+                }
+                detailBuilder.append(entry.getKey().getFormattedName(entry.getValue()));
+                first = false;
+            }
+            detailBuilder.append("\n");
         }
-        commandBuilder.set(selector + " #Detail.Text", detail);
+
+        if (currentLevel > 0) {
+            detailBuilder.append("Upgrade: ").append(enchantmentType.getFormattedName(currentLevel))
+                .append(" -> ").append(enchantmentType.getFormattedName(targetLevel));
+        } else {
+            detailBuilder.append("Apply: ").append(enchantmentType.getFormattedName(targetLevel));
+        }
+        
+        commandBuilder.set(selector + " #Detail.Text", detailBuilder.toString());
     }
 }

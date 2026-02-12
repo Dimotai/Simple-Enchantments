@@ -128,7 +128,8 @@ public class EnchantScrollPage extends ChoiceBasePage {
                 enchantmentType,
                 interactionTargetLevel,
                 currentLevel,
-                new EnchantItemInteraction(itemContext, heldItemContext, enchantmentType, interactionTargetLevel, enchantmentManager)
+                new EnchantItemInteraction(itemContext, heldItemContext, enchantmentType, interactionTargetLevel, enchantmentManager),
+                enchantmentManager
             ));
         }
 

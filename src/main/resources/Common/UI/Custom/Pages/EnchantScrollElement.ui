@@ -11,15 +11,20 @@ Button #Button {
     Anchor: (Width: 32, Height: 32);
   }
 
-  Label #Name {
-    Padding: (Horizontal: 10, Vertical: 5);
-    Style: (RenderBold: true);
+  Group {
+    LayoutMode: Top;
     FlexWeight: 1;
-  }
+    Padding: (Left: 10);
+    
+    Label #Name {
+      Padding: (Vertical: 2);
+      Style: (RenderBold: true);
+    }
 
-  Label #Detail {
-    Padding: (Horizontal: 10, Vertical: 5);
-    Style: (TextColor: #ffffff(0.6));
+    Label #Detail {
+      Padding: (Vertical: 2);
+      Style: (TextColor: #ffffff(0.6));
+    }
   }
 
   Group {
