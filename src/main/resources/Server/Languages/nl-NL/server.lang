@@ -168,15 +168,15 @@ items.Scroll_Strength_III.description = Verhoogt projectielschade met 30%.
 
 items.Scroll_Eagles_Eye_I.name = Rol van Adelaarsoog I
 
-items.Scroll_Eagles_Eye_I.description = Verhoogt projectielschade tot 15% op basis van afstand.
+items.Scroll_Eagles_Eye_I.description = Verhoogt projectielschade tot 25% op basis van afstand.
 
 items.Scroll_Eagles_Eye_II.name = Rol van Adelaarsoog II
 
-items.Scroll_Eagles_Eye_II.description = Verhoogt projectielschade tot 30% op basis van afstand.
+items.Scroll_Eagles_Eye_II.description = Verhoogt projectielschade tot 50% op basis van afstand.
 
 items.Scroll_Eagles_Eye_III.name = Rol van Adelaarsoog III
 
-items.Scroll_Eagles_Eye_III.description = Verhoogt projectielschade tot 45% op basis van afstand.
+items.Scroll_Eagles_Eye_III.description = Verhoogt projectielschade tot 75% op basis van afstand.
 
 
 
@@ -398,7 +398,7 @@ enchantment.strength.description = Verhoogt projectielschade met 10%.
 
 enchantment.eagles_eye.name = Adelaarsoog
 
-enchantment.eagles_eye.description = Verhoogt projectielschade tot 15% op basis van afstand.
+enchantment.eagles_eye.description = Verhoogt projectielschade tot 25% op basis van afstand.
 
 enchantment.looting.name = Plundering
 

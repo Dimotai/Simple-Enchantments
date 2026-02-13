@@ -11,7 +11,8 @@ import java.util.Map;
 public class EnchantingConfig {
     public double configVersion = 1.4; // Versioning for migration
     public int maxEnchantmentsPerItem = 5;
-    public boolean showEnchantmentBanner = false;
+    public boolean showEnchantmentBanner = true; // Default to true so people see it without the lib
+    public boolean hasAutoDisabledBanner = false; // Tracks if we've already auto-disabled it for the user
     public boolean enableEnchantmentGlow = true; // Renamed from showEnchantmentGlow to force enable on update
     
     // Enchantment specific settings
@@ -67,12 +68,16 @@ public class EnchantingConfig {
         EnchantingConfig config = new EnchantingConfig();
         config.initializeDefaultRecipes();
         config.initializeDefaultDisabledEnchantments();
+        if (config.notifiedPlayers == null) config.notifiedPlayers = new ArrayList<>();
         return config;
     }
 
     private void initializeDefaultDisabledEnchantments() {
         if (disabledEnchantments == null) {
             disabledEnchantments = new LinkedHashMap<>();
+        }
+        if (notifiedPlayers == null) {
+            notifiedPlayers = new ArrayList<>();
         }
         for (org.herolias.plugin.enchantment.EnchantmentType type : org.herolias.plugin.enchantment.EnchantmentType.values()) {
             if (type == org.herolias.plugin.enchantment.EnchantmentType.THRIFT) {
@@ -230,4 +235,14 @@ public class EnchantingConfig {
         }
     }
     
+
+
+    // Track players who have seen the "Tooltips are here" welcome message
+    // Moved to bottom to keep config readable
+    // Track players who have seen the "Tooltips are here" welcome message
+    // Moved to bottom to keep config readable
+    public List<String> notifiedPlayers = new ArrayList<>();
+    
+    // If true, the welcome message will not be shown (used for fresh installs)
+    public boolean skipWelcomeMessage = false;
 }

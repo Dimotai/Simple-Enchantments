@@ -168,15 +168,15 @@ items.Scroll_Strength_III.description = Aumenta i danni dei proiettili del 30%.
 
 items.Scroll_Eagles_Eye_I.name = Pergamena dell'Occhio d'Aquila I
 
-items.Scroll_Eagles_Eye_I.description = Aumenta i danni dei proiettili fino al 15% in base alla distanza.
+items.Scroll_Eagles_Eye_I.description = Aumenta i danni dei proiettili fino al 25% in base alla distanza.
 
 items.Scroll_Eagles_Eye_II.name = Pergamena dell'Occhio d'Aquila II
 
-items.Scroll_Eagles_Eye_II.description = Aumenta i danni dei proiettili fino al 30% in base alla distanza.
+items.Scroll_Eagles_Eye_II.description = Aumenta i danni dei proiettili fino al 50% in base alla distanza.
 
 items.Scroll_Eagles_Eye_III.name = Pergamena dell'Occhio d'Aquila III
 
-items.Scroll_Eagles_Eye_III.description = Aumenta i danni dei proiettili fino al 45% in base alla distanza.
+items.Scroll_Eagles_Eye_III.description = Aumenta i danni dei proiettili fino al 75% in base alla distanza.
 
 
 
@@ -398,7 +398,7 @@ enchantment.strength.description = Aumenta i danni dei proiettili del 10%.
 
 enchantment.eagles_eye.name = Occhio d'Aquila
 
-enchantment.eagles_eye.description = Aumenta i danni dei proiettili fino al 15% in base alla distanza.
+enchantment.eagles_eye.description = Aumenta i danni dei proiettili fino al 25% in base alla distanza.
 
 enchantment.looting.name = Saccheggio
 

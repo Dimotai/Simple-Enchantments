@@ -505,6 +505,7 @@ public enum EnchantmentType {
             case EFFICIENCY -> config.efficiencyMiningSpeedPerLevel;
             case FORTUNE -> config.fortuneRollChancePerLevel;
             case STRENGTH -> config.strengthDamageMultiplierPerLevel;
+            case EAGLES_EYE -> config.eaglesEyeDistanceBonusPerLevel;
             case LOOTING -> config.lootingChanceMultiplierPerLevel;
             case FEATHER_FALLING -> config.featherFallingReductionPerLevel;
             case WATERBREATHING -> config.waterBreathingReductionPerLevel;
@@ -583,7 +584,7 @@ public enum EnchantmentType {
     public String getBonusDescription(int level) {
          if (level <= 0) return "";
          double mult = getEffectMultiplier() * level;
-         int percentage = (int) Math.round(mult * 100);
+         float percentage = (float) (mult * 100);
 
          return switch (this) {
              case SHARPNESS -> "Melee damage increased by " + percentage + "%";

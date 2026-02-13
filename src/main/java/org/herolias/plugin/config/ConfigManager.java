@@ -67,4 +67,8 @@ public class ConfigManager {
     public File getConfigDirectory() {
         return configFile.getParentFile();
     }
+
+    public File getConfigFile() {
+        return configFile;
+    }
 }

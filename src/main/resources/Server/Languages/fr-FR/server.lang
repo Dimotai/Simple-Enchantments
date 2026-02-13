@@ -168,15 +168,15 @@ items.Scroll_Strength_III.description = Augmente les dégâts des projectiles de
 
 items.Scroll_Eagles_Eye_I.name = Parchemin d'Oeil d'Aigle I
 
-items.Scroll_Eagles_Eye_I.description = Augmente les dégâts des projectiles jusqu'à 15% selon la distance.
+items.Scroll_Eagles_Eye_I.description = Augmente les dégâts des projectiles jusqu'à 25% selon la distance.
 
 items.Scroll_Eagles_Eye_II.name = Parchemin d'Oeil d'Aigle II
 
-items.Scroll_Eagles_Eye_II.description = Augmente les dégâts des projectiles jusqu'à 30% selon la distance.
+items.Scroll_Eagles_Eye_II.description = Augmente les dégâts des projectiles jusqu'à 50% selon la distance.
 
 items.Scroll_Eagles_Eye_III.name = Parchemin d'Oeil d'Aigle III
 
-items.Scroll_Eagles_Eye_III.description = Augmente les dégâts des projectiles jusqu'à 45% selon la distance.
+items.Scroll_Eagles_Eye_III.description = Augmente les dégâts des projectiles jusqu'à 75% selon la distance.
 
 
 
@@ -398,7 +398,7 @@ enchantment.strength.description = Augmente les dégâts des projectiles de 10%.
 
 enchantment.eagles_eye.name = Oeil d'Aigle
 
-enchantment.eagles_eye.description = Augmente les dégâts des projectiles jusqu'à 15% selon la distance.
+enchantment.eagles_eye.description = Augmente les dégâts des projectiles jusqu'à 25% selon la distance.
 
 enchantment.looting.name = Butin
 

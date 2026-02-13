@@ -168,15 +168,15 @@ items.Scroll_Strength_III.description = Ökar projektilskada med 30%.
 
 items.Scroll_Eagles_Eye_I.name = Örnblicksrulle I
 
-items.Scroll_Eagles_Eye_I.description = Ökar projektilskada upp till 15% baserat på avstånd.
+items.Scroll_Eagles_Eye_I.description = Ökar projektilskada upp till 25% baserat på avstånd.
 
 items.Scroll_Eagles_Eye_II.name = Örnblicksrulle II
 
-items.Scroll_Eagles_Eye_II.description = Ökar projektilskada upp till 30% baserat på avstånd.
+items.Scroll_Eagles_Eye_II.description = Ökar projektilskada upp till 50% baserat på avstånd.
 
 items.Scroll_Eagles_Eye_III.name = Örnblicksrulle III
 
-items.Scroll_Eagles_Eye_III.description = Ökar projektilskada upp till 45% baserat på avstånd.
+items.Scroll_Eagles_Eye_III.description = Ökar projektilskada upp till 75% baserat på avstånd.
 
 
 
@@ -398,7 +398,7 @@ enchantment.strength.description = Ökar projektilskada med 10%.
 
 enchantment.eagles_eye.name = Örnblick
 
-enchantment.eagles_eye.description = Ökar projektilskada upp till 15% baserat på avstånd.
+enchantment.eagles_eye.description = Ökar projektilskada upp till 25% baserat på avstånd.
 
 enchantment.looting.name = Plundring
 

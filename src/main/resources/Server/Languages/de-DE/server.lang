@@ -168,15 +168,15 @@ items.Scroll_Strength_III.description = Erhöht Projektilschaden um 30%.
 
 items.Scroll_Eagles_Eye_I.name = Schriftrolle des Adlerauges I
 
-items.Scroll_Eagles_Eye_I.description = Erhöht Projektilschaden je nach Distanz um bis zu 15%.
+items.Scroll_Eagles_Eye_I.description = Erhöht Projektilschaden je nach Distanz um bis zu 25%.
 
 items.Scroll_Eagles_Eye_II.name = Schriftrolle des Adlerauges II
 
-items.Scroll_Eagles_Eye_II.description = Erhöht Projektilschaden je nach Distanz um bis zu 30%.
+items.Scroll_Eagles_Eye_II.description = Erhöht Projektilschaden je nach Distanz um bis zu 50%.
 
 items.Scroll_Eagles_Eye_III.name = Schriftrolle des Adlerauges III
 
-items.Scroll_Eagles_Eye_III.description = Erhöht Projektilschaden je nach Distanz um bis zu 45%.
+items.Scroll_Eagles_Eye_III.description = Erhöht Projektilschaden je nach Distanz um bis zu 75%.
 
 
 
@@ -398,7 +398,7 @@ enchantment.strength.description = Erhöht Projektilschaden um 10%.
 
 enchantment.eagles_eye.name = Adlerauge
 
-enchantment.eagles_eye.description = Erhöht Projektilschaden je nach Distanz um bis zu 15%.
+enchantment.eagles_eye.description = Erhöht Projektilschaden je nach Distanz um bis zu 25%.
 
 enchantment.looting.name = Plünderung
 

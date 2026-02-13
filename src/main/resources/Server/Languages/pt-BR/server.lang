@@ -168,15 +168,15 @@ items.Scroll_Strength_III.description = Aumenta o dano de projéteis em 30%.
 
 items.Scroll_Eagles_Eye_I.name = Pergaminho de Olho de Águia I
 
-items.Scroll_Eagles_Eye_I.description = Aumenta o dano de projéteis em até 15% com base na distância.
+items.Scroll_Eagles_Eye_I.description = Aumenta o dano de projéteis em até 25% com base na distância.
 
 items.Scroll_Eagles_Eye_II.name = Pergaminho de Olho de Águia II
 
-items.Scroll_Eagles_Eye_II.description = Aumenta o dano de projéteis em até 30% com base na distância.
+items.Scroll_Eagles_Eye_II.description = Aumenta o dano de projéteis em até 50% com base na distância.
 
 items.Scroll_Eagles_Eye_III.name = Pergaminho de Olho de Águia III
 
-items.Scroll_Eagles_Eye_III.description = Aumenta o dano de projéteis em até 45% com base na distância.
+items.Scroll_Eagles_Eye_III.description = Aumenta o dano de projéteis em até 75% com base na distância.
 
 
 
@@ -398,7 +398,7 @@ enchantment.strength.description = Aumenta o dano de projéteis em 10%.
 
 enchantment.eagles_eye.name = Olho de Águia
 
-enchantment.eagles_eye.description = Aumenta o dano de projéteis em até 15% com base na distância.
+enchantment.eagles_eye.description = Aumenta o dano de projéteis em até 25% com base na distância.
 
 enchantment.looting.name = Saque
 

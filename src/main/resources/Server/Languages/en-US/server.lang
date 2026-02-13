@@ -164,15 +164,15 @@ items.Scroll_Strength_III.description = Increases projectile damage by 30%.
 
 items.Scroll_Eagles_Eye_I.name = Scroll of Eagle's Eye I
 
-items.Scroll_Eagles_Eye_I.description = Increases projectile damage by up to 15% based on distance.
+items.Scroll_Eagles_Eye_I.description = Increases projectile damage by up to 25% based on distance.
 
 items.Scroll_Eagles_Eye_II.name = Scroll of Eagle's Eye II
 
-items.Scroll_Eagles_Eye_II.description = Increases projectile damage by up to 30% based on distance.
+items.Scroll_Eagles_Eye_II.description = Increases projectile damage by up to 50% based on distance.
 
 items.Scroll_Eagles_Eye_III.name = Scroll of Eagle's Eye III
 
-items.Scroll_Eagles_Eye_III.description = Increases projectile damage by up to 45% based on distance.
+items.Scroll_Eagles_Eye_III.description = Increases projectile damage by up to 75% based on distance.
 
 
 
@@ -398,7 +398,7 @@ enchantment.strength.description = Increases projectile damage by 10%.
 
 enchantment.eagles_eye.name = Eagle's Eye
 
-enchantment.eagles_eye.description = Increases projectile damage by up to 15% based on distance.
+enchantment.eagles_eye.description = Increases projectile damage by up to 25% based on distance.
 
 enchantment.looting.name = Looting
 

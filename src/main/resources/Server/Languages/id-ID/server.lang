@@ -168,15 +168,15 @@ items.Scroll_Strength_III.description = Meningkatkan kerusakan proyektil sebesar
 
 items.Scroll_Eagles_Eye_I.name = Gulungan Mata Rajawali I
 
-items.Scroll_Eagles_Eye_I.description = Meningkatkan kerusakan proyektil hingga 15% berdasarkan jarak.
+items.Scroll_Eagles_Eye_I.description = Meningkatkan kerusakan proyektil hingga 25% berdasarkan jarak.
 
 items.Scroll_Eagles_Eye_II.name = Gulungan Mata Rajawali II
 
-items.Scroll_Eagles_Eye_II.description = Meningkatkan kerusakan proyektil hingga 30% berdasarkan jarak.
+items.Scroll_Eagles_Eye_II.description = Meningkatkan kerusakan proyektil hingga 50% berdasarkan jarak.
 
 items.Scroll_Eagles_Eye_III.name = Gulungan Mata Rajawali III
 
-items.Scroll_Eagles_Eye_III.description = Meningkatkan kerusakan proyektil hingga 45% berdasarkan jarak.
+items.Scroll_Eagles_Eye_III.description = Meningkatkan kerusakan proyektil hingga 75% berdasarkan jarak.
 
 
 
@@ -398,7 +398,7 @@ enchantment.strength.description = Meningkatkan kerusakan proyektil sebesar 10%.
 
 enchantment.eagles_eye.name = Mata Rajawali
 
-enchantment.eagles_eye.description = Meningkatkan kerusakan proyektil hingga 15% berdasarkan jarak.
+enchantment.eagles_eye.description = Meningkatkan kerusakan proyektil hingga 25% berdasarkan jarak.
 
 enchantment.looting.name = Penjarahan
 

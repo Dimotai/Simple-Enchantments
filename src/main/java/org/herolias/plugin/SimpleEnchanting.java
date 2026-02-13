@@ -5,6 +5,7 @@ import com.hypixel.hytale.server.core.modules.interaction.interaction.config.ser
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import org.herolias.plugin.command.EnchantCommand;
+import org.herolias.plugin.config.EnchantingConfig;
 import org.herolias.plugin.enchantment.EnchantmentDamageSystem;
 import org.herolias.plugin.enchantment.EnchantmentAbilityStaminaSystem;
 import org.herolias.plugin.enchantment.EnchantmentBlockDamageSystem;
@@ -103,7 +104,19 @@ public class SimpleEnchanting extends JavaPlugin {
         
         // Initialize Config
         this.configManager = new org.herolias.plugin.config.ConfigManager(new java.io.File("config"));
+        
+        // Check if this is a fresh install (no config file yet)
+        boolean isFreshInstall = !this.configManager.getConfigFile().exists();
+        
         this.configManager.loadConfig();
+        
+        // If fresh install, skip the welcome message (users installing now likely know about tooltips or read the mod page)
+        if (isFreshInstall) {
+            EnchantingConfig config = this.configManager.getConfig();
+            config.skipWelcomeMessage = true;
+            this.configManager.saveConfig();
+            LOGGER.atInfo().log("Fresh install detected: Welcome message disabled.");
+        }
 
         // Register event listener for recipe filtering based on config
         // This intercepts recipes as they're loaded and removes disabled enchantment scrolls
@@ -303,6 +316,20 @@ public class SimpleEnchanting extends JavaPlugin {
 
         // Initialize enchanting table listener
         this.enchantingTableListener = new EnchantingTableListener(this);
+        
+        // Auto-disable enchantment banner if tooltips are present and we haven't done it yet
+        if (tooltipsEnabled) {
+            EnchantingConfig config = configManager.getConfig();
+            if (!config.hasAutoDisabledBanner) {
+                config.showEnchantmentBanner = false;
+                config.hasAutoDisabledBanner = true;
+                configManager.saveConfig();
+                LOGGER.atInfo().log("Automatically disabled Enchantment Banner because DynamicTooltipsLib is installed.");
+            }
+        }
+        
+        // Register Welcome Listener (One-time notification for tooltips)
+        this.getEventRegistry().registerGlobal(com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent.class, new org.herolias.plugin.listener.WelcomeListener(this)::onPlayerReady);
         
         // Register commands
         this.getCommandRegistry().registerCommand(new EnchantCommand(this));
