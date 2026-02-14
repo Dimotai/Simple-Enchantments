@@ -392,8 +392,35 @@ public enum EnchantmentType {
         false, // isLegendary
         ItemCategory.MELEE_WEAPON, ItemCategory.RANGED_WEAPON, 
         ItemCategory.STAFF, ItemCategory.STAFF_MANA, ItemCategory.STAFF_ESSENCE
-    )
+    ),
 
+    /**
+     * Riposte - Increases damage dealt by counter attacks
+     * Applicable to: Melee weapons
+     */
+    RIPOSTE(
+        "riposte",
+        "Riposte",
+        "Increases counter attack damage",
+        3,  // max level
+        false, // requiresDurability
+        false, // isLegendary
+        ItemCategory.MELEE_WEAPON
+    ),
+
+    /**
+     * Coup de Grâce - Increases damage towards stunned/downed enemies
+     * Applicable to: Melee weapons
+     */
+    COUP_DE_GRACE(
+        "coup_de_grace",
+        "Coup de Grâce",
+        "Increases damage to stunned enemies",
+        3,  // max level
+        false, // requiresDurability
+        false, // isLegendary
+        ItemCategory.MELEE_WEAPON
+    )
     ;
 
     private final String id;
@@ -517,6 +544,8 @@ public enum EnchantmentType {
             case FAST_SWIM -> config.fastSwimSpeedBonusPerLevel;
             case RANGED_PROTECTION -> config.rangedProtectionDamageReductionPerLevel;
             case FRENZY -> config.frenzyChargeSpeedMultiplierPerLevel;
+            case RIPOSTE -> config.riposteDamageMultiplierPerLevel;
+            case COUP_DE_GRACE -> config.coupDeGraceDamageMultiplierPerLevel;
             //case BURN -> config.burnDamagePerSecond;
             default -> 0.0;
         };
@@ -614,6 +643,8 @@ public enum EnchantmentType {
              case NIGHT_VISION -> "Enhances vision in dark environments";
              case RANGED_PROTECTION -> "Projectile/magic damage reduced by " + percentage + "%";
              case FRENZY -> "Ability charge speed increased by " + percentage + "%";
+             case RIPOSTE -> "Counter attack damage increased by " + percentage + "%";
+             case COUP_DE_GRACE -> "Damage to stunned enemies increased by " + percentage + "%";
              default -> "";
          };
     }

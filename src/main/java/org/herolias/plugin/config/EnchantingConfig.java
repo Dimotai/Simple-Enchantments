@@ -22,7 +22,7 @@ public class EnchantingConfig {
     public double dexterityStaminaReductionPerLevel = 0.20;
     public double protectionDamageReductionPerLevel = 0.04;
     public double efficiencyMiningSpeedPerLevel = 0.20;
-    public double efficiencySwingSpeedMultiplier = 0.10;
+    // public double efficiencySwingSpeedMultiplier = 0.10;
     public double fortuneRollChancePerLevel = 0.25;
     public double strengthDamageMultiplierPerLevel = 0.10;
     public double strengthRangeMultiplierPerLevel = 0.15;
@@ -39,6 +39,8 @@ public class EnchantingConfig {
     public double fastSwimSpeedBonusPerLevel = 0.25;
     public double rangedProtectionDamageReductionPerLevel = 0.04;
     public double frenzyChargeSpeedMultiplierPerLevel = 0.15;
+    public double riposteDamageMultiplierPerLevel = 0.20;
+    public double coupDeGraceDamageMultiplierPerLevel = 0.20;
     //public double burnDamagePerSecond = 3.0;
 
     // Staff Enchantments
@@ -80,7 +82,7 @@ public class EnchantingConfig {
             notifiedPlayers = new ArrayList<>();
         }
         for (org.herolias.plugin.enchantment.EnchantmentType type : org.herolias.plugin.enchantment.EnchantmentType.values()) {
-            if (type == org.herolias.plugin.enchantment.EnchantmentType.THRIFT) {
+            if (type == org.herolias.plugin.enchantment.EnchantmentType.THRIFT || type == org.herolias.plugin.enchantment.EnchantmentType.NIGHT_VISION) {
                 disabledEnchantments.put(type.getId(), true);
             } else {
                 disabledEnchantments.put(type.getId(), false);
@@ -161,6 +163,14 @@ public class EnchantingConfig {
         addScrollRecipe("Scroll_Frenzy_I", 1, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Plant_Petals_Blood", 15, "Ingredient_Crystal_Cyan", 10, "Plant_Crop_Stamina1", 5);
         addScrollRecipe("Scroll_Frenzy_II", 2, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Plant_Petals_Blood", 20, "Ingredient_Crystal_Cyan", 20, "Plant_Crop_Stamina1", 7);
         addScrollRecipe("Scroll_Frenzy_III", 3, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Plant_Petals_Blood", 25, "Ingredient_Crystal_Cyan", 30, "Plant_Crop_Stamina1", 10);
+
+        addScrollRecipe("Scroll_Riposte_I", 1, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Bar_Iron", 5, "Ingredient_Crystal_Yellow", 5);
+        addScrollRecipe("Scroll_Riposte_II", 2, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Bar_Iron", 10, "Ingredient_Crystal_Yellow", 10);
+        addScrollRecipe("Scroll_Riposte_III", 3, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Bar_Steel", 5, "Ingredient_Crystal_Yellow", 15);
+
+        addScrollRecipe("Scroll_Coup_De_Grace_I", 1, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Bar_Iron", 5, "Ingredient_Crystal_Red", 5);
+        addScrollRecipe("Scroll_Coup_De_Grace_II", 2, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Bar_Iron", 10, "Ingredient_Crystal_Red", 10);
+        addScrollRecipe("Scroll_Coup_De_Grace_III", 3, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Bar_Steel", 5, "Ingredient_Crystal_Red", 15);
 
         if (enchantingTableRecipe == null) {
             enchantingTableRecipe = new ArrayList<>();

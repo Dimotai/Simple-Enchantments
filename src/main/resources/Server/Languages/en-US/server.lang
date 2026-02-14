@@ -501,3 +501,37 @@ items.Scroll_Frenzy_III.description = Increases signature charge rate by 45%.
 enchantment.frenzy.name = Frenzy
 
 enchantment.frenzy.description = Increases signature charge rate by 15%.
+
+
+items.Scroll_Riposte_I.name = Scroll of Riposte I
+
+items.Scroll_Riposte_I.description = Increases counter attack damage by 20%.
+
+items.Scroll_Riposte_II.name = Scroll of Riposte II
+
+items.Scroll_Riposte_II.description = Increases counter attack damage by 40%.
+
+items.Scroll_Riposte_III.name = Scroll of Riposte III
+
+items.Scroll_Riposte_III.description = Increases counter attack damage by 60%.
+
+enchantment.riposte.name = Riposte
+
+enchantment.riposte.description = Increases counter attack damage by 20%.
+
+
+items.Scroll_Coup_De_Grace_I.name = Scroll of Coup de Grâce I
+
+items.Scroll_Coup_De_Grace_I.description = Increases damage to stunned enemies by 20%.
+
+items.Scroll_Coup_De_Grace_II.name = Scroll of Coup de Grâce II
+
+items.Scroll_Coup_De_Grace_II.description = Increases damage to stunned enemies by 40%.
+
+items.Scroll_Coup_De_Grace_III.name = Scroll of Coup de Grâce III
+
+items.Scroll_Coup_De_Grace_III.description = Increases damage to stunned enemies by 60%.
+
+enchantment.coup_de_grace.name = Coup de Grâce
+
+enchantment.coup_de_grace.description = Increases damage to stunned enemies by 20%.

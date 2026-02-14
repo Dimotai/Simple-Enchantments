@@ -404,6 +404,18 @@ public class SimpleEnchanting extends JavaPlugin {
         return tooltipsEnabled;
     }
 
+    /**
+     * Checks if the Perfect Parries mod is present.
+     */
+    public boolean isPerfectParriesModPresent() {
+        try {
+            Class.forName("org.narwhals.plugin.PerfectParries");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
     public org.herolias.plugin.config.ConfigManager getConfigManager() {
         return configManager;
     }

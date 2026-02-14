@@ -51,6 +51,11 @@ public class EnchantmentRecipeManager {
     public static void reload() {
         if (plugin == null) return;
         
+        if (!initialized) {
+            initializeScrollItemMap();
+            initialized = true;
+        }
+        
         // 1. Rebuild the disabled set based on new config
         buildDisabledScrollSet();
         LOGGER.atInfo().log("Reload: Updated disabled recipe set. Count: " + DISABLED_SCROLL_ITEM_IDS.size());
@@ -186,6 +191,11 @@ public class EnchantmentRecipeManager {
     public static void registerEventListener(@Nonnull SimpleEnchanting pluginInstance) {
         plugin = pluginInstance;
         
+        if (!initialized) {
+            initializeScrollItemMap();
+            initialized = true;
+        }
+        
         // Build the set of disabled scroll item IDs based on config
         buildDisabledScrollSet();
         
@@ -234,9 +244,20 @@ public class EnchantmentRecipeManager {
             LOGGER.atInfo().log("All enchantment crafting disabled by config. All scroll recipes will be removed.");
             return;
         }
+
+        // Check for missing optional dependencies
+        boolean hasPerfectParries = plugin.isPerfectParriesModPresent();
+        if (!hasPerfectParries) {
+            LOGGER.atInfo().log("Perfect Parries mod not found. Disabling Riposte and Coup de Grâce scrolls.");
+        }
         
         for (EnchantmentType type : EnchantmentType.values()) {
             boolean isDisabled = config.disabledEnchantments.getOrDefault(type.getId(), false);
+            
+            // Explicitly disable Riposte and Coup de Grace if mod is missing
+            if (!hasPerfectParries && (type == EnchantmentType.RIPOSTE || type == EnchantmentType.COUP_DE_GRACE)) {
+                isDisabled = true;
+            }
             
             if (isDisabled) {
                 List<String> scrollItemIds = ENCHANTMENT_SCROLL_ITEMS.get(type.getId());

@@ -99,8 +99,8 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
         SECONDARY_MULTIPLIER_LABELS.put("strengthRangeMultiplierPerLevel", "Range/Speed Bonus");
         SECONDARY_MULTIPLIER_LABELS.put("lootingQuantityMultiplierPerLevel", "Quantity Bonus");
         
-        ENCHANTMENT_SECONDARY_MULTIPLIERS.put(EnchantmentType.EFFICIENCY, "efficiencySwingSpeedMultiplier");
-        SECONDARY_MULTIPLIER_LABELS.put("efficiencySwingSpeedMultiplier", "Swing Speed Bonus");
+        // ENCHANTMENT_SECONDARY_MULTIPLIERS.put(EnchantmentType.EFFICIENCY, "efficiencySwingSpeedMultiplier");
+        // SECONDARY_MULTIPLIER_LABELS.put("efficiencySwingSpeedMultiplier", "Swing Speed Bonus");
     }
     
     // Default config instance for reset functionality - uses values from EnchantingConfig.java
@@ -140,7 +140,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
         copy.dexterityStaminaReductionPerLevel = original.dexterityStaminaReductionPerLevel;
         copy.protectionDamageReductionPerLevel = original.protectionDamageReductionPerLevel;
         copy.efficiencyMiningSpeedPerLevel = original.efficiencyMiningSpeedPerLevel;
-        copy.efficiencySwingSpeedMultiplier = original.efficiencySwingSpeedMultiplier;
+        // copy.efficiencySwingSpeedMultiplier = original.efficiencySwingSpeedMultiplier;
         copy.fortuneRollChancePerLevel = original.fortuneRollChancePerLevel;
         copy.strengthDamageMultiplierPerLevel = original.strengthDamageMultiplierPerLevel;
         copy.strengthRangeMultiplierPerLevel = original.strengthRangeMultiplierPerLevel;
@@ -1097,7 +1097,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
             case "dexterityStaminaReductionPerLevel" -> workingConfig.dexterityStaminaReductionPerLevel;
             case "protectionDamageReductionPerLevel" -> workingConfig.protectionDamageReductionPerLevel;
             case "efficiencyMiningSpeedPerLevel" -> workingConfig.efficiencyMiningSpeedPerLevel;
-            case "efficiencySwingSpeedMultiplier" -> workingConfig.efficiencySwingSpeedMultiplier;
+            // case "efficiencySwingSpeedMultiplier" -> workingConfig.efficiencySwingSpeedMultiplier;
             case "fortuneRollChancePerLevel" -> workingConfig.fortuneRollChancePerLevel;
             case "strengthDamageMultiplierPerLevel" -> workingConfig.strengthDamageMultiplierPerLevel;
             case "strengthRangeMultiplierPerLevel" -> workingConfig.strengthRangeMultiplierPerLevel;
@@ -1147,7 +1147,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
                 case "dexterityStaminaReductionPerLevel" -> workingConfig.dexterityStaminaReductionPerLevel = Double.parseDouble(value);
                 case "protectionDamageReductionPerLevel" -> workingConfig.protectionDamageReductionPerLevel = Double.parseDouble(value);
                 case "efficiencyMiningSpeedPerLevel" -> workingConfig.efficiencyMiningSpeedPerLevel = Double.parseDouble(value);
-                case "efficiencySwingSpeedMultiplier" -> workingConfig.efficiencySwingSpeedMultiplier = Double.parseDouble(value);
+                // case "efficiencySwingSpeedMultiplier" -> workingConfig.efficiencySwingSpeedMultiplier = Double.parseDouble(value);
                 case "fortuneRollChancePerLevel" -> workingConfig.fortuneRollChancePerLevel = Double.parseDouble(value);
                 case "strengthDamageMultiplierPerLevel" -> workingConfig.strengthDamageMultiplierPerLevel = Double.parseDouble(value);
                 case "strengthRangeMultiplierPerLevel" -> workingConfig.strengthRangeMultiplierPerLevel = Double.parseDouble(value);
@@ -1238,7 +1238,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
             case "dexterityStaminaReductionPerLevel" -> String.valueOf(DEFAULT_CONFIG.dexterityStaminaReductionPerLevel);
             case "protectionDamageReductionPerLevel" -> String.valueOf(DEFAULT_CONFIG.protectionDamageReductionPerLevel);
             case "efficiencyMiningSpeedPerLevel" -> String.valueOf(DEFAULT_CONFIG.efficiencyMiningSpeedPerLevel);
-            case "efficiencySwingSpeedMultiplier" -> String.valueOf(DEFAULT_CONFIG.efficiencySwingSpeedMultiplier);
+            // case "efficiencySwingSpeedMultiplier" -> String.valueOf(DEFAULT_CONFIG.efficiencySwingSpeedMultiplier);
             case "fortuneRollChancePerLevel" -> String.valueOf(DEFAULT_CONFIG.fortuneRollChancePerLevel);
             case "strengthDamageMultiplierPerLevel" -> String.valueOf(DEFAULT_CONFIG.strengthDamageMultiplierPerLevel);
             case "strengthRangeMultiplierPerLevel" -> String.valueOf(DEFAULT_CONFIG.strengthRangeMultiplierPerLevel);
@@ -1273,7 +1273,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
         actualConfig.dexterityStaminaReductionPerLevel = workingConfig.dexterityStaminaReductionPerLevel;
         actualConfig.protectionDamageReductionPerLevel = workingConfig.protectionDamageReductionPerLevel;
         actualConfig.efficiencyMiningSpeedPerLevel = workingConfig.efficiencyMiningSpeedPerLevel;
-        actualConfig.efficiencySwingSpeedMultiplier = workingConfig.efficiencySwingSpeedMultiplier;
+        // actualConfig.efficiencySwingSpeedMultiplier = workingConfig.efficiencySwingSpeedMultiplier;
         actualConfig.fortuneRollChancePerLevel = workingConfig.fortuneRollChancePerLevel;
         actualConfig.strengthDamageMultiplierPerLevel = workingConfig.strengthDamageMultiplierPerLevel;
         actualConfig.strengthRangeMultiplierPerLevel = workingConfig.strengthRangeMultiplierPerLevel;
@@ -1356,7 +1356,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
         workingConfig.dexterityStaminaReductionPerLevel = defaults.dexterityStaminaReductionPerLevel;
         workingConfig.protectionDamageReductionPerLevel = defaults.protectionDamageReductionPerLevel;
         workingConfig.efficiencyMiningSpeedPerLevel = defaults.efficiencyMiningSpeedPerLevel;
-        workingConfig.efficiencySwingSpeedMultiplier = defaults.efficiencySwingSpeedMultiplier;
+        // workingConfig.efficiencySwingSpeedMultiplier = defaults.efficiencySwingSpeedMultiplier;
         workingConfig.fortuneRollChancePerLevel = defaults.fortuneRollChancePerLevel;
         workingConfig.strengthDamageMultiplierPerLevel = defaults.strengthDamageMultiplierPerLevel;
         workingConfig.strengthRangeMultiplierPerLevel = defaults.strengthRangeMultiplierPerLevel;

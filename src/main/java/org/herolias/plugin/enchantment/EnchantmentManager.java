@@ -506,6 +506,12 @@ public class EnchantmentManager {
                 disabled.add(entry.getKey());
             }
         }
+        
+        // Robustness: Automatically disable dependent enchantments if the dependency is missing
+        if (!SimpleEnchanting.getInstance().isPerfectParriesModPresent()) {
+            disabled.add(EnchantmentType.RIPOSTE.getId());
+            disabled.add(EnchantmentType.COUP_DE_GRACE.getId());
+        }
         this.disabledEnchantmentIds = disabled;
         return disabled;
     }
@@ -690,7 +696,7 @@ public class EnchantmentManager {
     public double calculateSwingSpeedMultiplier(@Nullable ItemStack item) {
         int efficiencyLevel = getEnchantmentLevel(item, EnchantmentType.EFFICIENCY);
         if (efficiencyLevel > 0) {
-            return 1.0 + (efficiencyLevel * getConfig().efficiencySwingSpeedMultiplier);
+            // return 1.0 + (efficiencyLevel * getConfig().efficiencySwingSpeedMultiplier);
         }
         return 1.0;
     }
