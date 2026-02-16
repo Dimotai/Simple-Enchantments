@@ -32,12 +32,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class EnchantmentSlotTracker implements Runnable {
 
     private final EnchantmentManager enchantmentManager;
+    private final EnchantmentEternalShotSystem eternalShotSystem;
     private final Map<UUID, Byte> lastSlotMap = new ConcurrentHashMap<>();
     /** Set of player UUIDs we have already processed for initial tooltip setup. */
     private final Set<UUID> knownPlayers = ConcurrentHashMap.newKeySet();
 
-    public EnchantmentSlotTracker(EnchantmentManager enchantmentManager) {
+    public EnchantmentSlotTracker(EnchantmentManager enchantmentManager, EnchantmentEternalShotSystem eternalShotSystem) {
         this.enchantmentManager = enchantmentManager;
+        this.eternalShotSystem = eternalShotSystem;
     }
 
     @Override
@@ -119,6 +121,11 @@ public class EnchantmentSlotTracker implements Runnable {
             // Mask out the offhand bit to check slot index
             byte lastSlotIndex = lastState != null ? (byte)(lastState & 0x7F) : -1;
             if (currentSlot != lastSlotIndex) {
+                // Notify Eternal Shot system about slot change with the PREVIOUS item
+                if (lastSlotIndex >= 0) {
+                    ItemStack previousItem = inventory.getHotbar().getItemStack(lastSlotIndex);
+                    eternalShotSystem.onSlotChanged(player, previousItem);
+                }
                 showEnchantmentTitle(playerRef, player, currentSlot);
                 // DynamicTooltipsLib handles tooltip updates via packet interception
             }

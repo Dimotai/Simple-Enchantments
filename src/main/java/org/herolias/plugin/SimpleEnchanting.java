@@ -91,6 +91,7 @@ public class SimpleEnchanting extends JavaPlugin {
     private EnchantmentStaminaSystem enchantmentStaminaSystem;
     private EnchantmentAbilityStaminaSystem enchantmentAbilityStaminaSystem;
     private EnchantmentProjectileSpeedSystem enchantmentProjectileSpeedSystem;
+    private EnchantmentEternalShotSystem eternalShotSystem;
     private EnchantingTableListener enchantingTableListener;
     private boolean tooltipsEnabled;
     private org.herolias.plugin.config.ConfigManager configManager;
@@ -276,7 +277,7 @@ public class SimpleEnchanting extends JavaPlugin {
         
         // Initialize and register the Eternal Shot system (Event Listener)
         // This intercepts arrow consumption and restores arrows when weapon has Eternal Shot enchantment
-        EnchantmentEternalShotSystem eternalShotSystem = new EnchantmentEternalShotSystem(enchantmentManager);
+        eternalShotSystem = new EnchantmentEternalShotSystem(enchantmentManager);
         this.getEventRegistry().registerGlobal(LivingEntityInventoryChangeEvent.class, eternalShotSystem::onInventoryChange);
         
         // Register SwitchActiveSlot handler to clear stale records when switching from unloaded crossbows
@@ -371,7 +372,7 @@ public class SimpleEnchanting extends JavaPlugin {
     protected void start() {
         // Register the slot tracker (handles glow updates + enchantment banner on slot change)
         try {
-            EnchantmentSlotTracker slotTracker = new EnchantmentSlotTracker(enchantmentManager);
+            EnchantmentSlotTracker slotTracker = new EnchantmentSlotTracker(enchantmentManager, eternalShotSystem);
             com.hypixel.hytale.server.core.HytaleServer.SCHEDULED_EXECUTOR.scheduleAtFixedRate(
                 slotTracker,
                 0,

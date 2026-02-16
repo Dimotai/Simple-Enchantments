@@ -1,7 +1,6 @@
 package org.herolias.plugin.enchantment;
 
 import com.hypixel.hytale.component.Archetype;
-import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
@@ -14,18 +13,17 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import javax.annotation.Nonnull;
 
 /**
- * System to handle SwitchActiveSlotEvent and delegate to EnchantmentEternalShotSystem.
- * Required because EventRegistry doesn't support passing EntityStore context to listeners,
- * but the logic needs to access Player and EntityStatMap components.
+ * System to handle SwitchActiveSlotEvent.
+ * Previously used for Eternal Shot slot-switch detection, but the ECS event
+ * dispatch never fires reliably. Slot switch detection is now handled by
+ * the per-tick EnchantmentSlotTracker instead.
+ * This class is kept registered as a no-op for safety.
  */
 public class SwitchActiveSlotSystem extends EntityEventSystem<EntityStore, SwitchActiveSlotEvent> {
 
-    private final EnchantmentEternalShotSystem eternalShotSystem;
-    private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-
     public SwitchActiveSlotSystem(EnchantmentEternalShotSystem eternalShotSystem) {
         super(SwitchActiveSlotEvent.class);
-        this.eternalShotSystem = eternalShotSystem;
+        // eternalShotSystem parameter kept for constructor compatibility
     }
 
     @Override
@@ -40,8 +38,6 @@ public class SwitchActiveSlotSystem extends EntityEventSystem<EntityStore, Switc
                        @Nonnull Store<EntityStore> store,
                        @Nonnull CommandBuffer<EntityStore> commandBuffer,
                        @Nonnull SwitchActiveSlotEvent event) {
-        Ref<EntityStore> ref = archetypeChunk.getReferenceTo(index);
-        LOGGER.atInfo().log("[DEBUG] SwitchActiveSlotEvent fired!");
-        eternalShotSystem.onSwitchActiveSlot(event, ref, store);
+        // No-op: Slot switch detection is handled by EnchantmentSlotTracker
     }
 }
