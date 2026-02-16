@@ -825,8 +825,10 @@ public class EnchantmentManager {
         if (strengthLevel <= 0) {
             return 1.0;
         }
-        org.herolias.plugin.config.EnchantingConfig config = getConfig();
-        return 1.0 + (strengthLevel * config.strengthRangeMultiplierPerLevel);
+        // Disabled due to buggy behavior - always return 1.0 (no range bonus)
+        return 1.0; 
+        // org.herolias.plugin.config.EnchantingConfig config = getConfig();
+        // return 1.0 + (strengthLevel * config.strengthRangeMultiplierPerLevel);
     }
 
     /**

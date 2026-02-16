@@ -94,9 +94,10 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
         ENCHANTMENT_MULTIPLIERS.put(EnchantmentType.FRENZY, "frenzyChargeSpeedMultiplierPerLevel");
         ENCHANTMENT_MULTIPLIERS.put(EnchantmentType.RIPOSTE, "riposteDamageMultiplierPerLevel");
         ENCHANTMENT_MULTIPLIERS.put(EnchantmentType.COUP_DE_GRACE, "coupDeGraceDamageMultiplierPerLevel");
+        ENCHANTMENT_MULTIPLIERS.put(EnchantmentType.RANGED_PROTECTION, "rangedProtectionDamageReductionPerLevel");
 
         // Secondary multipliers for enchantments with multiple effects
-        ENCHANTMENT_SECONDARY_MULTIPLIERS.put(EnchantmentType.STRENGTH, "strengthRangeMultiplierPerLevel");
+        // ENCHANTMENT_SECONDARY_MULTIPLIERS.put(EnchantmentType.STRENGTH, "strengthRangeMultiplierPerLevel");
         ENCHANTMENT_SECONDARY_MULTIPLIERS.put(EnchantmentType.LOOTING, "lootingQuantityMultiplierPerLevel");
 
         SECONDARY_MULTIPLIER_LABELS.put("strengthRangeMultiplierPerLevel", "server.config.secondary.range_speed_bonus");
@@ -151,6 +152,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
         copy.frenzyChargeSpeedMultiplierPerLevel = original.frenzyChargeSpeedMultiplierPerLevel;
         copy.riposteDamageMultiplierPerLevel = original.riposteDamageMultiplierPerLevel;
         copy.coupDeGraceDamageMultiplierPerLevel = original.coupDeGraceDamageMultiplierPerLevel;
+        copy.rangedProtectionDamageReductionPerLevel = original.rangedProtectionDamageReductionPerLevel;
         
         copy.disableEnchantmentCrafting = original.disableEnchantmentCrafting;
         copy.eaglesEyeDistanceBonusPerLevel = original.eaglesEyeDistanceBonusPerLevel;
@@ -1141,6 +1143,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
             case "frenzyChargeSpeedMultiplierPerLevel" -> workingConfig.frenzyChargeSpeedMultiplierPerLevel;
             case "riposteDamageMultiplierPerLevel" -> workingConfig.riposteDamageMultiplierPerLevel;
             case "coupDeGraceDamageMultiplierPerLevel" -> workingConfig.coupDeGraceDamageMultiplierPerLevel;
+            case "rangedProtectionDamageReductionPerLevel" -> workingConfig.rangedProtectionDamageReductionPerLevel;
             default -> 0.0;
         };
     }
@@ -1193,6 +1196,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
                 case "frenzyChargeSpeedMultiplierPerLevel" -> workingConfig.frenzyChargeSpeedMultiplierPerLevel = Double.parseDouble(value);
                 case "riposteDamageMultiplierPerLevel" -> workingConfig.riposteDamageMultiplierPerLevel = Double.parseDouble(value);
                 case "coupDeGraceDamageMultiplierPerLevel" -> workingConfig.coupDeGraceDamageMultiplierPerLevel = Double.parseDouble(value);
+                case "rangedProtectionDamageReductionPerLevel" -> workingConfig.rangedProtectionDamageReductionPerLevel = Double.parseDouble(value);
             }
         } catch (NumberFormatException e) {
             LOGGER.atWarning().log("Failed to parse setting value: " + key + " = " + value);
@@ -1288,6 +1292,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
             case "disableEnchantmentCrafting" -> String.valueOf(DEFAULT_CONFIG.disableEnchantmentCrafting);
             case "riposteDamageMultiplierPerLevel" -> String.valueOf(DEFAULT_CONFIG.riposteDamageMultiplierPerLevel);
             case "coupDeGraceDamageMultiplierPerLevel" -> String.valueOf(DEFAULT_CONFIG.coupDeGraceDamageMultiplierPerLevel);
+            case "rangedProtectionDamageReductionPerLevel" -> String.valueOf(DEFAULT_CONFIG.rangedProtectionDamageReductionPerLevel);
             default -> null;
         };
     }
@@ -1326,6 +1331,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
         actualConfig.disableEnchantmentCrafting = workingConfig.disableEnchantmentCrafting;
         actualConfig.riposteDamageMultiplierPerLevel = workingConfig.riposteDamageMultiplierPerLevel;
         actualConfig.coupDeGraceDamageMultiplierPerLevel = workingConfig.coupDeGraceDamageMultiplierPerLevel;
+        actualConfig.rangedProtectionDamageReductionPerLevel = workingConfig.rangedProtectionDamageReductionPerLevel;
         actualConfig.disabledEnchantments = new LinkedHashMap<>(workingConfig.disabledEnchantments);
         actualConfig.scrollRecipes = new LinkedHashMap<>();
         for (var entry : workingConfig.scrollRecipes.entrySet()) {
@@ -1421,6 +1427,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
         workingConfig.frenzyChargeSpeedMultiplierPerLevel = defaults.frenzyChargeSpeedMultiplierPerLevel;
         workingConfig.riposteDamageMultiplierPerLevel = defaults.riposteDamageMultiplierPerLevel;
         workingConfig.coupDeGraceDamageMultiplierPerLevel = defaults.coupDeGraceDamageMultiplierPerLevel;
+        workingConfig.rangedProtectionDamageReductionPerLevel = defaults.rangedProtectionDamageReductionPerLevel;
         workingConfig.returnEnchantmentOnCleanse = defaults.returnEnchantmentOnCleanse;
         workingConfig.disableEnchantmentCrafting = defaults.disableEnchantmentCrafting;
 

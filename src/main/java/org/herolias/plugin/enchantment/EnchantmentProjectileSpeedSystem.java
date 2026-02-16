@@ -119,6 +119,8 @@ public class EnchantmentProjectileSpeedSystem extends RefSystem<EntityStore> {
         }
 
         // Try to apply velocity modification immediately
+        // Disabled due to buggy behavior
+        /* 
         boolean applied = tryApplyVelocityMultiplier(ref, store, commandBuffer, multiplier);
 
         if (!applied) {
@@ -134,6 +136,7 @@ public class EnchantmentProjectileSpeedSystem extends RefSystem<EntityStore> {
                 LOGGER.atWarning().log("Cannot defer velocity modification: projectile has no UUID component");
             }
         }
+        */
     }
 
     @Override
