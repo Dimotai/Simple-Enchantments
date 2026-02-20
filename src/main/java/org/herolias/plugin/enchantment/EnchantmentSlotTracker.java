@@ -133,7 +133,7 @@ public class EnchantmentSlotTracker implements Runnable {
     }
 
     private void showEnchantmentTitle(PlayerRef playerRef, Player player, byte slot) {
-        if (!SimpleEnchanting.getInstance().getConfigManager().getConfig().showEnchantmentBanner) {
+        if (!SimpleEnchanting.getInstance().getUserSettingsManager().getShowEnchantmentBanner(playerRef.getUuid())) {
             return;
         }
 

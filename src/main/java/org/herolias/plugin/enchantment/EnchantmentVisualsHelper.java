@@ -39,7 +39,10 @@ public class EnchantmentVisualsHelper {
                 return;
             }
 
-            boolean isGlowEnabled = SimpleEnchanting.getInstance().getConfigManager().getConfig().enableEnchantmentGlow;
+            com.hypixel.hytale.server.core.universe.PlayerRef playerRef = store.getComponent(entityRef, com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+            if (playerRef == null) return;
+
+            boolean isGlowEnabled = SimpleEnchanting.getInstance().getUserSettingsManager().getEnableEnchantmentGlow(playerRef.getUuid());
             
             Inventory inventory = player.getInventory();
             if (inventory == null) {

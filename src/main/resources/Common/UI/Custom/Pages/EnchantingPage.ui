@@ -1,0 +1,74 @@
+$C = "../Common.ui";
+
+$C.@PageOverlay {}
+
+$C.@DecoratedContainer {
+  Anchor: (Width: 900, Height: 600);
+
+  #Title {
+    Group {
+      $C.@Title {
+        @Text = "Simple Enchantments";
+      }
+    }
+  }
+
+  #Content {
+    LayoutMode: Top;
+
+    Group #TabBar {
+      LayoutMode: Left;
+      Anchor: (Height: 50, Bottom: 10);
+      Padding: (Horizontal: 5);
+
+      TextButton #TabWalkthrough {
+        Style: $C.@SecondaryTextButtonStyle;
+        Anchor: (Width: 180, Height: 40, Right: 8);
+        Padding: (Horizontal: 16);
+        Text: "Walkthrough";
+      }
+
+      TextButton #TabSettings {
+        Style: $C.@SecondaryTextButtonStyle;
+        Anchor: (Width: 180, Height: 40, Right: 8);
+        Padding: (Horizontal: 16);
+        Text: "User Settings";
+      }
+    }
+
+    Group {
+      Anchor: (Height: 1, Bottom: 10);
+      Background: (Color: #5e512c);
+    }
+
+    Group #ContentArea {
+      FlexWeight: 1;
+      LayoutMode: TopScrolling;
+      ScrollbarStyle: $C.@DefaultScrollbarStyle;
+      Padding: (Right: 10);
+    }
+
+    Group {
+      Anchor: (Height: 1, Top: 10);
+      Background: (Color: #5e512c);
+    }
+
+    Group #ActionBar {
+      LayoutMode: Left;
+      Anchor: (Height: 50, Top: 10);
+
+      Group {
+        FlexWeight: 1;
+      }
+
+      TextButton #CloseButton {
+        Style: $C.@DefaultTextButtonStyle;
+        Anchor: (Width: 120, Height: 40);
+        Padding: (Horizontal: 16);
+        Text: "Close";
+      }
+    }
+  }
+}
+
+$C.@BackButton {}

@@ -95,6 +95,7 @@ public class SimpleEnchanting extends JavaPlugin {
     private EnchantingTableListener enchantingTableListener;
     private boolean tooltipsEnabled;
     private org.herolias.plugin.config.ConfigManager configManager;
+    private org.herolias.plugin.config.UserSettingsManager userSettingsManager;
 
     public SimpleEnchanting(@Nonnull JavaPluginInit init) {
         super(init);
@@ -113,6 +114,10 @@ public class SimpleEnchanting extends JavaPlugin {
         boolean isFreshInstall = !this.configManager.getConfigFile().exists();
         
         this.configManager.loadConfig();
+
+        // Initialize User Settings
+        this.userSettingsManager = new org.herolias.plugin.config.UserSettingsManager(new java.io.File("config"), this.configManager);
+        this.userSettingsManager.loadSettings();
         
         // If fresh install, skip the welcome message (users installing now likely know about tooltips or read the mod page)
         if (isFreshInstall) {
@@ -352,6 +357,9 @@ public class SimpleEnchanting extends JavaPlugin {
         this.getCommandRegistry().registerCommand(new EnchantCommand(this));
         LOGGER.atInfo().log("Registered /enchant command");
         
+        this.getCommandRegistry().registerCommand(new org.herolias.plugin.command.EnchantingCommand(this));
+        LOGGER.atInfo().log("Registered /enchanting command");
+        
         // Register custom /give command (overrides vanilla)
         this.getCommandRegistry().registerCommand(new org.herolias.plugin.command.GiveEnchantedCommand());
         LOGGER.atInfo().log("Registered enhanced /give command");
@@ -435,5 +443,9 @@ public class SimpleEnchanting extends JavaPlugin {
 
     public org.herolias.plugin.config.ConfigManager getConfigManager() {
         return configManager;
+    }
+
+    public org.herolias.plugin.config.UserSettingsManager getUserSettingsManager() {
+        return userSettingsManager;
     }
 }

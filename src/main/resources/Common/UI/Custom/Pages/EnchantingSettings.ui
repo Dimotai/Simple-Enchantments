@@ -1,0 +1,22 @@
+$C = "../Common.ui";
+
+Group {
+  LayoutMode: Left;
+  Anchor: (Height: 40);
+  Padding: (Bottom: 10, Horizontal: 10);
+
+  Label #SettingName {
+    FlexWeight: 1;
+    Style: (
+      FontSize: 16,
+      TextColor: #ffffff,
+      VerticalAlignment: Center
+    );
+  }
+
+  TextButton #ToggleButton {
+    Style: $C.@SecondaryTextButtonStyle;
+    Anchor: (Width: 100, Height: 30);
+    Padding: (Horizontal: 10);
+  }
+}
