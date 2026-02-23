@@ -1,0 +1,10 @@
+$C = "../Common.ui";
+
+Group {
+  Anchor: (Height: 40, Bottom: 5);
+  
+  TextButton #SubBtn {
+    Style: $C.@SecondaryTextButtonStyle;
+    Anchor: (Height: 40);
+  }
+}

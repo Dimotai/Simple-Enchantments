@@ -22,6 +22,8 @@ public class EnchantingPageEventData {
             (entry, s) -> entry.walkthroughAction = s, entry -> entry.walkthroughAction)
         .addField(new KeyedCodec<>("WalkthroughPageSelect", Codec.STRING), 
             (entry, s) -> entry.walkthroughPageSelect = s, entry -> entry.walkthroughPageSelect)
+        .addField(new KeyedCodec<>("OpenDiscord", Codec.STRING), 
+            (entry, s) -> entry.openDiscord = s, entry -> entry.openDiscord)
         .build();
 
     public String tabSwitch;
@@ -29,6 +31,7 @@ public class EnchantingPageEventData {
     public String close;
     public String walkthroughAction;
     public String walkthroughPageSelect;
+    public String openDiscord;
 
     public EnchantingPageEventData() {
     }

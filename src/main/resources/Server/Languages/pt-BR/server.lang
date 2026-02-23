@@ -604,3 +604,5 @@ config.message.saved = Salvo! A maioria das alterações requer reinicializaçã
 config.message.unsaved = [!] Alterações não salvas
 
 customUI.enchantingPage.adminNote = As configurações de todo o servidor e as personalizações de encantamentos estão disponíveis na Configuração de Admin. Acesse via /enchantconfig
+customUI.walkthrough.enchantments.title = 5. Enchantments
+customUI.walkthrough.enchantments.desc = A complete list of enchantments and their effects. Click on any to find out more.

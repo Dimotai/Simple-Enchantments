@@ -149,7 +149,7 @@ public class LanguageManager {
                     prefixedTranslationsMap
                 );
             if (playerRef.getPacketHandler() != null) {
-                playerRef.getPacketHandler().writeNoCache(packet);
+                ((com.hypixel.hytale.server.core.receiver.IPacketReceiver) playerRef.getPacketHandler()).writeNoCache(packet);
             }
         }
     }

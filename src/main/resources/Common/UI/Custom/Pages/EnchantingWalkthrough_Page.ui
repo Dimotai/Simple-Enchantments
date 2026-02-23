@@ -10,13 +10,30 @@ Group {
     Padding: (Horizontal: 15, Vertical: 15);
     FlexWeight: 1;
     
-    Label #Title {
-      Style: (
-        FontSize: 24,
-        TextColor: #ffd700,
-        HorizontalAlignment: Center
-      );
+    Group {
+      Anchor: (Height: 30);
       Padding: (Bottom: 15);
+      
+      Label #Title {
+        Style: (
+          FontSize: 24,
+          TextColor: #ffd700,
+          HorizontalAlignment: Center,
+          VerticalAlignment: Center
+        );
+        Anchor: (Left: 0, Right: 0, Top: 0, Bottom: 0);
+      }
+
+      Label #ServerEnabledLabel {
+        Style: (
+          FontSize: 14,
+          TextColor: #aaaaaa,
+          HorizontalAlignment: End,
+          VerticalAlignment: Center
+        );
+        Anchor: (Width: 300, Right: 0, Top: 0, Bottom: 0);
+        Visible: false;
+      }
     }
 
     Label #Desc {
@@ -26,6 +43,13 @@ Group {
         Wrap: true
       );
       Padding: (Bottom: 15);
+    }
+    
+    TextButton #DiscordBtn {
+      Style: $C.@SecondaryTextButtonStyle;
+      Anchor: (Width: 200, Height: 40);
+      Padding: (Horizontal: 16);
+      Visible: false;
     }
 
     Group {

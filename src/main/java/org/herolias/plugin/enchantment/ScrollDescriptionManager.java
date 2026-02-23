@@ -82,7 +82,7 @@ public class ScrollDescriptionManager {
                 UpdateTranslations packet = new UpdateTranslations(UpdateType.AddOrUpdate, translations);
                 
                 if (playerRef.getPacketHandler() != null) {
-                    playerRef.getPacketHandler().writeNoCache(packet);
+                    ((com.hypixel.hytale.server.core.receiver.IPacketReceiver) playerRef.getPacketHandler()).writeNoCache(packet);
                 }
             }
 

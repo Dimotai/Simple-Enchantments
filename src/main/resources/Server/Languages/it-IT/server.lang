@@ -604,3 +604,5 @@ config.message.saved = Salvato! La maggior parte delle modifiche richiede un ria
 config.message.unsaved = [!] Modifiche non salvate
 
 customUI.enchantingPage.adminNote = Le impostazioni a livello di server e le personalizzazioni degli incantesimi sono disponibili nella configurazione dell'amministratore. Accedi tramite /enchantconfig
+customUI.walkthrough.enchantments.title = 5. Enchantments
+customUI.walkthrough.enchantments.desc = A complete list of enchantments and their effects. Click on any to find out more.

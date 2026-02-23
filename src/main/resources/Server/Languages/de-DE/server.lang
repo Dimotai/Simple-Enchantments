@@ -1098,3 +1098,6 @@ config.message.unsaved = [!] Ungespeicherte Änderungen
 
 customUI.enchantingPage.adminNote = Serverweite Einstellungen und Verzauberungsanpassungen sind in der Admin-Konfiguration verfügbar. Greifen Sie über /enchantconfig darauf zu
 
+
+customUI.walkthrough.enchantments.title = 5. Enchantments
+customUI.walkthrough.enchantments.desc = A complete list of enchantments and their effects. Click on any to find out more.

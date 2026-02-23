@@ -129,6 +129,6 @@ public class EnchantmentFastSwimSystem extends EntityTickingSystem<EntityStore> 
         packet.maxId = assetMap.getNextIndex();
 
         // Send to player
-        playerRef.getPacketHandler().writeNoCache(packet);
+        ((com.hypixel.hytale.server.core.receiver.IPacketReceiver) playerRef.getPacketHandler()).writeNoCache(packet);
     }
 }

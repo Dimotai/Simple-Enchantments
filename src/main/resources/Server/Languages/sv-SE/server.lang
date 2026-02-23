@@ -604,3 +604,5 @@ config.message.saved = Sparad! De flesta ändringar kräver omstart.
 config.message.unsaved = [!] Osparade ändringar
 
 customUI.enchantingPage.adminNote = Serveromfattande inställningar och anpassningar av förtrollningar är tillgängliga i administratörskonfig. Kom åt den via /enchantconfig
+customUI.walkthrough.enchantments.title = 5. Enchantments
+customUI.walkthrough.enchantments.desc = A complete list of enchantments and their effects. Click on any to find out more.

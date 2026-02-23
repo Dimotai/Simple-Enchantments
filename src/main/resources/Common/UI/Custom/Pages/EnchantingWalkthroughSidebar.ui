@@ -34,4 +34,15 @@ $C.@Panel {
     Style: $C.@SecondaryTextButtonStyle;
     Anchor: (Height: 40, Bottom: 5);
   }
+  
+  TextButton #WalkthroughP6 {
+    Style: $C.@SecondaryTextButtonStyle;
+    Anchor: (Height: 40, Bottom: 5);
+  }
+
+  Group #EnchantmentList {
+    LayoutMode: TopScrolling;
+    ScrollbarStyle: $C.@DefaultScrollbarStyle;
+    FlexWeight: 1;
+  }
 }

@@ -37,11 +37,12 @@ import org.herolias.plugin.enchantment.EnchantmentSlotTracker;
 import org.herolias.plugin.enchantment.EnchantmentThriftSystem;
 import org.herolias.plugin.enchantment.TooltipBridge;
 import org.herolias.plugin.enchantment.ItemCategoryManager;
+import org.herolias.plugin.crafting.WorkbenchRefreshSystem;
 import org.herolias.plugin.enchantment.EnchantmentReflectionSystem;
 import org.herolias.plugin.enchantment.EnchantmentAbsorptionSystem;
 import org.herolias.plugin.enchantment.EnchantmentFastSwimSystem;
 
-
+import com.al3x.HStats;
 import org.herolias.plugin.listener.EnchantingTableListener;
 import org.herolias.plugin.ui.EnchantScrollPageSupplier;
 import com.hypixel.hytale.server.core.event.events.entity.LivingEntityInventoryChangeEvent;
@@ -49,7 +50,6 @@ import com.hypixel.hytale.server.core.event.events.ecs.SwitchActiveSlotEvent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
-
 import javax.annotation.Nonnull;
 
 /**
@@ -107,7 +107,8 @@ public class SimpleEnchanting extends JavaPlugin {
     @Override
     protected void setup() {
         LOGGER.atInfo().log("Setting up SimpleEnchanting...");
-        
+        super.setup();
+        new HStats("b04768bd-4189-4ecc-b29c-0f644d7c95cc", this.getManifest().getVersion().toString());
         // Initialize Config
         this.configManager = new org.herolias.plugin.config.ConfigManager(new java.io.File("config"));
         
@@ -266,6 +267,10 @@ public class SimpleEnchanting extends JavaPlugin {
             this.getEntityStoreRegistry().registerSystem(new EnchantmentNightVisionSystem(enchantmentManager));
             LOGGER.atInfo().log("Registered EnchantmentNightVisionSystem with ECS");
 
+            // Workbench Refresh System (Bug fix for ExtraResources not rescanning on upgrade)
+            this.getEntityStoreRegistry().registerSystem(new WorkbenchRefreshSystem());
+            LOGGER.atInfo().log("Registered WorkbenchRefreshSystem with ECS");
+
         } catch (Exception e) {
             LOGGER.atWarning().log("Could not register enchantment ECS systems: " + e.getMessage());
         }
@@ -401,6 +406,10 @@ public class SimpleEnchanting extends JavaPlugin {
         if (tooltipsEnabled) {
             LOGGER.atInfo().log("Enchantment tooltips active via DynamicTooltipsLib");
         }
+    }
+    @Override
+    protected void shutdown() {
+        super.shutdown();
     }
 
     /**
