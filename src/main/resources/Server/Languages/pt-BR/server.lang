@@ -1,4 +1,4 @@
-﻿benchCategories.enchantingArmor = Armadura
+benchCategories.enchantingArmor = Armadura
 
 benchCategories.enchantingTools = Ferramentas
 
@@ -582,6 +582,7 @@ config.general.table_tier = Nível de Criação da Mesa de Encantamentos
 config.general.disable_crafting = Desabilitar Criação de Encantamentos
 config.general.return_cleanse = Devolver Encantamento ao Limpar
 config.general.salvager_yield = Reciclador devolve Pergaminho
+config.general.show_welcome = Show Welcome Messages
 config.general.table_recipe = Receita da Mesa de Encantamentos
 config.general.upgrade_1 = Custo de Melhoria 1 (Nível 1 -> 2)
 config.general.upgrade_2 = Custo de Melhoria 2 (Nível 2 -> 3)

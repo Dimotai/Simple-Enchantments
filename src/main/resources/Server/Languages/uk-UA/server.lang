@@ -1,4 +1,4 @@
-﻿benchCategories.enchantingArmor = Обладунки
+benchCategories.enchantingArmor = Обладунки
 
 benchCategories.enchantingTools = Інструменти
 
@@ -582,6 +582,7 @@ config.general.table_tier = Рівень Крафту Столу Чар
 config.general.disable_crafting = Вимкнути Крафт Чар
 config.general.return_cleanse = Повертати Чари При Очищенні
 config.general.salvager_yield = Переробник повертає сувій
+config.general.show_welcome = Show Welcome Messages
 config.general.table_recipe = Рецепт Столу Чар
 config.general.upgrade_1 = Вартість Покращення 1 (Рів. 1 -> 2)
 config.general.upgrade_2 = Вартість Покращення 2 (Рів. 2 -> 3)

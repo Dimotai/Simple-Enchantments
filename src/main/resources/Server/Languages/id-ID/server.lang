@@ -1,4 +1,4 @@
-﻿benchCategories.enchantingArmor = Baju Zirah
+benchCategories.enchantingArmor = Baju Zirah
 
 benchCategories.enchantingTools = Alat
 
@@ -582,6 +582,7 @@ config.general.table_tier = Tingkat Kerajinan Meja Sihir
 config.general.disable_crafting = Nonaktifkan Kerajinan Sihir
 config.general.return_cleanse = Kembalikan Sihir saat Pembersihan
 config.general.salvager_yield = Pendaur Ulang Mengembalikan Gulungan
+config.general.show_welcome = Show Welcome Messages
 config.general.table_recipe = Resep Meja Sihir
 config.general.upgrade_1 = Biaya Peningkatan 1 (Tingkat 1 -> 2)
 config.general.upgrade_2 = Biaya Peningkatan 2 (Tingkat 2 -> 3)

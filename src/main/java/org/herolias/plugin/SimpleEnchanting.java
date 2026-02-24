@@ -124,12 +124,12 @@ public class SimpleEnchanting extends JavaPlugin {
         // Initialize Language Manager
         this.languageManager = new org.herolias.plugin.lang.LanguageManager();
         
-        // If fresh install, skip the welcome message (users installing now likely know about tooltips or read the mod page)
+        // If fresh install, skip the tooltip announcement (users installing now likely already expect tooltips)
         if (isFreshInstall) {
             EnchantingConfig config = this.configManager.getConfig();
-            config.skipWelcomeMessage = true;
+            config.hasSkippedTooltipAnnouncement = true;
             this.configManager.saveConfig();
-            LOGGER.atInfo().log("Fresh install detected: Welcome message disabled.");
+            LOGGER.atInfo().log("Fresh install detected: Tooltip announcement disabled.");
         }
 
         // Register event listener for recipe filtering based on config

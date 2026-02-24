@@ -1,4 +1,4 @@
-﻿benchCategories.enchantingArmor = Armor
+benchCategories.enchantingArmor = Armor
 
 benchCategories.enchantingTools = Tools
 
@@ -608,6 +608,7 @@ config.general.upgrade_1 = Upgrade 1 Cost (Tier 1 -> 2)
 config.general.upgrade_2 = Upgrade 2 Cost (Tier 2 -> 3)
 config.general.upgrade_3 = Upgrade 3 Cost (Tier 3 -> 4)
 config.general.salvager_yield = Salvager Yields Scroll
+config.general.show_welcome = Show Welcome Messages
 
 config.recipe.title = Recipe
 config.recipe.ingredients = Ingredients

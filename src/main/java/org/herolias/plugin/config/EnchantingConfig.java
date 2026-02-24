@@ -250,10 +250,11 @@ public class EnchantingConfig {
 
     // Track players who have seen the "Tooltips are here" welcome message
     // Moved to bottom to keep config readable
-    // Track players who have seen the "Tooltips are here" welcome message
-    // Moved to bottom to keep config readable
     public List<String> notifiedPlayers = new ArrayList<>();
     
-    // If true, the welcome message will not be shown (used for fresh installs)
-    public boolean skipWelcomeMessage = false;
+    // Used to skip the tooltip announcement for everyone on fresh installs
+    public boolean hasSkippedTooltipAnnouncement = false;
+    
+    // If true, the welcome messages will be shown
+    public boolean showWelcomeMessage = true;
 }

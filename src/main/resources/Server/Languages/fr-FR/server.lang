@@ -1,4 +1,4 @@
-﻿benchCategories.enchantingArmor = Armure
+benchCategories.enchantingArmor = Armure
 
 benchCategories.enchantingTools = Outils
 
@@ -581,6 +581,7 @@ config.general.table_tier = Niveau de Craft Table d'Enchantement
 config.general.disable_crafting = Désactiver Craft d'Enchantement
 config.general.return_cleanse = Rendre l'Enchantement au Désenchantement
 config.general.salvager_yield = Le Recycleur rend un Parchemin
+config.general.show_welcome = Show Welcome Messages
 config.general.table_recipe = Recette Table d'Enchantement
 config.general.upgrade_1 = Coût Amélioration 1 (Niveau 1 -> 2)
 config.general.upgrade_2 = Coût Amélioration 2 (Niveau 2 -> 3)

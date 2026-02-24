@@ -178,6 +178,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
         copy.returnEnchantmentOnCleanse = original.returnEnchantmentOnCleanse;
         copy.salvagerYieldsScroll = original.salvagerYieldsScroll;
         copy.enchantingTableCraftingTier = original.enchantingTableCraftingTier;
+        copy.showWelcomeMessage = original.showWelcomeMessage;
         
         copy.disabledEnchantments = new LinkedHashMap<>(original.disabledEnchantments);
         copy.scrollRecipes = new LinkedHashMap<>();
@@ -578,6 +579,15 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
         commandBuilder.set("#ContentArea[" + index + "] #EditRecipeBtn.TextSpans", languageManager.getMessage("config.button.edit", lang, this.playerRef.getLanguage()));
         eventBuilder.addEventBinding(CustomUIEventBindingType.Activating, "#ContentArea[" + index + "] #EditRecipeBtn",
             EventData.of("EditRecipeType", "table"));
+        index++;
+        
+        // Show Welcome Message toggle
+        commandBuilder.append("#ContentArea", "Pages/EnchantConfigToggle.ui");
+        commandBuilder.set("#ContentArea[" + index + "] #SettingName.TextSpans", languageManager.getMessage("config.general.show_welcome", lang, this.playerRef.getLanguage()));
+        commandBuilder.set("#ContentArea[" + index + "] #ToggleButton.TextSpans", 
+            languageManager.getMessage(workingConfig.showWelcomeMessage ? "config.common.enabled" : "config.common.disabled", lang, this.playerRef.getLanguage()));
+        eventBuilder.addEventBinding(CustomUIEventBindingType.Activating, "#ContentArea[" + index + "] #ToggleButton",
+            EventData.of("SettingValue", "showWelcomeMessage:" + !workingConfig.showWelcomeMessage));
         index++;
         
         // Edit Upgrade 1 button
@@ -1255,6 +1265,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
                 case "coupDeGraceDamageMultiplierPerLevel" -> workingConfig.coupDeGraceDamageMultiplierPerLevel = Double.parseDouble(value);
                 case "rangedProtectionDamageReductionPerLevel" -> workingConfig.rangedProtectionDamageReductionPerLevel = Double.parseDouble(value);
                 case "salvagerYieldsScroll" -> workingConfig.salvagerYieldsScroll = Boolean.parseBoolean(value);
+                case "showWelcomeMessage" -> workingConfig.showWelcomeMessage = Boolean.parseBoolean(value);
             }
         } catch (NumberFormatException e) {
             LOGGER.atWarning().log("Failed to parse setting value: " + key + " = " + value);
@@ -1352,6 +1363,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
             case "coupDeGraceDamageMultiplierPerLevel" -> String.valueOf(DEFAULT_CONFIG.coupDeGraceDamageMultiplierPerLevel);
             case "rangedProtectionDamageReductionPerLevel" -> String.valueOf(DEFAULT_CONFIG.rangedProtectionDamageReductionPerLevel);
             case "salvagerYieldsScroll" -> String.valueOf(DEFAULT_CONFIG.salvagerYieldsScroll);
+            case "showWelcomeMessage" -> String.valueOf(DEFAULT_CONFIG.showWelcomeMessage);
             default -> null;
         };
     }
@@ -1392,6 +1404,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
         actualConfig.riposteDamageMultiplierPerLevel = workingConfig.riposteDamageMultiplierPerLevel;
         actualConfig.coupDeGraceDamageMultiplierPerLevel = workingConfig.coupDeGraceDamageMultiplierPerLevel;
         actualConfig.rangedProtectionDamageReductionPerLevel = workingConfig.rangedProtectionDamageReductionPerLevel;
+        actualConfig.showWelcomeMessage = workingConfig.showWelcomeMessage;
         actualConfig.disabledEnchantments = new LinkedHashMap<>(workingConfig.disabledEnchantments);
         actualConfig.scrollRecipes = new LinkedHashMap<>();
         for (var entry : workingConfig.scrollRecipes.entrySet()) {
@@ -1491,6 +1504,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
         workingConfig.returnEnchantmentOnCleanse = defaults.returnEnchantmentOnCleanse;
         workingConfig.disableEnchantmentCrafting = defaults.disableEnchantmentCrafting;
         workingConfig.salvagerYieldsScroll = defaults.salvagerYieldsScroll;
+        workingConfig.showWelcomeMessage = defaults.showWelcomeMessage;
 
         
         // Reset maps

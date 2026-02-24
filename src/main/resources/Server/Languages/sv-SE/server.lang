@@ -1,4 +1,4 @@
-﻿benchCategories.enchantingArmor = Rustning
+benchCategories.enchantingArmor = Rustning
 
 benchCategories.enchantingTools = Verktyg
 
@@ -582,6 +582,7 @@ config.general.table_tier = Förtrollningsbords Hantverksnivå
 config.general.disable_crafting = Inaktivera Förtrollningshantverk
 config.general.return_cleanse = Returnera Förtrollning Vid Rening
 config.general.salvager_yield = Återvinnare ger tillbaka Skriftrulle
+config.general.show_welcome = Show Welcome Messages
 config.general.table_recipe = Förtrollningsbordsrecept
 config.general.upgrade_1 = Uppgraderingskostnad 1 (Nivå 1 -> 2)
 config.general.upgrade_2 = Uppgraderingskostnad 2 (Nivå 2 -> 3)

@@ -22,10 +22,6 @@ customUI.enchantScrollPage.enchantment = Incantesimo
 
 
 
-chat.greeting = Benvenuto in Simple Enchantments! Per una guida e le impostazioni usa /enchanting
-
-
-
 items.Enchanting_Table.name = Tavolo degli Incantesimi
 
 items.Enchanting_Table.description = Un tavolo usato per creare pergamene d'incantesimo.
@@ -104,19 +100,19 @@ items.Scroll_Fortune_III.description = Aumenta la probabilità di ottenere miner
 
 items.Scroll_Smelting_I.name = Pergamena della Fusione
 
-items.Scroll_Smelting_I.description = Fonde automaticamente i blocchi scavati.
+items.Scroll_Smelting_I.description = Fonde automaticamente i minerali scavati.
 
 
 
-items.Scroll_Life_Leech_I.name = Pergamena del Furto Vitale I
+items.Scroll_Life_Leech_I.name = Pergamena del Risucchio Vitale I
 
 items.Scroll_Life_Leech_I.description = Cura l'attaccante del 10% del danno inflitto.
 
-items.Scroll_Life_Leech_II.name = Pergamena del Furto Vitale II
+items.Scroll_Life_Leech_II.name = Pergamena del Risucchio Vitale II
 
 items.Scroll_Life_Leech_II.description = Cura l'attaccante del 20% del danno inflitto.
 
-items.Scroll_Life_Leech_III.name = Pergamena del Furto Vitale III
+items.Scroll_Life_Leech_III.name = Pergamena del Risucchio Vitale III
 
 items.Scroll_Life_Leech_III.description = Cura l'attaccante del 30% del danno inflitto.
 
@@ -124,15 +120,15 @@ items.Scroll_Life_Leech_III.description = Cura l'attaccante del 30% del danno in
 
 items.Scroll_Dexterity_I.name = Pergamena della Destrezza I
 
-items.Scroll_Dexterity_I.description = Riduce i costi di resistenza del 20%.
+items.Scroll_Dexterity_I.description = Riduce i costi di stamina del 20%.
 
 items.Scroll_Dexterity_II.name = Pergamena della Destrezza II
 
-items.Scroll_Dexterity_II.description = Riduce i costi di resistenza del 40%.
+items.Scroll_Dexterity_II.description = Riduce i costi di stamina del 40%.
 
 items.Scroll_Dexterity_III.name = Pergamena della Destrezza III
 
-items.Scroll_Dexterity_III.description = Riduce i costi di resistenza del 60%.
+items.Scroll_Dexterity_III.description = Riduce i costi di stamina del 60%.
 
 
 
@@ -150,81 +146,81 @@ items.Scroll_Looting_III.description = Aumenta il tasso di caduta oggetti dai mo
 
 
 
-items.Scroll_Sturdy_I.name = Pergamena della Solidità
+items.Scroll_Sturdy_I.name = Pergamena della Durabilità
 
 items.Scroll_Sturdy_I.description = Previene la perdita della durabilità massima durante la riparazione.
 
 
 
-items.Scroll_Strength_I.name = Pergamena della Forza I
+items.Scroll_Strength_I.name = Pergamena dell'Impatto I
 
 items.Scroll_Strength_I.description = Aumenta i danni dei proiettili del 10%.
 
-items.Scroll_Strength_II.name = Pergamena della Forza II
+items.Scroll_Strength_II.name = Pergamena dell'Impatto II
 
 items.Scroll_Strength_II.description = Aumenta i danni dei proiettili del 20%.
 
-items.Scroll_Strength_III.name = Pergamena della Forza III
+items.Scroll_Strength_III.name = Pergamena dell'Impatto III
 
 items.Scroll_Strength_III.description = Aumenta i danni dei proiettili del 30%.
 
 
 
-items.Scroll_Eagles_Eye_I.name = Pergamena dell'Occhio d'Aquila I
+items.Scroll_Eagles_Eye_I.name = Pergamena dell'Occhio di Falco I
 
 items.Scroll_Eagles_Eye_I.description = Aumenta i danni dei proiettili fino al 25% in base alla distanza.
 
-items.Scroll_Eagles_Eye_II.name = Pergamena dell'Occhio d'Aquila II
+items.Scroll_Eagles_Eye_II.name = Pergamena dell'Occhio di Falco II
 
 items.Scroll_Eagles_Eye_II.description = Aumenta i danni dei proiettili fino al 50% in base alla distanza.
 
-items.Scroll_Eagles_Eye_III.name = Pergamena dell'Occhio d'Aquila III
+items.Scroll_Eagles_Eye_III.name = Pergamena dell'Occhio di Falco III
 
 items.Scroll_Eagles_Eye_III.description = Aumenta i danni dei proiettili fino al 75% in base alla distanza.
 
 
 
-items.Scroll_Feather_Falling_I.name = Pergamena della Caduta Piumata I
+items.Scroll_Feather_Falling_I.name = Pergamena dell'Atterraggio Morbido I
 
 items.Scroll_Feather_Falling_I.description = Riduce i danni da caduta del 20%.
 
-items.Scroll_Feather_Falling_II.name = Pergamena della Caduta Piumata II
+items.Scroll_Feather_Falling_II.name = Pergamena dell'Atterraggio Morbido II
 
 items.Scroll_Feather_Falling_II.description = Riduce i danni da caduta del 40%.
 
-items.Scroll_Feather_Falling_III.name = Pergamena della Caduta Piumata III
+items.Scroll_Feather_Falling_III.name = Pergamena dell'Atterraggio Morbido III
 
 items.Scroll_Feather_Falling_III.description = Riduce i danni da caduta del 60%.
 
 
 
-items.Scroll_Waterbreathing_I.name = Pergamena della Respirazione Acquatica I
+items.Scroll_Waterbreathing_I.name = Pergamena della Respirazione I
 
 items.Scroll_Waterbreathing_I.description = Riduce il consumo di ossigeno del 20%.
 
-items.Scroll_Waterbreathing_II.name = Pergamena della Respirazione Acquatica II
+items.Scroll_Waterbreathing_II.name = Pergamena della Respirazione II
 
 items.Scroll_Waterbreathing_II.description = Riduce il consumo di ossigeno del 40%.
 
-items.Scroll_Waterbreathing_III.name = Pergamena della Respirazione Acquatica III
+items.Scroll_Waterbreathing_III.name = Pergamena della Respirazione III
 
 items.Scroll_Waterbreathing_III.description = Riduce il consumo di ossigeno del 60%.
 
 
 
-items.Scroll_Burn_I.name = Pergamena dell'Arsura
+items.Scroll_Burn_I.name = Pergamena del Fuoco
 
-items.Scroll_Burn_I.description = Incendia il bersaglio e fa cadere carne cotta. Non combinabile con Congelamento.
-
-
-
-items.Scroll_Freeze_I.name = Pergamena del Congelamento
-
-items.Scroll_Freeze_I.description = Applica un forte rallentamento (50%) al bersaglio colpito. Non combinabile con Arsura.
+items.Scroll_Burn_I.description = Incendia il bersaglio e fa cadere carne cotta. Non combinabile con la pergamena del Ghiaccio.
 
 
 
-items.Scroll_Eternal_Shot_I.name = Pergamena del Tiro Eterno
+items.Scroll_Freeze_I.name = Pergamena del Ghiaccio
+
+items.Scroll_Freeze_I.description = Applica un forte rallentamento (50%) al bersaglio colpito. Non combinabile con la pergamena del Fuoco.
+
+
+
+items.Scroll_Eternal_Shot_I.name = Pergamena dell'infinità
 
 items.Scroll_Eternal_Shot_I.description = Permette di scoccare frecce senza consumarle.
 
@@ -236,21 +232,21 @@ items.Scroll_Silktouch_I.description = I blocchi scavati rilasciano sé stessi i
 
 
 
-items.Scroll_Thrift_I.name = Pergamena del Risparmio I
+items.Scroll_Thrift_I.name = Pergamena del Risparmio Mana I
 
 items.Scroll_Thrift_I.description = Ripristina il 20% del mana speso colpendo.
 
-items.Scroll_Thrift_II.name = Pergamena del Risparmio II
+items.Scroll_Thrift_II.name = Pergamena del Risparmio Mana II
 
 items.Scroll_Thrift_II.description = Ripristina il 40% del mana speso colpendo.
 
-items.Scroll_Thrift_III.name = Pergamena del Risparmio III
+items.Scroll_Thrift_III.name = Pergamena del Risparmio Mana III
 
 items.Scroll_Thrift_III.description = Ripristina il 60% del mana speso colpendo.
 
 
 
-items.Scroll_ElementalHeart_I.name = Pergamena del Cuore Elementale
+items.Scroll_ElementalHeart_I.name = Pergamena Elementale
 
 items.Scroll_ElementalHeart_I.description = I bastoni elementali non consumano essenza durante il lancio.
 
@@ -298,15 +294,15 @@ items.Scroll_Absorption_III.description = Cura il difensore del 30% del danno bl
 
 
 
-items.Scroll_FastSwim_I.name = Pergamena del Nuoto Rapido I
+items.Scroll_FastSwim_I.name = Pergamena del Nuoto I
 
 items.Scroll_FastSwim_I.description = Aumenta la velocità di nuoto del 25%.
 
-items.Scroll_FastSwim_II.name = Pergamena del Nuoto Rapido II
+items.Scroll_FastSwim_II.name = Pergamena del Nuoto II
 
 items.Scroll_FastSwim_II.description = Aumenta la velocità di nuoto del 50%.
 
-items.Scroll_FastSwim_III.name = Pergamena del Nuoto Rapido III
+items.Scroll_FastSwim_III.name = Pergamena del Nuoto III
 
 items.Scroll_FastSwim_III.description = Aumenta la velocità di nuoto del 75%.
 
@@ -400,7 +396,7 @@ enchantment.strength.name = Forza
 
 enchantment.strength.description = Aumenta i danni dei proiettili del 10%.
 
-enchantment.eagles_eye.name = Occhio d'Aquila
+enchantment.eagles_eye.name = Occhio di Falco
 
 enchantment.eagles_eye.description = Aumenta i danni dei proiettili fino al 25% in base alla distanza.
 
@@ -408,23 +404,23 @@ enchantment.looting.name = Saccheggio
 
 enchantment.looting.description = Aumenta il tasso di caduta oggetti dai mostri del 25% e le probabilità di oggetti rari.
 
-enchantment.feather_falling.name = Caduta Piumata
+enchantment.feather_falling.name = Atterraggio Morbido
 
 enchantment.feather_falling.description = Riduce i danni da caduta del 20%.
 
-enchantment.waterbreathing.name = Respirazione Acquatica
+enchantment.waterbreathing.name = Respirazione
 
 enchantment.waterbreathing.description = Riduce il consumo di ossigeno del 20%.
 
-enchantment.burn.name = Arsura
+enchantment.burn.name = Fuoco
 
 enchantment.burn.description = Incendia il bersaglio e fa cadere carne cotta. Non combinabile con Congelamento.
 
-enchantment.freeze.name = Congelamento
+enchantment.freeze.name = Ghiaccio
 
 enchantment.freeze.description = Applica un forte rallentamento (50%) al bersaglio colpito. Non combinabile con Arsura.
 
-enchantment.eternal_shot.name = Tiro Eterno
+enchantment.eternal_shot.name = Infinità
 
 enchantment.eternal_shot.description = Permette di scoccare frecce senza consumarle.
 
@@ -432,11 +428,11 @@ enchantment.pick_perfect.name = Tocco di Velluto
 
 enchantment.pick_perfect.description = I blocchi scavati rilasciano sé stessi invece delle risorse abituali. Non combinabile con Fortuna o Fusione.
 
-enchantment.thrift.name = Risparmio
+enchantment.thrift.name = Risparmio Mana
 
 enchantment.thrift.description = Ripristina il 20% del mana speso colpendo.
 
-enchantment.elemental_heart.name = Cuore Elementale
+enchantment.elemental_heart.name = Elementale
 
 enchantment.elemental_heart.description = I bastoni elementali non consumano essenza durante il lancio.
 
@@ -452,13 +448,13 @@ enchantment.absorption.name = Assorbimento
 
 enchantment.absorption.description = Cura il difensore del 10% del danno bloccato. Non combinabile con Riflesso.
 
-enchantment.fast_swim.name = Nuoto Rapido
+enchantment.fast_swim.name = Nuoto
 
 enchantment.fast_swim.description = Aumenta la velocità di nuoto del 25%.
 
 
 
-items.Scroll_Night_Vision_I.name = Pergamena di Visione Notturna
+items.Scroll_Night_Vision_I.name = Pergamena della Visione Notturna
 
 items.Scroll_Night_Vision_I.description = Migliora la visibilità in ambienti bui come grotte, di notte e sott'acqua.
 
@@ -507,24 +503,24 @@ enchantment.frenzy.name = Frenesia
 
 enchantment.frenzy.description = Aumenta la velocità di carica dell'abilità caratteristica del 15%.
 
-items.Scroll_Riposte_I.name = Pergamena della Riposte I
+items.Scroll_Riposte_I.name = Pergamena del Contrattacco I
 items.Scroll_Riposte_I.description = Aumenta i danni del contrattacco del 20%.
-items.Scroll_Riposte_II.name = Pergamena della Riposte II
+items.Scroll_Riposte_II.name = Pergamena del Contrattacco II
 items.Scroll_Riposte_II.description = Aumenta i danni del contrattacco del 40%.
-items.Scroll_Riposte_III.name = Pergamena della Riposte III
+items.Scroll_Riposte_III.name = Pergamena del Contrattacco III
 items.Scroll_Riposte_III.description = Aumenta i danni del contrattacco del 60%.
 
-enchantment.riposte.name = Riposte
+enchantment.riposte.name = Contrattacco
 enchantment.riposte.description = Aumenta i danni del contrattacco del 20%.
 
-items.Scroll_Coup_De_Grace_I.name = Pergamena del Coup de Grâce I
+items.Scroll_Coup_De_Grace_I.name = Pergamena del Colpo di Grazia I
 items.Scroll_Coup_De_Grace_I.description = Aumenta i danni contro i nemici storditi del 20%.
-items.Scroll_Coup_De_Grace_II.name = Pergamena del Coup de Grâce II
+items.Scroll_Coup_De_Grace_II.name = Pergamena del Colpo di Grazia II
 items.Scroll_Coup_De_Grace_II.description = Aumenta i danni contro i nemici storditi del 40%.
-items.Scroll_Coup_De_Grace_III.name = Pergamena del Coup de Grâce III
+items.Scroll_Coup_De_Grace_III.name = Pergamena del Colpo di Grazia III
 items.Scroll_Coup_De_Grace_III.description = Aumenta i danni contro i nemici storditi del 60%.
 
-enchantment.coup_de_grace.name = Coup de Grâce
+enchantment.coup_de_grace.name = Colpo di Grazia
 enchantment.coup_de_grace.description = Aumenta i danni contro i nemici storditi del 20%.
 
 # Enchantment Bonuses
@@ -534,7 +530,7 @@ enchantment.durability.bonus = Perdita di durabilità ridotta del {amount}%
 enchantment.sturdy.bonus = Previene la perdita di durabilità durante la riparazione
 enchantment.dexterity.bonus = Costo della resistenza ridotto del {amount}%
 enchantment.protection.bonus = Danni fisici ridotti del {amount}%
-enchantment.efficiency.bonus = Velocità di estrazione aumentata del {amount}%
+enchantment.efficiency.bonus = Efficienza aumentata del {amount}%
 enchantment.fortune.bonus = Probabilità di bottino extra aumentata del {amount}%
 enchantment.smelting.bonus = Fonde automaticamente i blocchi estratti
 enchantment.strength.bonus = Danni dei proiettili aumentati del {amount}%
@@ -570,10 +566,6 @@ config.button.confirm_reset = Conferma Reimpostazione
 config.button.back = Indietro
 config.button.add_ingredient = Aggiungi Ingrediente
 config.button.reset_recipe = Reimposta Ricetta
-config.button.edit = Modifica
-config.button.edit_recipe = Modifica Ricetta
-config.button.reset = Reimposta
-config.button.change = Cambia
 
 config.general.max_enchantments = Max Incantesimi Per Oggetto
 config.general.show_banner = Mostra Banner Incantesimi
@@ -581,7 +573,6 @@ config.general.enable_glow = Abilita Bagliore Incantesimi
 config.general.table_tier = Livello Creazione Tavolo Incantesimi
 config.general.disable_crafting = Disabilita Creazione Incantesimi
 config.general.return_cleanse = Restituisci Incantesimo alla Pulizia
-config.general.salvager_yield = Il Riciclatore restituisce la Pergamena
 config.general.table_recipe = Ricetta Tavolo Incantesimi
 config.general.upgrade_1 = Costo Aggiornamento 1 (Livello 1 -> 2)
 config.general.upgrade_2 = Costo Aggiornamento 2 (Livello 2 -> 3)
@@ -598,22 +589,42 @@ config.secondary.quantity_bonus = Bonus Quantità
 
 config.recipe.active_title = {0} - Ingredienti
 config.recipe.crafting_tier = Livello Creazione
-config.recipe.tier_label = Si sblocca al Livello del Tavolo
 
 config.message.saved = Salvato! La maggior parte delle modifiche richiede un riavvio.
 config.message.unsaved = [!] Modifiche non salvate
 
-customUI.enchantingPage.adminNote = Le impostazioni a livello di server e le personalizzazioni degli incantesimi sono disponibili nella configurazione dell'amministratore. Accedi tramite /enchantconfig
-customUI.walkthrough.enchantments.title = 5. Enchantments
-customUI.walkthrough.enchantments.desc = A complete list of enchantments and their effects. Click on any to find out more.
 
+# New Walkthrough & UI Translations
 customUI.enchantScrollPage.current = Attuale:
-
 customUI.enchantScrollPage.apply = Applica:
-
 customUI.enchantScrollPage.upgrade = Migliora:
-
+chat.greeting = Benvenuto in Simple Enchantments! Per una guida e le Impostazioni usa /enchanting
 customUI.cleansingScrollPage.enchantment.singular = incantesimo
-
 customUI.cleansingEnchantmentPage.clickToRemove = Clicca per rimuovere
-
+config.button.edit = Modifica
+config.button.edit_recipe = Modifica Ricetta
+config.button.reset = Ripristina
+config.button.change = Cambia
+config.general.salvager_yield = Riciclatore Restituisce Pergamena
+config.general.show_welcome = Mostra Messaggi di Benvenuto
+config.recipe.tier_label = Sbloccato al Livello Tavolo
+customUI.enchantingPage.tabWalkthrough = Guida
+customUI.enchantingPage.tabSettings = Impostazioni Utente
+customUI.enchantingPage.title = Simple Enchantments
+customUI.enchantingPage.language = Lingua
+customUI.enchantingPage.lang.default = Predefinita (Lingua di Gioco)
+customUI.walkthrough.next = Pagina Successiva
+customUI.walkthrough.prev = Pagina Precedente
+customUI.walkthrough.welcome.title = Benvenuto in Simple Enchantments!
+customUI.walkthrough.welcome.desc = Questa mod ti permette di migliorare il tuo equipaggiamento e le tue armi usando pergamene magiche e incantesimi. È altamente personalizzabile, con un menù di configurazione per gli amministratori (/enchantconfig) che ti permette di modificare le impostazioni o attivare e disattivare incantesimi specifici. Funziona al meglio con gli oggetti vanilla, ma offre un'ampia compatibilità con altre mod. Se riscontri un problema o hai una richiesta, unisciti al nostro server Discord. Inoltre, se Dynamic Tooltips Lib è installato, gli incantesimi verranno mostrati nel tooltip dell'oggetto.
+customUI.walkthrough.table.title = 1. Tavolo degli Incantesimi
+customUI.walkthrough.table.desc = Crea un Tavolo degli Incantesimi al Banco di Lavoro. Posizionalo e interagisci per sfogliare tutte le Pergamene d'Incantesimo disponibili che puoi creare. Puoi anche migliorare il tavolo per accedere a incantesimi di livello superiore.
+customUI.walkthrough.scrolls.title = 2. Pergamene d'Incantesimo
+customUI.walkthrough.scrolls.desc = Crea pergamene direttamente al Tavolo degli Incantesimi usando essenze, gemme, lingotti e piante. Una volta creata, fai clic destro sulla pergamena mentre la tieni in mano per applicare l'incantesimo a un'arma, un'armatura o uno strumento nel tuo inventario.
+customUI.walkthrough.removing.title = 3. Rimuovere Incantesimi
+customUI.walkthrough.removing.desc = Hai commesso un errore? Puoi creare una Pergamena della Purificazione per rimuovere gli incantesimi da un oggetto. Se il server lo permette, potresti anche riottenere la pergamena.
+customUI.walkthrough.salvaging.title = 4. Riciclaggio
+customUI.walkthrough.salvaging.desc = Se hai un pezzo di equipaggiamento incantato di cui non hai più bisogno, posizionalo nella Stazione di Riciclaggio per recuperare la pergamena d'incantesimo di livello più alto, se abilitato sul server.
+customUI.enchantingPage.adminNote = Le impostazioni globali del server e le personalizzazioni degli Incantesimi sono disponibili nella Configurazione Amministratore. Accedici tramite /enchantconfig
+customUI.walkthrough.enchantments.title = 5. Incantesimi
+customUI.walkthrough.enchantments.desc = Una lista completa degli incantesimi e dei loro effetti. Clicca su uno qualsiasi per saperne di più.

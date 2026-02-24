@@ -28,15 +28,17 @@ public class WelcomeListener {
         String uuid = playerRef.getUuid().toString();
         
         UserSettingsManager userSettingsManager = plugin.getUserSettingsManager();
-        
+        EnchantingConfig config = plugin.getConfigManager().getConfig();
+
         // Show the localized greeting message
         if (!userSettingsManager.hasSeenGreeting(playerRef.getUuid())) {
-            String clientLangCode = playerRef.getLanguage();
-            String langCode = userSettingsManager.getLanguage(playerRef.getUuid());
-            
-            Message greeting = plugin.getLanguageManager().getMessage("chat.greeting", langCode, clientLangCode).color("#AA00AA").bold(true); // Changed to purple hex
-            player.sendMessage(greeting);
-            
+            if (config.showWelcomeMessage) {
+                String clientLangCode = playerRef.getLanguage();
+                String langCode = userSettingsManager.getLanguage(playerRef.getUuid());
+                
+                Message greeting = plugin.getLanguageManager().getMessage("chat.greeting", langCode, clientLangCode).color("#AA00AA").bold(true); // Changed to purple hex
+                player.sendMessage(greeting);
+            }
             userSettingsManager.setHasSeenGreeting(playerRef.getUuid(), true);
         }
 
@@ -45,15 +47,20 @@ public class WelcomeListener {
             return;
         }
 
-        EnchantingConfig config = plugin.getConfigManager().getConfig();
-
-        // Check if player has already been notified
-        if (config.notifiedPlayers != null && config.notifiedPlayers.contains(uuid)) {
+        // Check if player has already been notified, or if it was globally skipped for fresh installs
+        if (config.hasSkippedTooltipAnnouncement || (config.notifiedPlayers != null && config.notifiedPlayers.contains(uuid))) {
             return;
         }
         
-        // Check if welcome message is disabled (e.g. fresh installs)
-        if (config.skipWelcomeMessage) {
+        // Mark player as notified and save
+        if (config.notifiedPlayers == null) {
+            config.notifiedPlayers = new java.util.ArrayList<>();
+        }
+        config.notifiedPlayers.add(uuid);
+        plugin.getConfigManager().saveConfig();
+        
+        // Check if welcome message is disabled
+        if (!config.showWelcomeMessage) {
             return;
         }
 
@@ -76,13 +83,6 @@ public class WelcomeListener {
         player.sendMessage(Message.raw(" They replace the banner by default, but you can ").color("YELLOW"));
         player.sendMessage(Message.raw("                turn it back on in the config.").color("YELLOW"));
         player.sendMessage(Message.raw(border).color("#FFAA00").bold(true));
-
-        // Mark player as notified and save
-        if (config.notifiedPlayers == null) {
-            config.notifiedPlayers = new java.util.ArrayList<>();
-        }
-        config.notifiedPlayers.add(uuid);
-        plugin.getConfigManager().saveConfig();
         
         // Log it just for debug
         // plugin.getLogger().atInfo().log("Showed welcome message to " + player.getName());

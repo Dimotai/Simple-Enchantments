@@ -1,4 +1,4 @@
-﻿benchCategories.enchantingArmor = Harnas
+benchCategories.enchantingArmor = Harnas
 
 benchCategories.enchantingTools = Gereedschap
 
@@ -582,6 +582,7 @@ config.general.table_tier = Betoveringstafel Ambachtsniveau
 config.general.disable_crafting = Schakel Betoveringsambacht Uit
 config.general.return_cleanse = Geef Betovering Terug Bij Reiniging
 config.general.salvager_yield = Recycler geeft Rol terug
+config.general.show_welcome = Show Welcome Messages
 config.general.table_recipe = Betoveringstafel Recept
 config.general.upgrade_1 = Upgrade 1 Kosten (Niveau 1 -> 2)
 config.general.upgrade_2 = Upgrade 2 Kosten (Niveau 2 -> 3)
