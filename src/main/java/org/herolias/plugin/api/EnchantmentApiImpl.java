@@ -37,7 +37,7 @@ public class EnchantmentApiImpl implements EnchantmentApi {
 
         // Delegate to manager's logic (handles checks, application, metadata update)
         // Note: manager.applyEnchantmentToItem returns a Result object with the new ItemStack
-        var result = manager.applyEnchantmentToItem(item, type, level, true);
+        var result = manager.applyEnchantmentToItem(null, item, type, level, true);
         
         if (result.success()) {
              return result.item();

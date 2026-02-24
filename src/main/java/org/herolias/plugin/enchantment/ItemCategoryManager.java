@@ -439,6 +439,10 @@ public class ItemCategoryManager {
         java.util.Map<String, String> draysBetterSpellBooks = new java.util.LinkedHashMap<>();
         draysBetterSpellBooks.put("Spellbook", "STAFF_MANA");
         defaultConfig.familyMappings.put("Drays Better Spell Books", draysBetterSpellBooks);
+        java.util.Map<String, String> bringTheBoom = new java.util.LinkedHashMap<>();
+        bringTheBoom.put("Gun", "RANGED_WEAPON");
+        bringTheBoom.put("Bomb", "UNKNOWN");
+        defaultConfig.familyMappings.put("Bring The Boom", bringTheBoom);
         
         // Standard Blacklist (Projectiles, Throwables, Totems, Guns, Magical Items)
         defaultConfig.blacklist = java.util.Arrays.asList(

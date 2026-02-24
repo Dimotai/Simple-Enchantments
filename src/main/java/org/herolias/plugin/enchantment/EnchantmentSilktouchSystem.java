@@ -136,5 +136,12 @@ public class EnchantmentSilktouchSystem extends EntityEventSystem<EntityStore, B
         List<ItemStack> drops = Collections.singletonList(silkTouchDrop);
         
         enchantmentManager.spawnDrops(commandBuffer, drops, dropPosition);
+        
+        com.hypixel.hytale.server.core.universe.PlayerRef playerRef = null;
+        if (breakerRef != null && breakerRef.isValid()) {
+            playerRef = store.getComponent(breakerRef, com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+        }
+        org.herolias.plugin.api.event.EnchantmentActivatedEvent ev = new org.herolias.plugin.api.event.EnchantmentActivatedEvent(playerRef, tool, EnchantmentType.PICK_PERFECT, enchantmentManager.getEnchantmentLevel(tool, EnchantmentType.PICK_PERFECT));
+        com.hypixel.hytale.server.core.HytaleServer.get().getEventBus().dispatchFor(org.herolias.plugin.api.event.EnchantmentActivatedEvent.class).dispatch(ev);
     }
 }

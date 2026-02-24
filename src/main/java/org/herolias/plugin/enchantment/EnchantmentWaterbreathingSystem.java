@@ -146,6 +146,12 @@ public class EnchantmentWaterbreathingSystem extends EntityTickingSystem<EntityS
             float newOxygen = Math.min(maxOxygen, currentOxygen + oxygenToRestore);
             if (newOxygen > currentOxygen) {
                 statMap.addStatValue(DefaultEntityStatTypes.getOxygen(), oxygenToRestore);
+                
+                if (entity instanceof com.hypixel.hytale.server.core.entity.entities.Player) {
+                    com.hypixel.hytale.server.core.universe.PlayerRef playerRef = store.getComponent(archetypeChunk.getReferenceTo(index), com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+                    org.herolias.plugin.api.event.EnchantmentActivatedEvent ev = new org.herolias.plugin.api.event.EnchantmentActivatedEvent(playerRef, helmet, EnchantmentType.WATERBREATHING, waterbreathingLevel);
+                    com.hypixel.hytale.server.core.HytaleServer.get().getEventBus().dispatchFor(org.herolias.plugin.api.event.EnchantmentActivatedEvent.class).dispatch(ev);
+                }
             }
             
         } catch (Exception e) {

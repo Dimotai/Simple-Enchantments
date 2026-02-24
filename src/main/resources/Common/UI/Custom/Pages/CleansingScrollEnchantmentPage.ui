@@ -7,7 +7,7 @@ $C.@DecoratedContainer {
 
   #Title {
     Group {
-      $C.@Title {
+      $C.@Title #TitleLabel {
         @Text = %server.customUI.cleansingEnchantmentPage.title;
       }
     }
@@ -18,7 +18,7 @@ $C.@DecoratedContainer {
       LayoutMode: Left;
       Padding: (Right: 15, Bottom: 5);
 
-      Label {
+      Label #SelectHintLabel {
         Text: %server.customUI.cleansingEnchantmentPage.selectHint;
         Style: (TextColor: #ffffff(0.7));
       }

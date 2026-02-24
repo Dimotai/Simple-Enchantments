@@ -21,6 +21,9 @@ import org.herolias.plugin.enchantment.EnchantmentManager;
  * Selecting an item opens CleansingEnchantmentPage to choose which enchantment to remove.
  */
 public class CleansingScrollPage extends ChoiceBasePage {
+    private final EnchantmentManager enchantmentManager;
+    private final PlayerRef playerRef;
+
     public CleansingScrollPage(
         @Nonnull PlayerRef playerRef,
         @Nonnull ItemContainer itemContainer,
@@ -32,6 +35,8 @@ public class CleansingScrollPage extends ChoiceBasePage {
             CleansingScrollPage.getItemElements(itemContainer, enchantmentManager, heldItemContext),
             "Pages/CleansingScrollPage.ui"
         );
+        this.enchantmentManager = enchantmentManager;
+        this.playerRef = playerRef;
     }
 
     @Override
@@ -43,14 +48,30 @@ public class CleansingScrollPage extends ChoiceBasePage {
     ) {
         if (this.getElements().length > 0) {
             super.build(ref, commandBuilder, eventBuilder, store);
+            translateLabels(commandBuilder);
             return;
         }
         commandBuilder.append(this.getPageLayout());
         commandBuilder.clear("#ElementList");
         commandBuilder.appendInline(
             "#ElementList",
-            "Label { Text: %server.customUI.cleansingScrollPage.noItems; Style: (Alignment: Center); }"
+            "Label #NoItemsLabel { Style: (Alignment: Center); }"
         );
+        translateLabels(commandBuilder);
+    }
+
+    private void translateLabels(UICommandBuilder commandBuilder) {
+        org.herolias.plugin.lang.LanguageManager languageManager = enchantmentManager.getPlugin().getLanguageManager();
+        String lang = enchantmentManager.getPlugin().getUserSettingsManager().getLanguage(this.playerRef.getUuid());
+        String clientLang = this.playerRef.getLanguage();
+
+        commandBuilder.set("#TitleLabel.TextSpans", languageManager.getMessage("customUI.cleansingScrollPage.title", lang, clientLang));
+        commandBuilder.set("#ItemLabel.TextSpans", languageManager.getMessage("customUI.cleansingScrollPage.item", lang, clientLang));
+        commandBuilder.set("#EnchantmentLabel.TextSpans", languageManager.getMessage("customUI.cleansingScrollPage.enchantments", lang, clientLang));
+        
+        if (this.getElements().length == 0) {
+            commandBuilder.set("#NoItemsLabel.TextSpans", languageManager.getMessage("customUI.cleansingScrollPage.noItems", lang, clientLang));
+        }
     }
 
     @Nonnull

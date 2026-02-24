@@ -606,3 +606,14 @@ config.message.unsaved = [!] Несохраненные изменения
 customUI.enchantingPage.adminNote = Настройки сервера и модификации чар доступны в настройках администратора. Получите к ним доступ через /enchantconfig
 customUI.walkthrough.enchantments.title = 5. Enchantments
 customUI.walkthrough.enchantments.desc = A complete list of enchantments and their effects. Click on any to find out more.
+
+customUI.enchantScrollPage.current = Текущий:
+
+customUI.enchantScrollPage.apply = Применить:
+
+customUI.enchantScrollPage.upgrade = Улучшить:
+
+customUI.cleansingScrollPage.enchantment.singular = зачарование
+
+customUI.cleansingEnchantmentPage.clickToRemove = Нажмите, чтобы удалить
+

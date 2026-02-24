@@ -606,3 +606,14 @@ config.message.unsaved = [!] Perubahan belum disimpan
 customUI.enchantingPage.adminNote = Pengaturan di seluruh server dan penyesuaian pesona tersedia di Konfigurasi Admin. Akses melalui /enchantconfig
 customUI.walkthrough.enchantments.title = 5. Enchantments
 customUI.walkthrough.enchantments.desc = A complete list of enchantments and their effects. Click on any to find out more.
+
+customUI.enchantScrollPage.current = Saat ini:
+
+customUI.enchantScrollPage.apply = Terapkan:
+
+customUI.enchantScrollPage.upgrade = Tingkatkan:
+
+customUI.cleansingScrollPage.enchantment.singular = pesona
+
+customUI.cleansingEnchantmentPage.clickToRemove = Klik untuk menghapus
+

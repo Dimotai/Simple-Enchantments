@@ -114,6 +114,12 @@ public class EnchantmentFeatherFallingSystem extends DamageEventSystem {
             float reducedDamage = (float) (originalDamage * multiplier);
             damage.setAmount(reducedDamage);
             
+            if (targetEntity instanceof com.hypixel.hytale.server.core.entity.entities.Player) {
+                com.hypixel.hytale.server.core.universe.PlayerRef playerRef = store.getComponent(targetEntity.getReference(), com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+                org.herolias.plugin.api.event.EnchantmentActivatedEvent ev = new org.herolias.plugin.api.event.EnchantmentActivatedEvent(playerRef, boots, EnchantmentType.FEATHER_FALLING, featherFallingLevel);
+                com.hypixel.hytale.server.core.HytaleServer.get().getEventBus().dispatchFor(org.herolias.plugin.api.event.EnchantmentActivatedEvent.class).dispatch(ev);
+            }
+            
             LOGGER.atFine().log("Feather Falling " + featherFallingLevel + " reduced fall damage: " 
                 + originalDamage + " -> " + reducedDamage);
             

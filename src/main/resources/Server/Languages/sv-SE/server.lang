@@ -606,3 +606,14 @@ config.message.unsaved = [!] Osparade ändringar
 customUI.enchantingPage.adminNote = Serveromfattande inställningar och anpassningar av förtrollningar är tillgängliga i administratörskonfig. Kom åt den via /enchantconfig
 customUI.walkthrough.enchantments.title = 5. Enchantments
 customUI.walkthrough.enchantments.desc = A complete list of enchantments and their effects. Click on any to find out more.
+
+customUI.enchantScrollPage.current = Nuvarande:
+
+customUI.enchantScrollPage.apply = Tillämpa:
+
+customUI.enchantScrollPage.upgrade = Uppgradera:
+
+customUI.cleansingScrollPage.enchantment.singular = förtrollning
+
+customUI.cleansingEnchantmentPage.clickToRemove = Klicka för att ta bort
+

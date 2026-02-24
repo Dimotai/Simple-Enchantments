@@ -102,6 +102,14 @@ public class EnchantmentFreezeSystem extends DamageEventSystem {
         // Use centralized status effect application
         if (!enchantmentManager.applyStatusEffect(targetRef, FREEZE_EFFECT_ID, store, commandBuffer)) {
             LOGGER.atWarning().log("Freeze effect " + FREEZE_EFFECT_ID + " not found in asset map");
+        } else if (ctx.hasAttacker()) {
+             Entity shooterEntity = EntityUtils.getEntity(ctx.attackerRef(), commandBuffer);
+             ItemStack weapon = enchantmentManager.getWeaponFromEntity(shooterEntity);
+             if (weapon != null) {
+                  com.hypixel.hytale.server.core.universe.PlayerRef playerRef = store.getComponent(ctx.attackerRef(), com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+                  org.herolias.plugin.api.event.EnchantmentActivatedEvent ev = new org.herolias.plugin.api.event.EnchantmentActivatedEvent(playerRef, weapon, EnchantmentType.FREEZE, freezeLevel);
+                  com.hypixel.hytale.server.core.HytaleServer.get().getEventBus().dispatchFor(org.herolias.plugin.api.event.EnchantmentActivatedEvent.class).dispatch(ev);
+             }
         }
     }
 }

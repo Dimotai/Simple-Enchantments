@@ -188,6 +188,19 @@ public class EnchantmentLootingSystem extends DeathSystems.OnDeathSystem {
         if (drops.length > 0) {
             commandBuffer.addEntities(drops, AddReason.SPAWN);
             LOGGER.atFine().log("Spawned " + drops.length + " Looting-boosted item(s)");
+            
+            // Fire event if Looting triggered and we have a valid attacker
+            Ref<EntityStore> attackerRef = null;
+            if (deathInfo.getSource() instanceof Damage.EntitySource entitySource) {
+                attackerRef = entitySource.getRef();
+            }
+
+            if (levels.lootingLevel() > 0 && attackerRef != null && enchantmentManager.getWeaponFromEntity(EntityUtils.getEntity(attackerRef, commandBuffer)) != null) {
+                com.hypixel.hytale.server.core.universe.PlayerRef playerRef = store.getComponent(attackerRef, com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+                ItemStack weapon = enchantmentManager.getWeaponFromEntity(EntityUtils.getEntity(attackerRef, commandBuffer));
+                org.herolias.plugin.api.event.EnchantmentActivatedEvent apiEvent = new org.herolias.plugin.api.event.EnchantmentActivatedEvent(playerRef, weapon, EnchantmentType.LOOTING, levels.lootingLevel());
+                com.hypixel.hytale.server.core.HytaleServer.get().getEventBus().dispatchFor(org.herolias.plugin.api.event.EnchantmentActivatedEvent.class).dispatch(apiEvent);
+            }
         }
         
         // Clean up stored enchantment data

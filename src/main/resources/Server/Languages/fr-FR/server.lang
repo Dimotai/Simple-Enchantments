@@ -605,3 +605,14 @@ config.message.unsaved = [!] Changements non sauvegardés
 customUI.enchantingPage.adminNote = Les paramètres du serveur et les personnalisations d'enchantement sont disponibles dans la configuration administrateur. Accédez-y via /enchantconfig
 customUI.walkthrough.enchantments.title = 5. Enchantments
 customUI.walkthrough.enchantments.desc = A complete list of enchantments and their effects. Click on any to find out more.
+
+customUI.enchantScrollPage.current = Actuel:
+
+customUI.enchantScrollPage.apply = Appliquer:
+
+customUI.enchantScrollPage.upgrade = Améliorer:
+
+customUI.cleansingScrollPage.enchantment.singular = enchantement
+
+customUI.cleansingEnchantmentPage.clickToRemove = Cliquer pour retirer
+

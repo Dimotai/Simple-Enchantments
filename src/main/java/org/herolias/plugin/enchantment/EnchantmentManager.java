@@ -181,13 +181,14 @@ public class EnchantmentManager {
     /**
      * Applies an enchantment to an item. Allows unsafe levels (ignoring max level cap).
      * 
+     * @param playerRef The player applying the enchantment (nullable)
      * @param item The item to enchant
      * @param type The enchantment to apply
      * @param level The level of the enchantment
      * @param unsafe If true, bypasses max level checks
      * @return Result
      */
-    public EnchantmentApplicationResult applyEnchantmentToItem(@Nonnull ItemStack item, @Nonnull EnchantmentType type, int level, boolean unsafe) {
+    public EnchantmentApplicationResult applyEnchantmentToItem(@Nullable com.hypixel.hytale.server.core.universe.PlayerRef playerRef, @Nonnull ItemStack item, @Nonnull EnchantmentType type, int level, boolean unsafe) {
         if (item == null || item.isEmpty()) {
             LOGGER.atWarning().log("Cannot enchant null or empty item");
             return EnchantmentApplicationResult.failure("Cannot enchant null or empty item.");
@@ -254,15 +255,37 @@ public class EnchantmentManager {
         enchantedItem = updateItemVisuals(enchantedItem);
         
         LOGGER.atInfo().log("Applied " + type.getFormattedName(appliedLevel) + " to " + item.getItemId());
+        
+        // Dispatch the API event
+        org.herolias.plugin.api.event.ItemEnchantedEvent event = new org.herolias.plugin.api.event.ItemEnchantedEvent(playerRef, enchantedItem, type, appliedLevel);
+        com.hypixel.hytale.server.core.HytaleServer.get().getEventBus().dispatchFor(org.herolias.plugin.api.event.ItemEnchantedEvent.class).dispatch(event);
+        
         return EnchantmentApplicationResult.success(enchantedItem, "Successfully applied " + type.getFormattedName(appliedLevel) + ".");
     }
 
     /**
      * Applies an enchantment to an item with strict max level checks (Safe mode).
+     * @param playerRef The player applying the enchantment (nullable)
+     */
+    @Nonnull
+    public EnchantmentApplicationResult applyEnchantmentToItem(@Nullable com.hypixel.hytale.server.core.universe.PlayerRef playerRef, @Nonnull ItemStack item, @Nonnull EnchantmentType type, int level) {
+        return applyEnchantmentToItem(playerRef, item, type, level, false);
+    }
+    
+    /**
+     * Legacy method without PlayerRef.
+     */
+    @Nonnull
+    public EnchantmentApplicationResult applyEnchantmentToItem(@Nonnull ItemStack item, @Nonnull EnchantmentType type, int level, boolean unsafe) {
+        return applyEnchantmentToItem(null, item, type, level, unsafe);
+    }
+
+    /**
+     * Legacy method without PlayerRef.
      */
     @Nonnull
     public EnchantmentApplicationResult applyEnchantmentToItem(@Nonnull ItemStack item, @Nonnull EnchantmentType type, int level) {
-        return applyEnchantmentToItem(item, type, level, false);
+        return applyEnchantmentToItem(null, item, type, level, false);
     }
 
     /**
@@ -1191,23 +1214,23 @@ public class EnchantmentManager {
             return null;
         }
         
-        // Build composite message
-        com.hypixel.hytale.server.core.Message msg = null;
+        // Build a flat string for the banner
+        // Composite messages with children often fail to render in Hytale's EventTitle/Action Bar 
+        // if the root text is empty. A flat string is the most robust approach.
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < enabledEnchants.size(); i++) {
             java.util.Map.Entry<EnchantmentType, Integer> entry = enabledEnchants.get(i);
             
             String lang = getPlugin().getUserSettingsManager().getLanguage(playerRef.getUuid());
-            com.hypixel.hytale.server.core.Message part = getPlugin().getLanguageManager().getMessage(entry.getKey().getNameKey(), lang, playerRef.getLanguage())
-                     .insert(com.hypixel.hytale.server.core.Message.raw(" " + EnchantmentType.toRoman(entry.getValue())));
+            String name = getPlugin().getLanguageManager().getRawMessage(entry.getKey().getNameKey(), lang, playerRef.getLanguage());
             
-            if (msg == null) {
-                msg = part;
-            } else {
-                msg = msg.insert(com.hypixel.hytale.server.core.Message.raw(" | ")).insert(part);
+            if (i > 0) {
+                sb.append(" | ");
             }
+            sb.append(name).append(" ").append(EnchantmentType.toRoman(entry.getValue()));
         }
         
-        return msg;
+        return com.hypixel.hytale.server.core.Message.raw(sb.toString());
     }
 
     // --- Centralized Helper Methods for Systems ---

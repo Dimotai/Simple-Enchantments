@@ -23,6 +23,9 @@ import java.util.Map;
  * Selecting an enchantment removes it from the item.
  */
 public class CleansingEnchantmentPage extends ChoiceBasePage {
+    private final EnchantmentManager enchantmentManager;
+    private final PlayerRef playerRef;
+
     public CleansingEnchantmentPage(
         @Nonnull PlayerRef playerRef,
         @Nonnull ItemContext itemContext,
@@ -35,6 +38,8 @@ public class CleansingEnchantmentPage extends ChoiceBasePage {
             CleansingEnchantmentPage.getEnchantmentElements(itemContext, heldItemContext, enchantmentData, enchantmentManager),
             "Pages/CleansingScrollEnchantmentPage.ui"
         );
+        this.enchantmentManager = enchantmentManager;
+        this.playerRef = playerRef;
     }
 
     @Override
@@ -45,6 +50,16 @@ public class CleansingEnchantmentPage extends ChoiceBasePage {
         @Nonnull Store<EntityStore> store
     ) {
         super.build(ref, commandBuilder, eventBuilder, store);
+        translateLabels(commandBuilder);
+    }
+
+    private void translateLabels(UICommandBuilder commandBuilder) {
+        org.herolias.plugin.lang.LanguageManager languageManager = enchantmentManager.getPlugin().getLanguageManager();
+        String lang = enchantmentManager.getPlugin().getUserSettingsManager().getLanguage(this.playerRef.getUuid());
+        String clientLang = this.playerRef.getLanguage();
+
+        commandBuilder.set("#TitleLabel.TextSpans", languageManager.getMessage("customUI.cleansingEnchantmentPage.title", lang, clientLang));
+        commandBuilder.set("#SelectHintLabel.TextSpans", languageManager.getMessage("customUI.cleansingEnchantmentPage.selectHint", lang, clientLang));
     }
 
     @Nonnull

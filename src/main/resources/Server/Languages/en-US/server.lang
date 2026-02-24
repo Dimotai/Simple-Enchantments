@@ -16,6 +16,12 @@ customUI.enchantScrollPage.item = Item
 
 customUI.enchantScrollPage.enchantment = Enchantment
 
+customUI.enchantScrollPage.current = Current:
+
+customUI.enchantScrollPage.apply = Apply:
+
+customUI.enchantScrollPage.upgrade = Upgrade:
+
 
 
 chat.greeting = Welcome to Simple Enchantments! For a walkthrough and Settings use /enchanting
@@ -346,11 +352,13 @@ customUI.cleansingScrollPage.item = Item
 
 customUI.cleansingScrollPage.enchantments = Enchantments
 
-
+customUI.cleansingScrollPage.enchantment.singular = enchantment
 
 customUI.cleansingEnchantmentPage.title = Select Enchantment to Remove
 
 customUI.cleansingEnchantmentPage.selectHint = Click an enchantment to remove it
+
+customUI.cleansingEnchantmentPage.clickToRemove = Click to remove
 
 
 

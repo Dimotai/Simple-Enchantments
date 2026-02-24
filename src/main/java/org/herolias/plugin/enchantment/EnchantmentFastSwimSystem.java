@@ -26,6 +26,7 @@ public class EnchantmentFastSwimSystem extends EntityTickingSystem<EntityStore> 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     private final EnchantmentManager enchantmentManager;
     private final it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap playerLastLevels = new it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap();
+    private final it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap playerLastFluidState = new it.unimi.dsi.fastutil.ints.Int2BooleanOpenHashMap();
 
     // We keep MovementStatesComponent to check if in fluid
     private static final Query<EntityStore> QUERY = Query.and(
@@ -36,6 +37,7 @@ public class EnchantmentFastSwimSystem extends EntityTickingSystem<EntityStore> 
     public EnchantmentFastSwimSystem(EnchantmentManager enchantmentManager) {
         this.enchantmentManager = enchantmentManager;
         this.playerLastLevels.defaultReturnValue(0);
+        this.playerLastFluidState.defaultReturnValue(false);
     }
 
     @Override
@@ -68,24 +70,43 @@ public class EnchantmentFastSwimSystem extends EntityTickingSystem<EntityStore> 
             }
         }
 
+        // 1.5 Check Fluid State
+        MovementStatesComponent statesComp = store.getComponent(archetypeChunk.getReferenceTo(index), MovementStatesComponent.getComponentType());
+        boolean inFluid = false;
+        if (statesComp != null && statesComp.getMovementStates() != null) {
+            inFluid = statesComp.getMovementStates().inFluid;
+        }
+
         // 2. Optimization: Check if level changed
         com.hypixel.hytale.server.core.modules.entity.tracker.NetworkId netIdComp = store.getComponent(archetypeChunk.getReferenceTo(index), com.hypixel.hytale.server.core.modules.entity.tracker.NetworkId.getComponentType());
         if (netIdComp == null) return;
         int entityId = netIdComp.getId();
         int lastLevel = playerLastLevels.get(entityId);
-
-        if (level == lastLevel) {
-            return; // No change, do nothing
-        }
+        boolean lastInFluid = playerLastFluidState.get(entityId);
 
         // 3. Level changed, send update packet
-        PlayerRef playerRef = archetypeChunk.getComponent(index, PlayerRef.getComponentType());
-        if (playerRef == null) return;
-
-        sendFluidUpdate(playerRef, level);
+        if (level != lastLevel) {
+            PlayerRef playerRef = archetypeChunk.getComponent(index, PlayerRef.getComponentType());
+            if (playerRef != null) {
+                sendFluidUpdate(playerRef, level);
+            }
+            // Update cache
+            playerLastLevels.put(entityId, level);
+        }
         
-        // Update cache
-        playerLastLevels.put(entityId, level);
+        // 4. Fluid state changed, fire event if they have the enchantment and ENTERED fluid
+        if (level > 0 && inFluid && !lastInFluid) {
+            PlayerRef playerRef = archetypeChunk.getComponent(index, PlayerRef.getComponentType());
+            if (playerRef != null) {
+                ItemStack gloves = player.getInventory().getArmor().getItemStack((short) com.hypixel.hytale.protocol.ItemArmorSlot.Hands.getValue());
+                org.herolias.plugin.api.event.EnchantmentActivatedEvent ev = new org.herolias.plugin.api.event.EnchantmentActivatedEvent(playerRef, gloves, EnchantmentType.FAST_SWIM, level);
+                com.hypixel.hytale.server.core.HytaleServer.get().getEventBus().dispatchFor(org.herolias.plugin.api.event.EnchantmentActivatedEvent.class).dispatch(ev);
+            }
+        }
+        
+        if (inFluid != lastInFluid) {
+            playerLastFluidState.put(entityId, inFluid);
+        }
         
         //LOGGER.atInfo().log("FastSwim Update [Player %s]: Level %d -> %d", player.getLegacyDisplayName(), lastLevel, level);
     }

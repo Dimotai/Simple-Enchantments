@@ -56,7 +56,7 @@ public class EnchantScrollElement extends ChoiceElement {
         // Display existing enchantments
         EnchantmentData data = enchantmentManager.getEnchantmentsFromItem(itemStack);
         if (data != null && !data.getAllEnchantments().isEmpty()) {
-            detailBuilder.append("Current: ");
+            detailBuilder.append(languageManager.getRawMessage("customUI.enchantScrollPage.current", lang, clientLang)).append(" ");
             boolean first = true;
             for (Map.Entry<EnchantmentType, Integer> entry : data.getAllEnchantments().entrySet()) {
                 if (!first) {
@@ -72,10 +72,10 @@ public class EnchantScrollElement extends ChoiceElement {
         String targetName = languageManager.getRawMessage(enchantmentType.getNameKey(), lang, clientLang) + " " + EnchantmentType.toRoman(targetLevel);
         if (currentLevel > 0) {
             String currentName = languageManager.getRawMessage(enchantmentType.getNameKey(), lang, clientLang) + " " + EnchantmentType.toRoman(currentLevel);
-            detailBuilder.append("Upgrade: ").append(currentName)
+            detailBuilder.append(languageManager.getRawMessage("customUI.enchantScrollPage.upgrade", lang, clientLang)).append(" ").append(currentName)
                 .append(" -> ").append(targetName);
         } else {
-            detailBuilder.append("Apply: ").append(targetName);
+            detailBuilder.append(languageManager.getRawMessage("customUI.enchantScrollPage.apply", lang, clientLang)).append(" ").append(targetName);
         }
         
         commandBuilder.set(selector + " #Detail.Text", detailBuilder.toString());

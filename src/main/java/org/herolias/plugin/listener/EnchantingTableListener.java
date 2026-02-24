@@ -62,11 +62,12 @@ public class EnchantingTableListener {
     /**
      * Processes an enchanting request from a player.
      * 
+     * @param playerRef The player performing the enchantment
      * @param item The item to enchant
      * @param essenceId The essence being used
      * @return true if enchanting was successful
      */
-    public ItemStack processEnchantment(ItemStack item, String essenceId) {
+    public ItemStack processEnchantment(com.hypixel.hytale.server.core.universe.PlayerRef playerRef, ItemStack item, String essenceId) {
         if (item == null || item.isEmpty()) {
             LOGGER.atWarning().log("Cannot enchant null or empty item");
             return null;
@@ -88,7 +89,7 @@ public class EnchantingTableListener {
         }
         
         // Apply the enchantment (level 1 for now) using metadata system
-        org.herolias.plugin.enchantment.EnchantmentApplicationResult result = enchantmentManager.applyEnchantmentToItem(item, enchantment, 1);
+        org.herolias.plugin.enchantment.EnchantmentApplicationResult result = enchantmentManager.applyEnchantmentToItem(playerRef, item, enchantment, 1);
         
         if (result.success()) {
             LOGGER.atInfo().log("Successfully applied " + enchantment.getDisplayName() + " to item");

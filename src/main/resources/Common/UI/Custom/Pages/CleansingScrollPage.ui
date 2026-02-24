@@ -7,7 +7,7 @@ $C.@DecoratedContainer {
 
   #Title {
     Group {
-      $C.@Title {
+      $C.@Title #TitleLabel {
         @Text = %server.customUI.cleansingScrollPage.title;
       }
     }
@@ -18,13 +18,13 @@ $C.@DecoratedContainer {
       LayoutMode: Left;
       Padding: (Right: 15, Bottom: 5);
 
-      Label {
+      Label #ItemLabel {
         FlexWeight: 1;
         Text: %server.customUI.cleansingScrollPage.item;
         Style: (RenderBold: true);
       }
 
-      Label {
+      Label #EnchantmentLabel {
         Text: %server.customUI.cleansingScrollPage.enchantments;
         Style: (RenderBold: true);
       }

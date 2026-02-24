@@ -7,6 +7,7 @@ import com.hypixel.hytale.server.core.inventory.transaction.SlotTransaction;
 import com.hypixel.hytale.server.core.inventory.transaction.Transaction;
 import org.herolias.plugin.util.ProcessingGuard;
 
+import com.hypixel.hytale.server.core.entity.LivingEntity;
 import java.util.Objects;
 
 /**
@@ -48,6 +49,15 @@ public class EnchantmentDurabilitySystem {
             guard.runGuarded(() -> {
                 ItemStack correctedStack = after.withRestoredDurability(beforeMax);
                 event.getItemContainer().replaceItemStackInSlot(slotTransaction.getSlot(), after, correctedStack);
+                
+                LivingEntity targetEntity = event.getEntity();
+                if (targetEntity instanceof com.hypixel.hytale.server.core.entity.entities.Player player) {
+                    if (player.getWorld() != null && player.getReference() != null) {
+                        com.hypixel.hytale.server.core.universe.PlayerRef playerRef = player.getWorld().getEntityStore().getStore().getComponent(player.getReference(), com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+                        org.herolias.plugin.api.event.EnchantmentActivatedEvent ev = new org.herolias.plugin.api.event.EnchantmentActivatedEvent(playerRef, before, EnchantmentType.STURDY, enchantmentManager.getEnchantmentLevel(before, EnchantmentType.STURDY));
+                        com.hypixel.hytale.server.core.HytaleServer.get().getEventBus().dispatchFor(org.herolias.plugin.api.event.EnchantmentActivatedEvent.class).dispatch(ev);
+                    }
+                }
             });
             return;
         }
@@ -63,11 +73,21 @@ public class EnchantmentDurabilitySystem {
         double multiplier = enchantmentManager.calculateDurabilityMultiplier(before);
         if (multiplier >= 1.0) return;
 
-        double refund = loss * (1.0 - multiplier);
-        if (refund > 0) {
+        // Use a chance-based system to prevent the durability loss entirely
+        double chanceToPrevent = 1.0 - multiplier;
+        if (Math.random() < chanceToPrevent) {
             guard.runGuarded(() -> {
-                ItemStack correctedStack = after.withIncreasedDurability(refund);
+                ItemStack correctedStack = after.withIncreasedDurability(loss);
                 event.getItemContainer().replaceItemStackInSlot(slotTransaction.getSlot(), after, correctedStack);
+                
+                LivingEntity targetEntity = event.getEntity();
+                if (targetEntity instanceof com.hypixel.hytale.server.core.entity.entities.Player player) {
+                    if (player.getWorld() != null && player.getReference() != null) {
+                        com.hypixel.hytale.server.core.universe.PlayerRef playerRef = player.getWorld().getEntityStore().getStore().getComponent(player.getReference(), com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+                        org.herolias.plugin.api.event.EnchantmentActivatedEvent ev = new org.herolias.plugin.api.event.EnchantmentActivatedEvent(playerRef, before, EnchantmentType.DURABILITY, enchantmentManager.getEnchantmentLevel(before, EnchantmentType.DURABILITY));
+                        com.hypixel.hytale.server.core.HytaleServer.get().getEventBus().dispatchFor(org.herolias.plugin.api.event.EnchantmentActivatedEvent.class).dispatch(ev);
+                    }
+                }
             });
         }
     }

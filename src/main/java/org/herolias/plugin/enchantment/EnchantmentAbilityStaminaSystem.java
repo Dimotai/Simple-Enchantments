@@ -148,9 +148,54 @@ public class EnchantmentAbilityStaminaSystem extends EntityTickingSystem<EntityS
         }
 
         statMap.addStatValue(DefaultEntityStatTypes.getStamina(), refund);
+        
+        if (entity instanceof com.hypixel.hytale.server.core.entity.entities.Player) {
+             com.hypixel.hytale.server.core.universe.PlayerRef playerRef = store.getComponent(ref, com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+             ItemStack activeItem = getDexterityItem(inventory, ref, commandBuffer);
+             if (activeItem != null) {
+                 org.herolias.plugin.api.event.EnchantmentActivatedEvent ev = new org.herolias.plugin.api.event.EnchantmentActivatedEvent(playerRef, activeItem, EnchantmentType.DEXTERITY, dexterityLevel);
+                 com.hypixel.hytale.server.core.HytaleServer.get().getEventBus().dispatchFor(org.herolias.plugin.api.event.EnchantmentActivatedEvent.class).dispatch(ev);
+             }
+        }
+        
         if (LOGGER.atFine().isEnabled()) {
             LOGGER.atFine().log("Dexterity refunded " + refund + " stamina.");
         }
+    }
+
+    private ItemStack getDexterityItem(@Nonnull Inventory inventory,
+                                       @Nonnull Ref<EntityStore> ref,
+                                       @Nonnull CommandBuffer<EntityStore> commandBuffer) {
+        ItemStack active = getDexterityItemFromActiveInteraction(ref, commandBuffer);
+        if (active != null) return active;
+        return inventory.getItemInHand();
+    }
+    
+    private ItemStack getDexterityItemFromActiveInteraction(@Nonnull Ref<EntityStore> ref,
+                                                            @Nonnull CommandBuffer<EntityStore> commandBuffer) {
+        InteractionManager interactionManager = commandBuffer.getComponent(ref, InteractionModule.get().getInteractionManagerComponent());
+        if (interactionManager == null) return null;
+
+        long newestTimestamp = Long.MIN_VALUE;
+        ItemStack bestItem = null;
+
+        for (InteractionChain chain : interactionManager.getChains().values()) {
+            if (chain == null || chain.getServerState() != InteractionState.NotFinished) continue;
+            if (!isDexterityRelevantType(chain.getType())) continue;
+
+            InteractionContext context = chain.getContext();
+            if (context == null) continue;
+
+            ItemStack heldItem = context.getHeldItem();
+            if (heldItem == null || heldItem.isEmpty()) continue;
+
+            if (chain.getTimestamp() > newestTimestamp) {
+                newestTimestamp = chain.getTimestamp();
+                bestItem = heldItem;
+            }
+        }
+
+        return getDexterityLevel(bestItem) > 0 ? bestItem : null;
     }
 
     private int getDexterityLevel(@Nonnull Inventory inventory,

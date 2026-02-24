@@ -196,6 +196,17 @@ public class EnchantmentBurnSmeltingSystem extends DeathSystems.OnDeathSystem {
         enchantmentManager.spawnDrops(commandBuffer, finalDrops, dropPosition, headRotation);
         LOGGER.atFine().log("Spawned " + finalDrops.size() + " item(s) with Burn cooking applied");
         
+        EnchantmentManager.DamageContext ctx = enchantmentManager.getDamageContext(deathInfo, commandBuffer);
+        if (ctx.hasAttacker()) {
+             Entity shooterEntity = EntityUtils.getEntity(ctx.attackerRef(), commandBuffer);
+             ItemStack weapon = enchantmentManager.getWeaponFromEntity(shooterEntity);
+             if (weapon != null) {
+                  com.hypixel.hytale.server.core.universe.PlayerRef playerRef = store.getComponent(ctx.attackerRef(), com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+                  org.herolias.plugin.api.event.EnchantmentActivatedEvent ev = new org.herolias.plugin.api.event.EnchantmentActivatedEvent(playerRef, weapon, EnchantmentType.BURN, burnLevel);
+                  com.hypixel.hytale.server.core.HytaleServer.get().getEventBus().dispatchFor(org.herolias.plugin.api.event.EnchantmentActivatedEvent.class).dispatch(ev);
+             }
+        }
+        
         // Clean up stored enchantment data
         com.hypixel.hytale.server.core.entity.UUIDComponent uuidComp = commandBuffer.getComponent(ref, com.hypixel.hytale.server.core.entity.UUIDComponent.getComponentType());
         if (uuidComp != null) {

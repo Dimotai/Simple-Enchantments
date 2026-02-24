@@ -121,5 +121,9 @@ public class EnchantmentKnockbackSystem extends DamageEventSystem {
         double multiplierPerLevel = EnchantmentType.KNOCKBACK.getEffectMultiplier();
         double knockbackMultiplier = 1.0 + (knockbackLevel * multiplierPerLevel);
         knockbackComponent.addModifier(knockbackMultiplier);
+        
+        com.hypixel.hytale.server.core.universe.PlayerRef playerRef = store.getComponent(ctx.attackerRef(), com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+        org.herolias.plugin.api.event.EnchantmentActivatedEvent ev = new org.herolias.plugin.api.event.EnchantmentActivatedEvent(playerRef, weapon, EnchantmentType.KNOCKBACK, knockbackLevel);
+        com.hypixel.hytale.server.core.HytaleServer.get().getEventBus().dispatchFor(org.herolias.plugin.api.event.EnchantmentActivatedEvent.class).dispatch(ev);
     }
 }

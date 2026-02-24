@@ -606,3 +606,14 @@ config.message.unsaved = [!] Niet-opgeslagen wijzigingen
 customUI.enchantingPage.adminNote = Serverbrede instellingen en betoveringsaanpassingen zijn beschikbaar in de Adminconfiguratie. Open het via /enchantconfig
 customUI.walkthrough.enchantments.title = 5. Enchantments
 customUI.walkthrough.enchantments.desc = A complete list of enchantments and their effects. Click on any to find out more.
+
+customUI.enchantScrollPage.current = Huidig:
+
+customUI.enchantScrollPage.apply = Toepassen:
+
+customUI.enchantScrollPage.upgrade = Upgraden:
+
+customUI.cleansingScrollPage.enchantment.singular = betovering
+
+customUI.cleansingEnchantmentPage.clickToRemove = Klik om te verwijderen
+

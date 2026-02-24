@@ -80,6 +80,14 @@ public class EnchantmentDamageSystem extends DamageEventSystem {
                 double multiplier = enchantmentManager.calculateDamageMultiplier(weapon);
                 if (multiplier != 1.0) {
                     damage.setAmount((float) (damage.getAmount() * multiplier));
+                    
+                    int level = enchantmentManager.getEnchantmentLevel(weapon, EnchantmentType.SHARPNESS);
+                    
+                    if (level > 0) {
+                        com.hypixel.hytale.server.core.universe.PlayerRef playerRef = store.getComponent(ctx.attackerRef(), com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+                        org.herolias.plugin.api.event.EnchantmentActivatedEvent event = new org.herolias.plugin.api.event.EnchantmentActivatedEvent(playerRef, weapon, EnchantmentType.SHARPNESS, level);
+                        com.hypixel.hytale.server.core.HytaleServer.get().getEventBus().dispatchFor(org.herolias.plugin.api.event.EnchantmentActivatedEvent.class).dispatch(event);
+                    }
                 }
             }
         }
@@ -87,7 +95,7 @@ public class EnchantmentDamageSystem extends DamageEventSystem {
         // Apply Strength/Eagle's Eye for projectile damage
         DamageCause damageCause = DamageCause.getAssetMap().getAsset(damage.getDamageCauseIndex());
         if (damageCause != null && enchantmentManager.isProjectileDamage(damageCause) && ctx.hasAttacker()) {
-            applyProjectileDamageModifiers(ctx, index, archetypeChunk, commandBuffer, damage);
+            applyProjectileDamageModifiers(ctx, index, archetypeChunk, store, commandBuffer, damage);
         }
 
         // Apply Protection enchantment (defender)
@@ -99,6 +107,23 @@ public class EnchantmentDamageSystem extends DamageEventSystem {
                     double protectionMultiplier = enchantmentManager.calculateProtectionMultiplier(targetInventory.getArmor());
                     if (protectionMultiplier < 1.0) {
                         damage.setAmount((float) (damage.getAmount() * protectionMultiplier));
+                        
+                        // Fire event for the first armor piece with protection
+                        com.hypixel.hytale.server.core.inventory.container.ItemContainer armorContainer = targetInventory.getArmor();
+                        for (short i = 0; i < armorContainer.getCapacity(); i++) {
+                            ItemStack armorPiece = armorContainer.getItemStack(i);
+                            if (armorPiece == null || armorPiece.isEmpty()) continue;
+                            int protLevel = enchantmentManager.getEnchantmentLevel(armorPiece, EnchantmentType.PROTECTION);
+                            if (protLevel > 0) {
+                                com.hypixel.hytale.server.core.universe.PlayerRef playerRef = null;
+                                if (targetEntity instanceof com.hypixel.hytale.server.core.entity.entities.Player) {
+                                    playerRef = store.getComponent(targetEntity.getReference(), com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+                                }
+                                org.herolias.plugin.api.event.EnchantmentActivatedEvent event = new org.herolias.plugin.api.event.EnchantmentActivatedEvent(playerRef, armorPiece, EnchantmentType.PROTECTION, protLevel);
+                                com.hypixel.hytale.server.core.HytaleServer.get().getEventBus().dispatchFor(org.herolias.plugin.api.event.EnchantmentActivatedEvent.class).dispatch(event);
+                                break; // Only fire once per hit
+                            }
+                        }
                     }
                 }
             }
@@ -113,19 +138,37 @@ public class EnchantmentDamageSystem extends DamageEventSystem {
                     double rangedProtectionMultiplier = enchantmentManager.calculateRangedProtectionMultiplier(targetInventory.getArmor());
                     if (rangedProtectionMultiplier < 1.0) {
                         damage.setAmount((float) (damage.getAmount() * rangedProtectionMultiplier));
+                        
+                        // Fire event for the first armor piece with ranged protection
+                        com.hypixel.hytale.server.core.inventory.container.ItemContainer armorContainer = targetInventory.getArmor();
+                        for (short i = 0; i < armorContainer.getCapacity(); i++) {
+                            ItemStack armorPiece = armorContainer.getItemStack(i);
+                            if (armorPiece == null || armorPiece.isEmpty()) continue;
+                            int protLevel = enchantmentManager.getEnchantmentLevel(armorPiece, EnchantmentType.RANGED_PROTECTION);
+                            if (protLevel > 0) {
+                                com.hypixel.hytale.server.core.universe.PlayerRef playerRef = null;
+                                if (targetEntity instanceof com.hypixel.hytale.server.core.entity.entities.Player) {
+                                    playerRef = store.getComponent(targetEntity.getReference(), com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+                                }
+                                org.herolias.plugin.api.event.EnchantmentActivatedEvent event = new org.herolias.plugin.api.event.EnchantmentActivatedEvent(playerRef, armorPiece, EnchantmentType.RANGED_PROTECTION, protLevel);
+                                com.hypixel.hytale.server.core.HytaleServer.get().getEventBus().dispatchFor(org.herolias.plugin.api.event.EnchantmentActivatedEvent.class).dispatch(event);
+                                break; // Only fire once per hit
+                            }
+                        }
                     }
                 }
             }
         }
 
         // Apply Life Leech (melee only)
-        applyLifeLeech(ctx, damage, commandBuffer);
+        applyLifeLeech(ctx, store, damage, commandBuffer);
 
         // Apply Frenzy (ability charge)
-        applyFrenzy(ctx, damage, commandBuffer);
+        applyFrenzy(ctx, store, damage, commandBuffer);
     }
 
-    private void applyLifeLeech(EnchantmentManager.DamageContext ctx, 
+    private void applyLifeLeech(EnchantmentManager.DamageContext ctx,
+                                Store<EntityStore> store,
                                 @Nonnull Damage damage, 
                                 @Nonnull CommandBuffer<EntityStore> commandBuffer) {
         if (damage.getAmount() <= 0) return;
@@ -148,10 +191,15 @@ public class EnchantmentDamageSystem extends DamageEventSystem {
         EntityStatMap statMap = commandBuffer.getComponent(ctx.attackerRef(), EntityStatMap.getComponentType());
         if (statMap != null) {
             statMap.addStatValue(DefaultEntityStatTypes.getHealth(), healAmount);
+            
+            com.hypixel.hytale.server.core.universe.PlayerRef playerRef = store.getComponent(ctx.attackerRef(), com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+            org.herolias.plugin.api.event.EnchantmentActivatedEvent event = new org.herolias.plugin.api.event.EnchantmentActivatedEvent(playerRef, weapon, EnchantmentType.LIFE_LEECH, lifeLeechLevel);
+            com.hypixel.hytale.server.core.HytaleServer.get().getEventBus().dispatchFor(org.herolias.plugin.api.event.EnchantmentActivatedEvent.class).dispatch(event);
         }
     }
 
     private void applyFrenzy(EnchantmentManager.DamageContext ctx,
+                             Store<EntityStore> store,
                              @Nonnull Damage damage,
                              @Nonnull CommandBuffer<EntityStore> commandBuffer) {
         if (damage.getAmount() <= 0) return;
@@ -201,12 +249,17 @@ public class EnchantmentDamageSystem extends DamageEventSystem {
         EntityStatMap statMap = commandBuffer.getComponent(ctx.attackerRef(), EntityStatMap.getComponentType());
         if (statMap != null) {
             statMap.addStatValue(DefaultEntityStatTypes.getSignatureEnergy(), chargeAmount);
+            
+            com.hypixel.hytale.server.core.universe.PlayerRef playerRef = store.getComponent(ctx.attackerRef(), com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+            org.herolias.plugin.api.event.EnchantmentActivatedEvent event = new org.herolias.plugin.api.event.EnchantmentActivatedEvent(playerRef, weapon, EnchantmentType.FRENZY, frenzyLevel);
+            com.hypixel.hytale.server.core.HytaleServer.get().getEventBus().dispatchFor(org.herolias.plugin.api.event.EnchantmentActivatedEvent.class).dispatch(event);
         }
     }
 
     private void applyProjectileDamageModifiers(EnchantmentManager.DamageContext ctx,
                                                 int index,
                                                 @Nonnull ArchetypeChunk<EntityStore> archetypeChunk,
+                                                @Nonnull Store<EntityStore> store,
                                                 @Nonnull CommandBuffer<EntityStore> commandBuffer,
                                                 @Nonnull Damage damage) {
         TransformComponent shooterTransform = commandBuffer.getComponent(ctx.attackerRef(), TransformComponent.getComponentType());
@@ -242,6 +295,43 @@ public class EnchantmentDamageSystem extends DamageEventSystem {
         
         if (multiplier != 1.0) {
             damage.setAmount((float) (damage.getAmount() * multiplier));
+            // Determine primary driving enchantment for the event
+            EnchantmentType activeType = null;
+            int activeLevel = 0;
+            
+            if (projectileData != null && projectileData.hasAny()) {
+                 if (projectileData.getStrengthLevel() > 0) {
+                     activeType = EnchantmentType.STRENGTH;
+                     activeLevel = projectileData.getStrengthLevel();
+                 } else if (projectileData.getEaglesEyeLevel() > 0) {
+                     activeType = EnchantmentType.EAGLES_EYE;
+                     activeLevel = projectileData.getEaglesEyeLevel();
+                 }
+            } else if (ctx.hasAttacker()) {
+                 Entity shooterEntity = EntityUtils.getEntity(ctx.attackerRef(), commandBuffer);
+                 ItemStack weapon = enchantmentManager.getWeaponFromEntity(shooterEntity);
+                 if (weapon != null) {
+                     int str = enchantmentManager.getEnchantmentLevel(weapon, EnchantmentType.STRENGTH);
+                     int ee = enchantmentManager.getEnchantmentLevel(weapon, EnchantmentType.EAGLES_EYE);
+                     if (str > 0) {
+                         activeType = EnchantmentType.STRENGTH;
+                         activeLevel = str;
+                     } else if (ee > 0) {
+                         activeType = EnchantmentType.EAGLES_EYE;
+                         activeLevel = ee;
+                     }
+                 }
+            }
+            
+            if (activeType != null && ctx.hasAttacker()) {
+                 Entity shooterEntity = EntityUtils.getEntity(ctx.attackerRef(), commandBuffer);
+                 ItemStack weapon = enchantmentManager.getWeaponFromEntity(shooterEntity);
+                 if (weapon != null) {
+                     com.hypixel.hytale.server.core.universe.PlayerRef playerRef = store.getComponent(ctx.attackerRef(), com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+                     org.herolias.plugin.api.event.EnchantmentActivatedEvent event = new org.herolias.plugin.api.event.EnchantmentActivatedEvent(playerRef, weapon, activeType, activeLevel);
+                     com.hypixel.hytale.server.core.HytaleServer.get().getEventBus().dispatchFor(org.herolias.plugin.api.event.EnchantmentActivatedEvent.class).dispatch(event);
+                 }
+            }
         }
     }
 }

@@ -19,6 +19,9 @@ import org.herolias.plugin.enchantment.EnchantmentType;
 import org.herolias.plugin.enchantment.ItemCategory;
 
 public class EnchantScrollPage extends ChoiceBasePage {
+    private final EnchantmentManager enchantmentManager;
+    private final PlayerRef playerRef;
+
     public EnchantScrollPage(
         @Nonnull PlayerRef playerRef,
         @Nonnull ItemContainer itemContainer,
@@ -32,6 +35,8 @@ public class EnchantScrollPage extends ChoiceBasePage {
             EnchantScrollPage.getItemElements(itemContainer, enchantmentManager, enchantmentType, level, heldItemContext),
             "Pages/EnchantScrollPage.ui"
         );
+        this.enchantmentManager = enchantmentManager;
+        this.playerRef = playerRef;
     }
 
     @Override
@@ -43,14 +48,30 @@ public class EnchantScrollPage extends ChoiceBasePage {
     ) {
         if (this.getElements().length > 0) {
             super.build(ref, commandBuilder, eventBuilder, store);
+            translateLabels(commandBuilder);
             return;
         }
         commandBuilder.append(this.getPageLayout());
         commandBuilder.clear("#ElementList");
         commandBuilder.appendInline(
             "#ElementList",
-            "Label { Text: %server.customUI.enchantScrollPage.noItems; Style: (Alignment: Center); }"
+            "Label #NoItemsLabel { Style: (Alignment: Center); }"
         );
+        translateLabels(commandBuilder);
+    }
+
+    private void translateLabels(UICommandBuilder commandBuilder) {
+        org.herolias.plugin.lang.LanguageManager languageManager = enchantmentManager.getPlugin().getLanguageManager();
+        String lang = enchantmentManager.getPlugin().getUserSettingsManager().getLanguage(this.playerRef.getUuid());
+        String clientLang = this.playerRef.getLanguage();
+
+        commandBuilder.set("#TitleLabel.TextSpans", languageManager.getMessage("customUI.enchantScrollPage.title", lang, clientLang));
+        commandBuilder.set("#ItemLabel.TextSpans", languageManager.getMessage("customUI.enchantScrollPage.item", lang, clientLang));
+        commandBuilder.set("#EnchantmentLabel.TextSpans", languageManager.getMessage("customUI.enchantScrollPage.enchantment", lang, clientLang));
+        
+        if (this.getElements().length == 0) {
+            commandBuilder.set("#NoItemsLabel.TextSpans", languageManager.getMessage("customUI.enchantScrollPage.noItems", lang, clientLang));
+        }
     }
 
     @Nonnull

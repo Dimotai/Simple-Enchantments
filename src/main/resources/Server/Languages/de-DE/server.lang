@@ -38,6 +38,16 @@ customUI.enchantScrollPage.enchantment = Verzauberung
 
 
 
+customUI.enchantScrollPage.current = Aktuell:
+
+
+
+customUI.enchantScrollPage.apply = Anwenden:
+
+
+
+customUI.enchantScrollPage.upgrade = Verbessern:
+
 
 
 items.Enchanting_Table.name = Verzauberungstisch
@@ -676,7 +686,7 @@ customUI.cleansingScrollPage.enchantments = Verzauberungen
 
 
 
-
+customUI.cleansingScrollPage.enchantment.singular = Verzauberung
 
 
 
@@ -685,6 +695,10 @@ customUI.cleansingEnchantmentPage.title = Wähle eine Verzauberung zum Entfernen
 
 
 customUI.cleansingEnchantmentPage.selectHint = Klicke auf eine Verzauberung, um sie zu entfernen
+
+
+
+customUI.cleansingEnchantmentPage.clickToRemove = Klicken zum Entfernen
 
 
 

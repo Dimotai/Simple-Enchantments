@@ -155,6 +155,12 @@ public class EnchantmentThriftSystem extends EntityTickingSystem<EntityStore> im
         // Apply Refund
         statMap.addStatValue(DefaultEntityStatTypes.getMana(), refund);
         
+        if (entity instanceof com.hypixel.hytale.server.core.entity.entities.Player player) {
+             com.hypixel.hytale.server.core.universe.PlayerRef playerRef = store.getComponent(EntityUtils.getEntity(index, archetypeChunk).getReference(), com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+             org.herolias.plugin.api.event.EnchantmentActivatedEvent ev = new org.herolias.plugin.api.event.EnchantmentActivatedEvent(playerRef, weapon, EnchantmentType.THRIFT, thriftLevel);
+             com.hypixel.hytale.server.core.HytaleServer.get().getEventBus().dispatchFor(org.herolias.plugin.api.event.EnchantmentActivatedEvent.class).dispatch(ev);
+        }
+        
         if (LOGGER.atInfo().isEnabled()) {
             // LOGGER.atInfo().log("Thrift refunded " + refund + " mana (Spent: " + manaSpent + ").");
         }

@@ -57,11 +57,13 @@ public class CleansingScrollElement extends ChoiceElement {
     ) {
         commandBuilder.append("#ElementList", "Pages/EnchantScrollElement.ui");
         commandBuilder.set(selector + " #Icon.ItemId", this.itemStack.getItemId().toString());
+        org.herolias.plugin.lang.LanguageManager langManager = enchantmentManager.getPlugin().getLanguageManager();
         String lang = enchantmentManager.getPlugin().getUserSettingsManager().getLanguage(playerRef.getUuid());
-        commandBuilder.set(selector + " #Name.TextSpans", enchantmentManager.getPlugin().getLanguageManager().getMessage(this.itemStack.getItem().getTranslationKey(), lang, playerRef.getLanguage()));
+        commandBuilder.set(selector + " #Name.TextSpans", langManager.getMessage(this.itemStack.getItem().getTranslationKey(), lang, playerRef.getLanguage()));
 
         int enchantCount = enchantmentData.getAllEnchantments().size();
-        String detail = enchantCount + " enchantment" + (enchantCount > 1 ? "s" : "");
+        String enchantString = langManager.getRawMessage(enchantCount == 1 ? "customUI.cleansingScrollPage.enchantment.singular" : "customUI.cleansingScrollPage.enchantments", lang, playerRef.getLanguage());
+        String detail = enchantCount + " " + enchantString;
         commandBuilder.set(selector + " #Detail.Text", detail);
     }
 

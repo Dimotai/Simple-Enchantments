@@ -104,6 +104,16 @@ public class EnchantmentBurnSystem extends DamageEventSystem {
             return;
         }
         
+        if (ctx.hasAttacker()) {
+             Entity shooterEntity = EntityUtils.getEntity(ctx.attackerRef(), commandBuffer);
+             ItemStack weapon = enchantmentManager.getWeaponFromEntity(shooterEntity);
+             if (weapon != null) {
+                  com.hypixel.hytale.server.core.universe.PlayerRef playerRef = store.getComponent(ctx.attackerRef(), com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+                  org.herolias.plugin.api.event.EnchantmentActivatedEvent ev = new org.herolias.plugin.api.event.EnchantmentActivatedEvent(playerRef, weapon, EnchantmentType.BURN, burnLevel);
+                  com.hypixel.hytale.server.core.HytaleServer.get().getEventBus().dispatchFor(org.herolias.plugin.api.event.EnchantmentActivatedEvent.class).dispatch(ev);
+             }
+        }
+        
         // Store enchantment data on the victim so we can attribute drops if they die from burn
         com.hypixel.hytale.server.core.entity.UUIDComponent targetUuid = commandBuffer.getComponent(targetRef, com.hypixel.hytale.server.core.entity.UUIDComponent.getComponentType());
         if (targetUuid != null) {

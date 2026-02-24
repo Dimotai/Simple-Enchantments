@@ -77,7 +77,7 @@ public class EnchantItemInteraction extends ChoiceInteraction {
             return;
         }
 
-        org.herolias.plugin.enchantment.EnchantmentApplicationResult result = enchantmentManager.applyEnchantmentToItem(itemStack, enchantmentType, targetLevel);
+        org.herolias.plugin.enchantment.EnchantmentApplicationResult result = enchantmentManager.applyEnchantmentToItem(playerRef, itemStack, enchantmentType, targetLevel);
         if (!result.success()) {
             playerRef.sendMessage(Message.raw(result.message()));
             pageManager.setPage(ref, store, Page.None);

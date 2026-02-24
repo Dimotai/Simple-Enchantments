@@ -114,29 +114,41 @@ public class EnchantCommand extends CommandBase {
         }
 
         try {
-            // Apply enchantment (Delegates checks to manager)
-            org.herolias.plugin.enchantment.EnchantmentApplicationResult result = enchantmentManager.applyEnchantmentToItem(item, enchantmentType, level, true);
+            final int finalLevel = level;
+            final EnchantmentType finalEnchantmentType = enchantmentType;
+            
+            player.getWorld().execute(() -> {
+                try {
+                    com.hypixel.hytale.server.core.universe.PlayerRef playerRef = player.getWorld().getEntityStore().getStore().getComponent(player.getReference(), com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+                    
+                    // Apply enchantment (Delegates checks to manager)
+                    org.herolias.plugin.enchantment.EnchantmentApplicationResult result = enchantmentManager.applyEnchantmentToItem(playerRef, item, finalEnchantmentType, finalLevel, true);
 
-            if (!result.success()) {
-                sender.sendMessage(Message.raw(result.message()));
-                return;
-            }
+                    if (!result.success()) {
+                        sender.sendMessage(Message.raw(result.message()));
+                        return;
+                    }
 
-            // Update inventory
-            hotbar.setItemStackForSlot((short) inventory.getActiveHotbarSlot(), result.item());
-            inventory.markChanged();
-            player.sendInventory();
+                    // Update inventory
+                    hotbar.setItemStackForSlot((short) inventory.getActiveHotbarSlot(), result.item());
+                    inventory.markChanged();
+                    player.sendInventory();
 
-            // Success message
-            EnchantmentData newEnchants = enchantmentManager.getEnchantmentsFromItem(result.item());
-            StringBuilder enchantList = new StringBuilder();
-            for (var entry : newEnchants.getAllEnchantments().entrySet()) {
-                if (enchantList.length() > 0) enchantList.append(", ");
-                enchantList.append(entry.getKey().getFormattedName(entry.getValue()));
-            }
+                    // Success message
+                    EnchantmentData newEnchants = enchantmentManager.getEnchantmentsFromItem(result.item());
+                    StringBuilder enchantList = new StringBuilder();
+                    for (var entry : newEnchants.getAllEnchantments().entrySet()) {
+                        if (enchantList.length() > 0) enchantList.append(", ");
+                        enchantList.append(entry.getKey().getFormattedName(entry.getValue()));
+                    }
 
-            sender.sendMessage(Message.raw("Enchanted! [" + enchantList + "]"));
-            LOGGER.atInfo().log(sender.getDisplayName() + " enchanted " + item.getItemId() + " with " + enchantmentType.getFormattedName(level));
+                    sender.sendMessage(Message.raw("Enchanted! [" + enchantList + "]"));
+                    LOGGER.atInfo().log(sender.getDisplayName() + " enchanted " + item.getItemId() + " with " + finalEnchantmentType.getFormattedName(finalLevel));
+                } catch (Exception e) {
+                    LOGGER.atWarning().log("Failed to apply enchantment: " + e.getMessage());
+                    sender.sendMessage(Message.raw("Failed to apply enchantment: " + e.getMessage()));
+                }
+            });
 
         } catch (Exception e) {
             LOGGER.atWarning().log("Failed to apply enchantment: " + e.getMessage());

@@ -366,6 +366,12 @@ public class SimpleEnchanting extends JavaPlugin {
             }
         }
         
+        // Register Event Logger Listener (Debug)
+        org.herolias.plugin.listener.EventLoggerListener debugListener = new org.herolias.plugin.listener.EventLoggerListener();
+        this.getEventRegistry().registerGlobal(org.herolias.plugin.api.event.EnchantmentActivatedEvent.class, debugListener::onEnchantmentActivated);
+        this.getEventRegistry().registerGlobal(org.herolias.plugin.api.event.ItemEnchantedEvent.class, debugListener::onItemEnchanted);
+        LOGGER.atInfo().log("Registered debug event logger");
+        
         // Register Welcome Listener (One-time notification for tooltips)
         this.getEventRegistry().registerGlobal(com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent.class, new org.herolias.plugin.listener.WelcomeListener(this)::onPlayerReady);
         

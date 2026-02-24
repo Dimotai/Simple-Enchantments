@@ -176,5 +176,12 @@ public class EnchantmentSmeltingSystem extends EntityEventSystem<EntityStore, Br
         if (itemEntities.length > 0) {
             commandBuffer.addEntities(itemEntities, AddReason.SPAWN);
         }
+        
+        com.hypixel.hytale.server.core.universe.PlayerRef playerRef = null;
+        if (breakerRef != null && breakerRef.isValid()) {
+            playerRef = store.getComponent(breakerRef, com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+        }
+        org.herolias.plugin.api.event.EnchantmentActivatedEvent ev = new org.herolias.plugin.api.event.EnchantmentActivatedEvent(playerRef, tool, EnchantmentType.SMELTING, enchantmentManager.getEnchantmentLevel(tool, EnchantmentType.SMELTING));
+        com.hypixel.hytale.server.core.HytaleServer.get().getEventBus().dispatchFor(org.herolias.plugin.api.event.EnchantmentActivatedEvent.class).dispatch(ev);
     }
 }
