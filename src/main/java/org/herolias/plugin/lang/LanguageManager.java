@@ -47,6 +47,8 @@ public class LanguageManager {
                             if (separatorIndex > 0) {
                                 String key = line.substring(0, separatorIndex).trim();
                                 String value = line.substring(separatorIndex + 1).trim();
+                                // Process escape sequences like Hytale's native LangFileParser
+                                value = value.replace("\\n", "\n").replace("\\t", "\t");
                                 langMap.put(key, value);
                             }
                         }

@@ -686,6 +686,55 @@ public enum EnchantmentType {
     }
 
     /**
+     * Gets the translation key for the enchantment walkthrough description.
+     * Format: enchantment.[id].walkthrough
+     */
+    public String getWalkthroughKey() {
+        return "enchantment." + id + ".walkthrough";
+    }
+
+    /**
+     * Gets the localized walkthrough description with dynamic config values.
+     * Replaces {amount} with the per-level effect multiplier percentage from config.
+     * Falls back to the existing description key if no walkthrough key exists.
+     */
+    public String getWalkthroughDescription(String langCode, String clientLangCode) {
+        String key = getWalkthroughKey();
+        String template = null;
+        try {
+            org.herolias.plugin.SimpleEnchanting plugin = org.herolias.plugin.SimpleEnchanting.getInstance();
+            if (plugin != null) {
+                template = plugin.getLanguageManager().getRawMessage(key, langCode, clientLangCode);
+            }
+        } catch (Exception ignored) {}
+
+        // Fallback to existing description if walkthrough key is missing
+        if (template == null || template.equals(key)) {
+            String descKey = getDescriptionKey();
+            try {
+                org.herolias.plugin.SimpleEnchanting plugin = org.herolias.plugin.SimpleEnchanting.getInstance();
+                if (plugin != null) {
+                    template = plugin.getLanguageManager().getRawMessage(descKey, langCode, clientLangCode);
+                    if (template.equals(descKey)) {
+                        template = getDescription();
+                    }
+                }
+            } catch (Exception ignored) {
+                template = getDescription();
+            }
+        }
+
+        // Replace {amount} with the per-level config value
+        double mult = getEffectMultiplier();
+        float percentage = (float) (mult * 100);
+        if (template.contains("{amount}")) {
+            template = template.replace("{amount}", String.valueOf(percentage));
+        }
+
+        return template;
+    }
+
+    /**
      * Converts an integer to Roman numerals (for enchantment levels)
      */
     public static String toRoman(int number) {

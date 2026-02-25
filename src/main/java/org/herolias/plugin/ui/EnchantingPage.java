@@ -285,7 +285,14 @@ public class EnchantingPage extends InteractiveCustomUIPage<EnchantingPageEventD
                 }
                 case 3 -> {
                     commandBuilder.set("#ContentArea[0] #Title.TextSpans", languageManager.getMessage("customUI.walkthrough.removing.title", lang, this.playerRef.getLanguage()));
-                    commandBuilder.set("#ContentArea[0] #Desc.TextSpans", languageManager.getMessage("customUI.walkthrough.removing.desc", lang, this.playerRef.getLanguage()));
+                    // Resolve {returnScroll} placeholder from config
+                    String removingDesc = languageManager.getRawMessage("customUI.walkthrough.removing.desc", lang, this.playerRef.getLanguage());
+                    boolean returnOnCleanse = plugin.getConfigManager().getConfig().returnEnchantmentOnCleanse;
+                    String scrollReplacement = languageManager.getRawMessage(
+                        returnOnCleanse ? "customUI.walkthrough.returnScroll.yes" : "customUI.walkthrough.returnScroll.no",
+                        lang, this.playerRef.getLanguage());
+                    removingDesc = removingDesc.replace("{returnScroll}", scrollReplacement);
+                    commandBuilder.set("#ContentArea[0] #Desc.TextSpans", Message.raw(removingDesc));
                     commandBuilder.set("#ContentArea[0] #DiscordBtn.Visible", false);
                 }
                 case 4 -> {
@@ -295,7 +302,11 @@ public class EnchantingPage extends InteractiveCustomUIPage<EnchantingPageEventD
                 }
                 case 5 -> {
                     commandBuilder.set("#ContentArea[0] #Title.TextSpans", languageManager.getMessage("customUI.walkthrough.enchantments.title", lang, this.playerRef.getLanguage()));
-                    commandBuilder.set("#ContentArea[0] #Desc.TextSpans", languageManager.getMessage("customUI.walkthrough.enchantments.desc", lang, this.playerRef.getLanguage()));
+                    // Resolve {maxEnchantments} placeholder from config
+                    String enchDesc = languageManager.getRawMessage("customUI.walkthrough.enchantments.desc", lang, this.playerRef.getLanguage());
+                    int maxEnch = plugin.getConfigManager().getConfig().maxEnchantmentsPerItem;
+                    enchDesc = enchDesc.replace("{maxEnchantments}", String.valueOf(maxEnch));
+                    commandBuilder.set("#ContentArea[0] #Desc.TextSpans", Message.raw(enchDesc));
                     commandBuilder.set("#ContentArea[0] #DiscordBtn.Visible", false);
                 }
             }
@@ -307,23 +318,9 @@ public class EnchantingPage extends InteractiveCustomUIPage<EnchantingPageEventD
                 // Set the title
                 commandBuilder.set("#ContentArea[0] #Title.TextSpans", languageManager.getMessage(type.getNameKey(), lang, this.playerRef.getLanguage()));
                 
-                // Build the description (Base Description + Dynamic configured Bonus Description)
-                Message description = Message.raw("");
-                
-                // Attempt to grab generic description. Fallback to raw enum description if missing.
-                String descRaw = languageManager.getRawMessage(type.getDescriptionKey(), lang, this.playerRef.getLanguage());
-                if (descRaw.equals(type.getDescriptionKey())) {
-                    descRaw = type.getDescription(); // fallback
-                }
-                description = description.insert(Message.raw(descRaw + "\n\n"));
-                
-                // Append the dynamic modifier bonus text
-                String bonus = type.getBonusDescription(1, lang, this.playerRef.getLanguage());
-                if (bonus != null && !bonus.isEmpty()) {
-                    description = description.insert(Message.raw("* " + bonus).color("#AAAAAA"));
-                }
-                
-                commandBuilder.set("#ContentArea[0] #Desc.TextSpans", description);
+                // Use walkthrough description with dynamic config values
+                String walkthroughDesc = type.getWalkthroughDescription(lang, this.playerRef.getLanguage());
+                commandBuilder.set("#ContentArea[0] #Desc.TextSpans", Message.raw(walkthroughDesc));
                 commandBuilder.set("#ContentArea[0] #DiscordBtn.Visible", false);
 
                 // Set server enabled Label
@@ -332,7 +329,6 @@ public class EnchantingPage extends InteractiveCustomUIPage<EnchantingPageEventD
                         ? "config.common.enabled" 
                         : "config.common.disabled";
                 String enabledPrefix = languageManager.getRawMessage("customUI.walkthrough.enabledOnServer", lang, this.playerRef.getLanguage());
-                if(enabledPrefix.equals("customUI.walkthrough.enabledOnServer")) enabledPrefix = "Enabled on this Server: ";
                 
                 String stateStr = languageManager.getRawMessage(enabledKey, lang, this.playerRef.getLanguage());
                 String color = isEnabled ? "#55FF55" : "#FF5555";

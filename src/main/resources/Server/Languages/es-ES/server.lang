@@ -472,11 +472,47 @@ customUI.walkthrough.table.desc = Crea una Mesa de Encantamiento en el Banco de 
 customUI.walkthrough.scrolls.title = 2. Pergaminos de Encantamiento
 customUI.walkthrough.scrolls.desc = Crea pergaminos directamente en la Mesa de Encantamiento usando esencias, gemas, lingotes y plantas. Una vez creado, haz clic derecho en el pergamino mientras lo sostienes para aplicar el encantamiento a un arma, armadura o herramienta en tu inventario.
 customUI.walkthrough.removing.title = 3. Eliminar Encantamientos
-customUI.walkthrough.removing.desc = ¿Cometiste un error? Puedes crear un Pergamino de Purificación para eliminar los encantamientos de un objeto. Si el servidor lo permite, podrías incluso recuperar el pergamino.
+customUI.walkthrough.removing.desc = ¿Cometiste un error? Puedes crear un Pergamino de Purificación para eliminar los encantamientos de un objeto. En este servidor, {returnScroll} recuperar el pergamino.
 customUI.walkthrough.salvaging.title = 4. Reciclaje
 customUI.walkthrough.salvaging.desc = Si tienes una pieza de equipo encantado que ya no necesitas, colócala en la Estación de Reciclaje para recuperar el pergamino de encantamiento del nivel más alto, si está habilitado en el servidor.
 customUI.enchantingPage.adminNote = La configuración global del servidor y las personalizaciones de Encantamientos están disponibles en la Configuración de Administrador. Accede mediante /enchantconfig
 customUI.walkthrough.enchantments.title = 5. Encantamientos
-customUI.walkthrough.enchantments.desc = Una lista completa de los encantamientos y sus efectos. Haz clic en cualquiera para saber más.
+customUI.walkthrough.enchantments.desc = Una lista completa de los encantamientos y sus efectos. Haz clic en cualquiera para saber más. En este servidor, cada objeto puede tener hasta {maxEnchantments} encantamientos.
 
 config.general.allow_same_scroll_upgrades = Allow Same Scroll Upgrades
+
+customUI.walkthrough.enabledOnServer = Activado en este servidor: 
+customUI.walkthrough.returnScroll.yes = podrás
+customUI.walkthrough.returnScroll.no = no podrás
+
+# Walkthrough Descriptions
+enchantment.sharpness.walkthrough = Aumenta el daño cuerpo a cuerpo en {amount}% por nivel. Se aplica a espadas y hachas.
+enchantment.life_leech.walkthrough = Cura al atacante un {amount}% del daño infligido. Se aplica a armas cuerpo a cuerpo.
+enchantment.durability.walkthrough = Reduce la probabilidad de pérdida de durabilidad en {amount}% por nivel. Se aplica a todas las armas, herramientas y armaduras.
+enchantment.sturdy.walkthrough = Previene la pérdida de durabilidad máxima al reparar. Se aplica a todas las armas, herramientas y armaduras.
+enchantment.dexterity.walkthrough = Reduce los costos de resistencia en {amount}% por nivel. Se aplica a armas cuerpo a cuerpo, escudos y bastones.
+enchantment.protection.walkthrough = Reduce el daño físico recibido en {amount}% por pieza de armadura por nivel. Se aplica a armaduras.
+enchantment.efficiency.walkthrough = Aumenta la velocidad de minería en {amount}% por nivel. Se aplica a picos, hachas y palas.
+enchantment.fortune.walkthrough = Aumenta la probabilidad de obtener minerales/cristales extra en {amount}% por nivel. Se aplica a picos. No combinable con Toque Perfecto o Fundición.
+enchantment.smelting.walkthrough = Funde automáticamente los bloques minados. Se aplica a picos. No combinable con Toque Perfecto o Fortuna.
+enchantment.strength.walkthrough = Aumenta el daño de proyectiles en {amount}% por nivel. Se aplica a armas a distancia.
+enchantment.eagles_eye.walkthrough = Aumenta el daño de proyectiles hasta {amount}% según la distancia por nivel. Se aplica a armas a distancia.
+enchantment.looting.walkthrough = Aumenta las tasas máximas de botín de enemigos en {amount}% por nivel y mejora la probabilidad de objetos raros. Se aplica a armas cuerpo a cuerpo, a distancia y bastones.
+enchantment.feather_falling.walkthrough = Reduce el daño por caída en {amount}% por nivel. Se aplica a botas.
+enchantment.waterbreathing.walkthrough = Reduce el consumo de oxígeno en {amount}% por nivel. Se aplica a cascos.
+enchantment.burn.walkthrough = Prende fuego al objetivo y hace que suelte variantes cocinadas de sus botines. Se aplica a armas cuerpo a cuerpo y a distancia. No combinable con Congelar.
+enchantment.freeze.walkthrough = Aplica ralentización severa (50%) al objetivo al golpear. Se aplica a armas cuerpo a cuerpo y a distancia. No combinable con Quemar.
+enchantment.eternal_shot.walkthrough = Permite disparar flechas sin consumirlas. Se aplica a armas a distancia.
+enchantment.pick_perfect.walkthrough = Los bloques minados se sueltan a sí mismos en lugar de sus botines habituales. Se aplica a picos, hachas y palas. No combinable con Fortuna o Fundición.
+enchantment.thrift.walkthrough = Restaura {amount}% del maná gastado al golpear por nivel. Se aplica a bastones de maná.
+enchantment.elemental_heart.walkthrough = Los bastones elementales no consumen esencia al lanzar. Se aplica a bastones de esencia.
+enchantment.knockback.walkthrough = Empuja a los objetivos hacia atrás al golpear. Se aplica a armas cuerpo a cuerpo.
+enchantment.reflection.walkthrough = Refleja {amount}% del daño bloqueado de vuelta al atacante por nivel. Se aplica a escudos. No combinable con Absorción.
+enchantment.absorption.walkthrough = Cura al bloqueador un {amount}% del daño bloqueado por nivel. Se aplica a escudos. No combinable con Reflejo.
+enchantment.fast_swim.walkthrough = Aumenta la velocidad de nado en {amount}% por nivel. Se aplica a guantes.
+enchantment.night_vision.walkthrough = Mejora la visibilidad en entornos oscuros como cuevas, noche y bajo el agua. Se aplica a cascos.
+enchantment.ranged_protection.walkthrough = Reduce el daño de proyectiles y magia recibido en {amount}% por pieza de armadura por nivel. Se aplica a armaduras.
+enchantment.frenzy.walkthrough = Aumenta la velocidad de carga de habilidades en {amount}% por nivel. Se aplica a todas las armas y bastones.
+enchantment.riposte.walkthrough = Aumenta el daño de contraataque en {amount}% por nivel. Se aplica a armas cuerpo a cuerpo.
+enchantment.coup_de_grace.walkthrough = Aumenta el daño a enemigos aturdidos en {amount}% por nivel. Se aplica a armas cuerpo a cuerpo.
+
