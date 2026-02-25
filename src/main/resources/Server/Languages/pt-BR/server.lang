@@ -618,3 +618,5 @@ customUI.cleansingScrollPage.enchantment.singular = encantamento
 
 customUI.cleansingEnchantmentPage.clickToRemove = Clique para remover
 
+
+config.general.allow_same_scroll_upgrades = Allow Same Scroll Upgrades

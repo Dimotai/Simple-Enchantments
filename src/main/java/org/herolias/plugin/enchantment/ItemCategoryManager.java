@@ -442,6 +442,7 @@ public class ItemCategoryManager {
         java.util.Map<String, String> bringTheBoom = new java.util.LinkedHashMap<>();
         bringTheBoom.put("Gun", "RANGED_WEAPON");
         bringTheBoom.put("Bomb", "UNKNOWN");
+        bringTheBoom.put("Bullet", "UNKNOWN");
         defaultConfig.familyMappings.put("Bring The Boom", bringTheBoom);
         
         // Standard Blacklist (Projectiles, Throwables, Totems, Guns, Magical Items)

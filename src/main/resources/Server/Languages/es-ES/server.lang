@@ -478,3 +478,5 @@ customUI.walkthrough.salvaging.desc = Si tienes una pieza de equipo encantado qu
 customUI.enchantingPage.adminNote = La configuración global del servidor y las personalizaciones de Encantamientos están disponibles en la Configuración de Administrador. Accede mediante /enchantconfig
 customUI.walkthrough.enchantments.title = 5. Encantamientos
 customUI.walkthrough.enchantments.desc = Una lista completa de los encantamientos y sus efectos. Haz clic en cualquiera para saber más.
+
+config.general.allow_same_scroll_upgrades = Allow Same Scroll Upgrades

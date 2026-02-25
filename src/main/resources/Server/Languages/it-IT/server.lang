@@ -628,3 +628,5 @@ customUI.walkthrough.salvaging.desc = Se hai un pezzo di equipaggiamento incanta
 customUI.enchantingPage.adminNote = Le impostazioni globali del server e le personalizzazioni degli Incantesimi sono disponibili nella Configurazione Amministratore. Accedici tramite /enchantconfig
 customUI.walkthrough.enchantments.title = 5. Incantesimi
 customUI.walkthrough.enchantments.desc = Una lista completa degli incantesimi e dei loro effetti. Clicca su uno qualsiasi per saperne di più.
+
+config.general.allow_same_scroll_upgrades = Allow Same Scroll Upgrades

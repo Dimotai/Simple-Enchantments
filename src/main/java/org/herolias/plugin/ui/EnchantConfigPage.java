@@ -148,6 +148,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
         copy.showEnchantmentBanner = original.showEnchantmentBanner;
         copy.hasAutoDisabledBanner = original.hasAutoDisabledBanner;
         copy.enableEnchantmentGlow = original.enableEnchantmentGlow;
+        copy.allowSameScrollUpgrades = original.allowSameScrollUpgrades;
         copy.sharpnessDamageMultiplierPerLevel = original.sharpnessDamageMultiplierPerLevel;
         copy.lifeLeechPercentage = original.lifeLeechPercentage;
         copy.durabilityReductionPerLevel = original.durabilityReductionPerLevel;
@@ -526,6 +527,15 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
             languageManager.getMessage(workingConfig.enableEnchantmentGlow ? "config.common.enabled" : "config.common.disabled", lang, this.playerRef.getLanguage()));
         eventBuilder.addEventBinding(CustomUIEventBindingType.Activating, "#ContentArea[" + index + "] #ToggleButton",
             EventData.of("SettingValue", "enableEnchantmentGlow:" + !workingConfig.enableEnchantmentGlow));
+        index++;
+        
+        // Allow Same Scroll Upgrades
+        commandBuilder.append("#ContentArea", "Pages/EnchantConfigToggle.ui");
+        commandBuilder.set("#ContentArea[" + index + "] #SettingName.TextSpans", languageManager.getMessage("config.general.allow_same_scroll_upgrades", lang, this.playerRef.getLanguage()));
+        commandBuilder.set("#ContentArea[" + index + "] #ToggleButton.TextSpans", 
+            languageManager.getMessage(workingConfig.allowSameScrollUpgrades ? "config.common.enabled" : "config.common.disabled", lang, this.playerRef.getLanguage()));
+        eventBuilder.addEventBinding(CustomUIEventBindingType.Activating, "#ContentArea[" + index + "] #ToggleButton",
+            EventData.of("SettingValue", "allowSameScrollUpgrades:" + !workingConfig.allowSameScrollUpgrades));
         index++;
         
         // Enchanting Table Crafting Tier
@@ -1236,6 +1246,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
                 case "maxEnchantmentsPerItem" -> workingConfig.maxEnchantmentsPerItem = Math.max(1, Integer.parseInt(value));
                 case "showEnchantmentBanner" -> workingConfig.showEnchantmentBanner = Boolean.parseBoolean(value);
                 case "enableEnchantmentGlow" -> workingConfig.enableEnchantmentGlow = Boolean.parseBoolean(value);
+                case "allowSameScrollUpgrades" -> workingConfig.allowSameScrollUpgrades = Boolean.parseBoolean(value);
                 case "disableEnchantmentCrafting" -> workingConfig.disableEnchantmentCrafting = Boolean.parseBoolean(value);
                 case "returnEnchantmentOnCleanse" -> workingConfig.returnEnchantmentOnCleanse = Boolean.parseBoolean(value);
                 case "enchantingTableCraftingTier" -> workingConfig.enchantingTableCraftingTier = Math.max(1, Integer.parseInt(value));
@@ -1334,6 +1345,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
     private String getDefaultValue(String key) {
         return switch (key) {
             case "maxEnchantmentsPerItem" -> String.valueOf(DEFAULT_CONFIG.maxEnchantmentsPerItem);
+            case "allowSameScrollUpgrades" -> String.valueOf(DEFAULT_CONFIG.allowSameScrollUpgrades);
             case "enchantingTableCraftingTier" -> String.valueOf(DEFAULT_CONFIG.enchantingTableCraftingTier);
             case "sharpnessDamageMultiplierPerLevel" -> String.valueOf(DEFAULT_CONFIG.sharpnessDamageMultiplierPerLevel);
             case "lifeLeechPercentage" -> String.valueOf(DEFAULT_CONFIG.lifeLeechPercentage);
@@ -1375,6 +1387,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
         actualConfig.showEnchantmentBanner = workingConfig.showEnchantmentBanner;
         actualConfig.hasAutoDisabledBanner = workingConfig.hasAutoDisabledBanner;
         actualConfig.enableEnchantmentGlow = workingConfig.enableEnchantmentGlow;
+        actualConfig.allowSameScrollUpgrades = workingConfig.allowSameScrollUpgrades;
         actualConfig.enchantingTableCraftingTier = workingConfig.enchantingTableCraftingTier;
         actualConfig.sharpnessDamageMultiplierPerLevel = workingConfig.sharpnessDamageMultiplierPerLevel;
         actualConfig.lifeLeechPercentage = workingConfig.lifeLeechPercentage;
@@ -1505,6 +1518,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
         workingConfig.disableEnchantmentCrafting = defaults.disableEnchantmentCrafting;
         workingConfig.salvagerYieldsScroll = defaults.salvagerYieldsScroll;
         workingConfig.showWelcomeMessage = defaults.showWelcomeMessage;
+        workingConfig.allowSameScrollUpgrades = defaults.allowSameScrollUpgrades;
 
         
         // Reset maps

@@ -84,6 +84,7 @@ public class EnchantScrollPage extends ChoiceBasePage {
     ) {
         ObjectArrayList<ChoiceElement> elements = new ObjectArrayList<>();
         int scrollLevel = Math.max(1, Math.min(level, enchantmentType.getMaxLevel()));
+        boolean allowSameScrollUpgrades = enchantmentManager.getPlugin().getConfigManager().getConfig().allowSameScrollUpgrades;
 
         for (short slot = 0; slot < itemContainer.getCapacity(); slot = (short) (slot + 1)) {
             ItemStack itemStack = itemContainer.getItemStack(slot);
@@ -129,14 +130,14 @@ public class EnchantScrollPage extends ChoiceBasePage {
 
             // Upgrade logic:
             // 1. If current level < scroll level, apply scroll level (normal behavior)
-            // 2. If current level == scroll level, upgrade to level + 1 (if below max)
-            // 3. If current level > scroll level, do nothing (item is already better)
+            // 2. If current level == scroll level AND allowSameScrollUpgrades is true, upgrade to level + 1 (if below max)
+            // 3. If current level >= scroll level (and rule 2 didn't apply), do nothing (item is already equal or better)
             
             if (currentLevel == scrollLevel) {
-                if (currentLevel < enchantmentType.getMaxLevel()) {
+                if (allowSameScrollUpgrades && currentLevel < enchantmentType.getMaxLevel()) {
                     interactionTargetLevel = currentLevel + 1;
                 } else {
-                    continue; // Already at max level
+                    continue; // Already at max level, or upgrading is disabled
                 }
             } else if (currentLevel > scrollLevel) {
                 continue; // Item has higher level than scroll

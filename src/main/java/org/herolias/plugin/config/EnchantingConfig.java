@@ -14,6 +14,7 @@ public class EnchantingConfig {
     public boolean showEnchantmentBanner = true; // Default to true so people see it without the lib
     public boolean hasAutoDisabledBanner = false; // Tracks if we've already auto-disabled it for the user
     public boolean enableEnchantmentGlow = true; // Renamed from showEnchantmentGlow to force enable on update
+    public boolean allowSameScrollUpgrades = true;
     
     // Enchantment specific settings
     public double sharpnessDamageMultiplierPerLevel = 0.10;

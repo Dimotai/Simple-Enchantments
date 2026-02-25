@@ -1116,3 +1116,5 @@ customUI.enchantingPage.adminNote = Serverweite Einstellungen und Verzauberungsa
 
 customUI.walkthrough.enchantments.title = 5. Enchantments
 customUI.walkthrough.enchantments.desc = A complete list of enchantments and their effects. Click on any to find out more.
+
+config.general.allow_same_scroll_upgrades = Allow Same Scroll Upgrades

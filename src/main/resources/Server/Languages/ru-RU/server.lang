@@ -618,3 +618,5 @@ customUI.cleansingScrollPage.enchantment.singular = зачарование
 
 customUI.cleansingEnchantmentPage.clickToRemove = Нажмите, чтобы удалить
 
+
+config.general.allow_same_scroll_upgrades = Allow Same Scroll Upgrades
