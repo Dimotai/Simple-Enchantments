@@ -1094,7 +1094,24 @@ config.general.upgrade_3 = Upgrade 3 Kosten (Rang 3 -> 4)
 config.general.salvager_yield = Zerkleinerer gibt Schriftrolle zurück
 config.general.show_welcome = Willkommensnachrichten anzeigen
 
+config.recipe.title = Rezept
+config.recipe.ingredients = Zutaten
+
+config.common.enabled = Aktiviert
+config.common.disabled = Deaktiviert
+
+config.secondary.range_speed_bonus = Reichweite/Tempo Bonus
+config.secondary.quantity_bonus = Mengenbonus
+
+config.recipe.active_title = {0} - Zutaten
+config.recipe.crafting_tier = Crafting Rang
+config.recipe.tier_label = Freigeschaltet ab Tisch-Stufe
+
+config.message.saved = Gespeichert! Die meisten Änderungen erfordern einen Neustart.
+config.message.unsaved = [!] Ungespeicherte Änderungen
+
 customUI.enchantingPage.tabWalkthrough = Anleitung
+
 customUI.enchantingPage.tabSettings = Benutzereinstellungen
 customUI.enchantingPage.title = Simple Enchantments
 customUI.enchantingPage.language = Sprache

@@ -6,7 +6,7 @@ Group {
   Anchor: (Width: 1870, Height: 700);
 
   Group #WalkthroughSidebarContainer {
-    Anchor: (Width: 400, Left: 0);   // Width for sidebar
+    Anchor: (Width: 330, Left: 80);   // Width for sidebar
   }
 
   $C.@DecoratedContainer {
@@ -29,14 +29,14 @@ Group {
 
       TextButton #TabWalkthrough {
         Style: $C.@SecondaryTextButtonStyle;
-        Anchor: (Width: 180, Height: 40, Right: 8);
+        Anchor: (Width: 200, Height: 40, Right: 8);
         Padding: (Horizontal: 16);
         Text: "Walkthrough";
       }
 
       TextButton #TabSettings {
         Style: $C.@SecondaryTextButtonStyle;
-        Anchor: (Width: 180, Height: 40, Right: 8);
+        Anchor: (Width: 280, Height: 40, Right: 8);
         Padding: (Horizontal: 16);
         Text: "User Settings";
       }
