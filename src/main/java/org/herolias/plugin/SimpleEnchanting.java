@@ -41,6 +41,7 @@ import org.herolias.plugin.crafting.WorkbenchRefreshSystem;
 import org.herolias.plugin.enchantment.EnchantmentReflectionSystem;
 import org.herolias.plugin.enchantment.EnchantmentAbsorptionSystem;
 import org.herolias.plugin.enchantment.EnchantmentFastSwimSystem;
+import org.herolias.plugin.enchantment.ScrollItemGenerator;
 
 import com.al3x.HStats;
 
@@ -130,6 +131,10 @@ public class SimpleEnchanting extends JavaPlugin {
             this.configManager.saveConfig();
             LOGGER.atInfo().log("Fresh install detected: Tooltip announcement disabled.");
         }
+
+        // Register scroll item generator (deferred to LoadedAssetsEvent<Item>)
+        // Replaces ~70 static JSON files with runtime-generated items
+        ScrollItemGenerator.registerEventListener(this);
 
         // Register event listener for recipe filtering based on config
         // This intercepts recipes as they're loaded and removes disabled enchantment scrolls
