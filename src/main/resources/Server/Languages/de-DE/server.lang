@@ -1178,3 +1178,6 @@ enchantment.ranged_protection.walkthrough = Verringert eingehenden Projektil- un
 enchantment.frenzy.walkthrough = Erhöht die Aufladerate der Signaturfähigkeit um {amount}% pro Stufe. Gilt für alle Waffen und Stäbe.
 enchantment.riposte.walkthrough = Dies ist eine Kollaborations-Verzauberung mit dem Perfect Parries Mod und funktioniert nur, wenn beide Mods installiert sind.\n\nErhöht den Schaden von Gegenangriffen um {amount}% pro Stufe. Gilt für Nahkampfwaffen.
 enchantment.coup_de_grace.walkthrough = Dies ist eine Kollaborations-Verzauberung mit dem Perfect Parries Mod und funktioniert nur, wenn beide Mods installiert sind.\n\nErhöht den Schaden gegen betäubte Feinde um {amount}% pro Stufe. Gilt für Nahkampfwaffen.
+
+
+tooltip.enchantments = Verzauberungen:

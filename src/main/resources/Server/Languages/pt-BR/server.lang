@@ -670,3 +670,6 @@ enchantment.ranged_protection.walkthrough = Reduz o dano de projéteis e magia r
 enchantment.frenzy.walkthrough = Aumenta a taxa de carregamento da habilidade especial em {amount}% por nível. Aplica-se a todas as armas e cajados.
 enchantment.riposte.walkthrough = Este é um Encantamento colaborativo com o mod Perfect Parries e só funcionará se ambos os mods estiverem instalados.\n\nAumenta o dano de contra-ataque em {amount}% por nível. Aplica-se a armas corpo a corpo.
 enchantment.coup_de_grace.walkthrough = Este é um Encantamento colaborativo com o mod Perfect Parries e só funcionará se ambos os mods estiverem instalados.\n\nAumenta o dano contra inimigos atordoados em {amount}% por nível. Aplica-se a armas corpo a corpo.
+
+
+tooltip.enchantments = Encantamentos:

@@ -671,3 +671,6 @@ enchantment.ranged_protection.walkthrough = Minskar inkommande projektil- och ma
 enchantment.frenzy.walkthrough = Ökar laddningshastigheten för signaturförmågan med {amount}% per nivå. Gäller för alla vapen och stavar.
 enchantment.riposte.walkthrough = Detta är en samarbetsförtrollning med Perfect Parries-modden och fungerar bara om båda moddarna är installerade.\n\nÖkar motanfallsskada med {amount}% per nivå. Gäller för närstridsvapen.
 enchantment.coup_de_grace.walkthrough = Detta är en samarbetsförtrollning med Perfect Parries-modden och fungerar bara om båda moddarna är installerade.\n\nÖkar skada mot bedövade fiender med {amount}% per nivå. Gäller för närstridsvapen.
+
+
+tooltip.enchantments = Förtrollningar:

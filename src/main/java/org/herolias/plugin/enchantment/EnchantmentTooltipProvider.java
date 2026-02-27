@@ -96,10 +96,7 @@ public class EnchantmentTooltipProvider implements TooltipProvider {
      */
     @Nonnull
     public List<String> buildEnchantmentLines(@Nonnull EnchantmentData data, @Nonnull String locale) {
-        List<String> lines = new ArrayList<>();
-
-        // Header line
-        lines.add("<color is=\"" + HEADER_COLOR + "\">Enchantments:</color>");
+        List<String> enchantmentLines = new ArrayList<>();
 
         for (Map.Entry<EnchantmentType, Integer> entry : data.getAllEnchantments().entrySet()) {
             EnchantmentType type = entry.getKey();
@@ -126,8 +123,21 @@ public class EnchantmentTooltipProvider implements TooltipProvider {
                 line.append("</color>");
             }
 
-            lines.add(line.toString());
+            enchantmentLines.add(line.toString());
         }
+
+        if (enchantmentLines.isEmpty()) {
+            return java.util.Collections.emptyList();
+        }
+
+        List<String> lines = new ArrayList<>();
+
+        // Header line
+        String headerFallback = "Enchantments:";
+        String header = resolveTranslation("tooltip.enchantments", locale, headerFallback);
+        lines.add("<color is=\"" + HEADER_COLOR + "\">" + header + "</color>");
+
+        lines.addAll(enchantmentLines);
 
         return lines;
     }

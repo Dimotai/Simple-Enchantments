@@ -670,3 +670,6 @@ enchantment.ranged_protection.walkthrough = Vermindert inkomende projectiel- en 
 enchantment.frenzy.walkthrough = Verhoogt de oplaadsnelheid van de kenmerkende vaardigheid met {amount}% per niveau. Van toepassing op alle wapens en staven.
 enchantment.riposte.walkthrough = Dit is een samenwerkingsbetovering met de Perfect Parries mod en werkt alleen als beide mods zijn geïnstalleerd.\n\nVerhoogt tegenaanvalschade met {amount}% per niveau. Van toepassing op melee-wapens.
 enchantment.coup_de_grace.walkthrough = Dit is een samenwerkingsbetovering met de Perfect Parries mod en werkt alleen als beide mods zijn geïnstalleerd.\n\nVerhoogt schade aan verdoofde vijanden met {amount}% per niveau. Van toepassing op melee-wapens.
+
+
+tooltip.enchantments = Betoveringen:

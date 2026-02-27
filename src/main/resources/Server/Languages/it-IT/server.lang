@@ -666,3 +666,6 @@ enchantment.frenzy.walkthrough = Aumenta la velocità di carica delle abilità d
 enchantment.riposte.walkthrough = Questo è un Incantesimo in collaborazione con la mod Perfect Parries e funzionerà solo se entrambe le mod sono installate.\n\nAumenta il danno da contrattacco del {amount}% per livello. Si applica alle armi da mischia.
 enchantment.coup_de_grace.walkthrough = Questo è un Incantesimo in collaborazione con la mod Perfect Parries e funzionerà solo se entrambe le mod sono installate.\n\nAumenta il danno ai nemici storditi del {amount}% per livello. Si applica alle armi da mischia.
 
+
+
+tooltip.enchantments = Incantesimi:

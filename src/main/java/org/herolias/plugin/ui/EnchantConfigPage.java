@@ -1424,6 +1424,9 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
         configManager.saveConfig();
         LOGGER.atInfo().log("Configuration saved via in-game editor");
 
+        // Invalidate enchantment cache FIRST so that refresh systems see the new state
+        org.herolias.plugin.SimpleEnchanting.getInstance().getEnchantmentManager().invalidateEnabledCache();
+
         // Force-refresh all players' tooltips so changes are visible immediately.
         // TooltipBridge isolates all DynamicTooltipsLib references; only call it
         // when we know the lib was loaded successfully.

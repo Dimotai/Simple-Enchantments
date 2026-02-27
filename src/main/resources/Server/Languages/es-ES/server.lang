@@ -516,3 +516,6 @@ enchantment.frenzy.walkthrough = Aumenta la velocidad de carga de habilidades en
 enchantment.riposte.walkthrough = Este es un Encantamiento en colaboración con el mod Perfect Parries y solo funcionará si ambos mods están instalados.\n\nAumenta el daño de contraataque en {amount}% por nivel. Se aplica a armas cuerpo a cuerpo.
 enchantment.coup_de_grace.walkthrough = Este es un Encantamiento en colaboración con el mod Perfect Parries y solo funcionará si ambos mods están instalados.\n\nAumenta el daño a enemigos aturdidos en {amount}% por nivel. Se aplica a armas cuerpo a cuerpo.
 
+
+
+tooltip.enchantments = Encantamientos:

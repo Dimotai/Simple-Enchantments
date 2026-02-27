@@ -671,3 +671,6 @@ enchantment.ranged_protection.walkthrough = Зменшує вхідну шкод
 enchantment.frenzy.walkthrough = Збільшує швидкість зарядки особливої здібності на {amount}% за рівень. Застосовується до всієї зброї та посохів.
 enchantment.riposte.walkthrough = Це спільне Зачарування з модом Perfect Parries і працюватиме лише якщо обидва моди встановлені.\n\nЗбільшує шкоду контратаки на {amount}% за рівень. Застосовується до зброї ближнього бою.
 enchantment.coup_de_grace.walkthrough = Це спільне Зачарування з модом Perfect Parries і працюватиме лише якщо обидва моди встановлені.\n\nЗбільшує шкоду по оглушених ворогах на {amount}% за рівень. Застосовується до зброї ближнього бою.
+
+
+tooltip.enchantments = Зачарування:

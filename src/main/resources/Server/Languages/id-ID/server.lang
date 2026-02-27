@@ -670,3 +670,6 @@ enchantment.ranged_protection.walkthrough = Mengurangi kerusakan proyektil dan s
 enchantment.frenzy.walkthrough = Meningkatkan kecepatan pengisian kemampuan tanda tangan sebesar {amount}% per level. Berlaku untuk semua senjata dan tongkat.
 enchantment.riposte.walkthrough = Ini adalah Pesona kolaborasi dengan mod Perfect Parries dan hanya akan berfungsi jika kedua mod terinstal.\n\nMeningkatkan kerusakan serangan balik sebesar {amount}% per level. Berlaku untuk senjata jarak dekat.
 enchantment.coup_de_grace.walkthrough = Ini adalah Pesona kolaborasi dengan mod Perfect Parries dan hanya akan berfungsi jika kedua mod terinstal.\n\nMeningkatkan kerusakan terhadap musuh yang terkejut sebesar {amount}% per level. Berlaku untuk senjata jarak dekat.
+
+
+tooltip.enchantments = Pesona:

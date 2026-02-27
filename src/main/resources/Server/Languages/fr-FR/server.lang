@@ -669,3 +669,6 @@ enchantment.ranged_protection.walkthrough = Réduit les dégâts de projectiles 
 enchantment.frenzy.walkthrough = Augmente la vitesse de charge de la capacité signature de {amount}% par niveau. S'applique à toutes les armes et bâtons.
 enchantment.riposte.walkthrough = Ceci est un Enchantement en collaboration avec le mod Perfect Parries et ne fonctionnera que si les deux mods sont installés.\n\nAugmente les dégâts de contre-attaque de {amount}% par niveau. S'applique aux armes de mêlée.
 enchantment.coup_de_grace.walkthrough = Ceci est un Enchantement en collaboration avec le mod Perfect Parries et ne fonctionnera que si les deux mods sont installés.\n\nAugmente les dégâts contre les ennemis étourdis de {amount}% par niveau. S'applique aux armes de mêlée.
+
+
+tooltip.enchantments = Enchantements:

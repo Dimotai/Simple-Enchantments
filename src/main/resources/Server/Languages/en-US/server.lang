@@ -692,3 +692,6 @@ enchantment.ranged_protection.walkthrough = Reduces incoming projectile and magi
 enchantment.frenzy.walkthrough = Increases signature charge rate by {amount}% per level. Applies to all weapons and staffs.
 enchantment.riposte.walkthrough = This is a collab Enchantment with the Perfect Parries mod and will only work if both mods are installed.\n\nIncreases counter attack damage by {amount}% per level. Applies to melee weapons.
 enchantment.coup_de_grace.walkthrough = This is a collab Enchantment with the Perfect Parries mod and will only work if both mods are installed.\n\nIncreases damage to stunned enemies by {amount}% per level. Applies to melee weapons.
+
+
+tooltip.enchantments = Enchantments:

@@ -670,3 +670,6 @@ enchantment.ranged_protection.walkthrough = Снижает входящий ур
 enchantment.frenzy.walkthrough = Увеличивает скорость зарядки особой способности на {amount}% за уровень. Применяется ко всему оружию и посохам.
 enchantment.riposte.walkthrough = Это совместное Зачарование с модом Perfect Parries и будет работать только если оба мода установлены.\n\nУвеличивает урон контратаки на {amount}% за уровень. Применяется к оружию ближнего боя.
 enchantment.coup_de_grace.walkthrough = Это совместное Зачарование с модом Perfect Parries и будет работать только если оба мода установлены.\n\nУвеличивает урон по оглушённым врагам на {amount}% за уровень. Применяется к оружию ближнего боя.
+
+
+tooltip.enchantments = Чары:
