@@ -1,7 +1,10 @@
 package org.herolias.plugin.api;
 
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.inventory.Inventory;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import org.herolias.plugin.SimpleEnchanting;
 import org.herolias.plugin.enchantment.EnchantmentData;
 import org.herolias.plugin.enchantment.EnchantmentManager;
@@ -154,5 +157,45 @@ public class EnchantmentApiImpl implements EnchantmentApi {
         LOGGER.atInfo().log("Registered crafting category: " + categoryId + " (" + displayName + ")");
     }
 
-}
+    @Override
+    @Nonnull
+    public Map<String, Integer> equippedItemEnchantments(@Nonnull Player player) {
+        Map<String, Integer> result = new HashMap<>();
+        if (player == null) return result;
 
+        Inventory inventory = player.getInventory();
+        if (inventory == null) return result;
+
+        // Main-hand
+        collectEnchantments(inventory.getItemInHand(), result);
+
+        // Utility / off-hand
+        collectEnchantments(inventory.getUtilityItem(), result);
+
+        // Armor slots (helmet=0, chestplate=1, leggings=2, boots=3)
+        ItemContainer armorContainer = inventory.getArmor();
+        if (armorContainer != null) {
+            for (short slot = 0; slot < armorContainer.getCapacity(); slot++) {
+                collectEnchantments(armorContainer.getItemStack(slot), result);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Helper: extracts enchantments from a single item and merges into the result map,
+     * keeping the highest level when duplicates exist.
+     */
+    private void collectEnchantments(@Nullable ItemStack item, @Nonnull Map<String, Integer> result) {
+        if (item == null || item.isEmpty()) return;
+
+        EnchantmentData data = manager.getEnchantmentsFromItem(item);
+        for (Map.Entry<EnchantmentType, Integer> entry : data.getAllEnchantments().entrySet()) {
+            String id = entry.getKey().getId();
+            int level = entry.getValue();
+            result.merge(id, level, Math::max);
+        }
+    }
+
+}

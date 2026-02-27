@@ -64,6 +64,12 @@ public class ScrollDescriptionManager {
                     
                     // Resolve description using custom language and client fallback
                     String dynamicDescription = type.getBonusDescription(level, langCode, clientLocale);
+
+                    // Append addon attribution for non-built-in enchantments
+                    if (dynamicDescription != null && !dynamicDescription.isEmpty()
+                            && type.getOwnerModId() != null) {
+                        dynamicDescription += "\n<color is=\"#AAAAAA\">Added by " + type.getOwnerModId() + "</color>";
+                    }
                     
                     if (dynamicDescription != null && !dynamicDescription.isEmpty()) {
                         translations.put(translationKey, dynamicDescription);

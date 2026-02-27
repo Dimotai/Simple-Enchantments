@@ -1,5 +1,6 @@
 package org.herolias.plugin.api;
 
+import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import java.util.Map;
 import javax.annotation.Nonnull;
@@ -134,5 +135,17 @@ public interface EnchantmentApi {
      */
     void registerCraftingCategory(@Nonnull String categoryId, @Nonnull String displayName,
                                   @Nullable String iconPath);
+
+    /**
+     * Gets all enchantments on a player's equipped items
+     * (armor slots, utility/off-hand, and main-hand).
+     * <p>
+     * If the same enchantment appears on multiple items, the highest level is used.
+     *
+     * @param player The player to inspect
+     * @return A map of enchantment IDs to their levels across all equipped slots
+     */
+    @Nonnull
+    Map<String, Integer> equippedItemEnchantments(@Nonnull Player player);
 
 }

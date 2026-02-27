@@ -27,12 +27,12 @@ import java.util.List;
  *         .craftingTier(1)
  *         .craftingCategory("Enchanting_Melee")
  *         .ingredient("My_Crystal", 3)
- *         .done()
+ *         .end()
  *     .scroll(2)
  *         .quality("Rare")
  *         .craftingTier(2)
  *         .ingredient("My_Crystal", 8)
- *         .done()
+ *         .end()
  *     .build();
  * }</pre>
  */
@@ -154,9 +154,9 @@ public class ScrollBuilder {
      * @throws IllegalStateException if this builder was created standalone
      */
     @Nonnull
-    public EnchantmentBuilder done() {
+    public EnchantmentBuilder end() {
         if (parent == null) {
-            throw new IllegalStateException("done() can only be called on chained ScrollBuilders. Use build() for standalone.");
+            throw new IllegalStateException("end() can only be called on chained ScrollBuilders. Use build() for standalone.");
         }
         parent.addScrollDefinition(buildDefinition());
         return parent;

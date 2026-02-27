@@ -6,6 +6,7 @@ import org.herolias.plugin.enchantment.ItemCategory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntToDoubleFunction;
 
 import javax.annotation.Nonnull;
 import java.util.LinkedHashSet;
@@ -21,6 +22,7 @@ import java.util.Set;
  *     .description("Chance to strike enemies with lightning")
  *     .maxLevel(3)
  *     .multiplierPerLevel(0.15)
+ *     .scale(ScaleType.DIMINISHING)
  *     .bonusDescription("Lightning strike chance: {amount}%")
  *     .appliesTo(ItemCategory.MELEE_WEAPON, ItemCategory.RANGED_WEAPON)
  *     .build();
@@ -42,6 +44,8 @@ public class EnchantmentBuilder {
     private double multiplierPerLevel = 0.0;
     private String bonusDescriptionTemplate = "";
     private String craftingCategory = null; // null = auto-derive from item categories
+    private IntToDoubleFunction scaleFunction = null; // null = linear (default)
+    private String walkthroughText = null; // null = fallback to bonusDescription
     private final Set<ItemCategory> categories = new LinkedHashSet<>();
     private final List<ScrollDefinition> scrollDefinitions = new ArrayList<>();
 
@@ -97,6 +101,62 @@ public class EnchantmentBuilder {
     }
 
     /**
+     * Sets the scaling curve using a predefined {@link ScaleType}.
+     * <p>
+     * If not called, defaults to {@link ScaleType#LINEAR} ({@code level * multiplierPerLevel}).
+     *
+     * @param scaleType the predefined scaling curve
+     * @see ScaleType
+     */
+    public EnchantmentBuilder scale(@Nonnull ScaleType scaleType) {
+        // Deferred: resolved in build() after multiplierPerLevel is finalized
+        this.scaleFunction = null;
+        this.deferredScaleType = scaleType;
+        this.deferredScalePower = Double.NaN;
+        return this;
+    }
+
+    /**
+     * Sets the scaling curve using a power exponent.
+     * The formula becomes: {@code level^exponent * multiplierPerLevel}.
+     * <p>
+     * Examples:
+     * <ul>
+     *   <li>{@code .scale(1.0)} — linear (default)</li>
+     *   <li>{@code .scale(2.0)} — quadratic</li>
+     *   <li>{@code .scale(0.5)} — diminishing (square root)</li>
+     * </ul>
+     *
+     * @param exponent the power exponent applied to the level
+     */
+    public EnchantmentBuilder scale(double exponent) {
+        this.scaleFunction = null;
+        this.deferredScaleType = null;
+        this.deferredScalePower = exponent;
+        return this;
+    }
+
+    /**
+     * Sets a fully custom scaling function.
+     * The function receives the enchantment level and must return the total
+     * scaled multiplier for that level (not per-level — the full amount).
+     * <p>
+     * Example: {@code .scale(level -> level * level * 0.05)}
+     *
+     * @param function custom scaling function (level → total multiplier)
+     */
+    public EnchantmentBuilder scale(@Nonnull IntToDoubleFunction function) {
+        this.scaleFunction = function;
+        this.deferredScaleType = null;
+        this.deferredScalePower = Double.NaN;
+        return this;
+    }
+
+    // Internal: deferred scale resolution (ScaleType and power need multiplierPerLevel)
+    private ScaleType deferredScaleType = null;
+    private double deferredScalePower = Double.NaN;
+
+    /**
      * Sets the bonus description template shown in tooltips/walkthrough.
      * Use {@code {amount}} as a placeholder for the calculated value.
      * <p>
@@ -104,6 +164,19 @@ public class EnchantmentBuilder {
      */
     public EnchantmentBuilder bonusDescription(@Nonnull String template) {
         this.bonusDescriptionTemplate = template;
+        return this;
+    }
+
+    /**
+     * Sets custom walkthrough text for the {@code /enchanting} page.
+     * <p>
+     * Use {@code {amount}} as a placeholder for the calculated per-level value.
+     * If not set, defaults to the bonus description template.
+     *
+     * @param text The walkthrough description text
+     */
+    public EnchantmentBuilder walkthrough(@Nonnull String text) {
+        this.walkthroughText = text;
         return this;
     }
 
@@ -123,7 +196,7 @@ public class EnchantmentBuilder {
 
     /**
      * Starts building a scroll definition for a specific level.
-     * Returns a {@link ScrollBuilder} that chains back via {@code .done()}.
+     * Returns a {@link ScrollBuilder} that chains back via {@code .end()}.
      * <p>
      * Example:
      * <pre>{@code
@@ -131,7 +204,7 @@ public class EnchantmentBuilder {
      *     .quality("Uncommon")
      *     .craftingTier(1)
      *     .ingredient("My_Crystal", 3)
-     *     .done()
+     *     .end()
      * }</pre>
      *
      * @param level The scroll level (1-based)
@@ -142,7 +215,7 @@ public class EnchantmentBuilder {
     }
 
     /**
-     * Called by ScrollBuilder.done() to add the completed definition.
+     * Called by ScrollBuilder.end() to add the completed definition.
      */
     void addScrollDefinition(@Nonnull ScrollDefinition definition) {
         scrollDefinitions.add(definition);
@@ -219,6 +292,17 @@ public class EnchantmentBuilder {
         type.setScrollDefinitions(scrollDefinitions);
         type.setCraftingCategory(resolvedCategory);
 
+        // Store custom walkthrough text if provided
+        if (walkthroughText != null) {
+            type.setWalkthroughText(walkthroughText);
+        }
+
+        // Resolve and store scale function
+        IntToDoubleFunction resolvedScale = resolveScaleFunction();
+        if (resolvedScale != null) {
+            type.setScaleFunction(resolvedScale);
+        }
+
         // Register in the global registry
         EnchantmentRegistry.getInstance().register(type);
 
@@ -229,6 +313,20 @@ public class EnchantmentBuilder {
             config.enchantmentMultipliers.putIfAbsent(id, multiplierPerLevel);
         } catch (Exception e) {
             // Plugin not yet initialized — will be populated on next config load
+        }
+
+        // Register translations so the name/description displays correctly in UIs
+        try {
+            org.herolias.plugin.lang.LanguageManager langMgr = org.herolias.plugin.SimpleEnchanting.getInstance().getLanguageManager();
+            if (langMgr != null) {
+                langMgr.putTranslation(type.getNameKey(), displayName);
+                langMgr.putTranslation("enchantment." + ownerModId + "_" + id.substring(id.indexOf(':') + 1) + ".description", description);
+                if (bonusDescriptionTemplate != null && !bonusDescriptionTemplate.isEmpty()) {
+                    langMgr.putTranslation("enchantment." + ownerModId + "_" + id.substring(id.indexOf(':') + 1) + ".bonus", bonusDescriptionTemplate);
+                }
+            }
+        } catch (Exception e) {
+            // LanguageManager not available yet or something went wrong
         }
 
         return type;
@@ -245,5 +343,24 @@ public class EnchantmentBuilder {
         if (categories.contains(ItemCategory.STAFF) || categories.contains(ItemCategory.STAFF_MANA) || categories.contains(ItemCategory.STAFF_ESSENCE)) return "Enchanting_Staff";
         if (categories.contains(ItemCategory.PICKAXE) || categories.contains(ItemCategory.AXE) || categories.contains(ItemCategory.SHOVEL) || categories.contains(ItemCategory.TOOL)) return "Enchanting_Tools";
         return "Enchanting_Melee"; // fallback
+    }
+
+    /**
+     * Resolves the scale function from deferred settings.
+     * Returns null for linear (default) to avoid storing a no-op function.
+     */
+    private IntToDoubleFunction resolveScaleFunction() {
+        if (scaleFunction != null) {
+            return scaleFunction;
+        }
+        if (deferredScaleType != null && deferredScaleType != ScaleType.LINEAR) {
+            return deferredScaleType.toFunction(multiplierPerLevel);
+        }
+        if (!Double.isNaN(deferredScalePower) && deferredScalePower != 1.0) {
+            double exponent = deferredScalePower;
+            double mult = multiplierPerLevel;
+            return level -> Math.pow(level, exponent) * mult;
+        }
+        return null; // linear default
     }
 }

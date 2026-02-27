@@ -155,4 +155,15 @@ public class LanguageManager {
             }
         }
     }
+
+    /**
+     * Dynamically registers a translation entry at runtime.
+     * If the key already exists for the given language, it will NOT be overwritten.
+     *
+     * @param key   The translation key (without "server." prefix), e.g. "items.Scroll_Gold_Digger_I.name"
+     * @param value The translated value
+     */
+    public void putTranslation(String key, String value) {
+        translations.computeIfAbsent("en-US", k -> new ConcurrentHashMap<>()).putIfAbsent(key, value);
+    }
 }

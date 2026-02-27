@@ -586,6 +586,84 @@ public class EnchantmentRecipeManager {
                  LOGGER.atInfo().log("Applying Enchanting Table upgrade overrides on BlockType");
                  applyBlockUpgrades(block, config.enchantingTableUpgrades);
             }
+            // Inject custom addon crafting categories into the bench
+            injectAddonCraftingCategories(block);
+        }
+    }
+
+    /**
+     * Injects custom crafting categories (registered by addon mods) into the
+     * Enchanting Table's bench categories array so they appear as tabs.
+     */
+    private static void injectAddonCraftingCategories(BlockType block) {
+        try {
+            java.util.Collection<org.herolias.plugin.api.CraftingCategoryDefinition> allDefs =
+                    org.herolias.plugin.api.CraftingCategoryDefinition.values();
+
+            // Filter to only addon (non-built-in) categories
+            java.util.List<org.herolias.plugin.api.CraftingCategoryDefinition> addonCategories =
+                    allDefs.stream().filter(d -> !d.isBuiltIn()).collect(java.util.stream.Collectors.toList());
+
+            if (addonCategories.isEmpty()) return;
+
+            Field benchField = BlockType.class.getDeclaredField("bench");
+            benchField.setAccessible(true);
+            Object bench = benchField.get(block);
+            if (bench == null) return;
+
+            // CraftingBench extends Bench, categories field is on CraftingBench
+            Class<?> craftingBenchClass = bench.getClass();
+            Field categoriesField = craftingBenchClass.getDeclaredField("categories");
+            categoriesField.setAccessible(true);
+
+            Object[] existingCategories = (Object[]) categoriesField.get(bench);
+            if (existingCategories == null) existingCategories = new Object[0];
+
+            // Check which addon categories aren't already present
+            java.util.Set<String> existingIds = new java.util.HashSet<>();
+            for (Object cat : existingCategories) {
+                java.lang.reflect.Method getId = cat.getClass().getMethod("getId");
+                existingIds.add((String) getId.invoke(cat));
+            }
+
+            java.util.List<Object> newCategories = new java.util.ArrayList<>(java.util.Arrays.asList(existingCategories));
+            Class<?> benchCategoryClass = Class.forName(
+                    "com.hypixel.hytale.server.core.asset.type.blocktype.config.bench.CraftingBench$BenchCategory");
+
+            for (org.herolias.plugin.api.CraftingCategoryDefinition def : addonCategories) {
+                if (existingIds.contains(def.getCategoryId())) continue;
+
+                // Create BenchCategory(id, name, icon, itemCategories)
+                Object benchCategory = benchCategoryClass.getDeclaredConstructor(
+                        String.class, String.class, String.class, 
+                        Class.forName("[Lcom.hypixel.hytale.server.core.asset.type.blocktype.config.bench.CraftingBench$BenchItemCategory;")
+                ).newInstance(
+                        def.getCategoryId(),
+                        "server.benchCategories." + def.getCategoryId(),
+                        def.getIconPath(),
+                        null
+                );
+
+                newCategories.add(benchCategory);
+
+                // Register the display name translation
+                plugin.getLanguageManager().putTranslation(
+                        "benchCategories." + def.getCategoryId(), def.getDisplayName());
+
+                LOGGER.atInfo().log("Injected addon crafting category tab: " + def.getCategoryId()
+                        + " (" + def.getDisplayName() + ")");
+            }
+
+            // Write back the expanded array
+            Object newArray = java.lang.reflect.Array.newInstance(benchCategoryClass, newCategories.size());
+            for (int i = 0; i < newCategories.size(); i++) {
+                java.lang.reflect.Array.set(newArray, i, newCategories.get(i));
+            }
+            categoriesField.set(bench, newArray);
+
+        } catch (Exception e) {
+            LOGGER.atSevere().log("Failed to inject addon crafting categories: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

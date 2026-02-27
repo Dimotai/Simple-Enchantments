@@ -26,8 +26,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Locale;
 
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
@@ -674,13 +676,23 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
     
     private String getEditingRecipeTitleKey() {
         if (editingRecipeType == null) return "config.recipe.title";
-        return switch (editingRecipeType) {
-            case "table" -> "config.general.table_recipe";
-            case "Upgrade_1" -> "config.general.upgrade_1";
-            case "Upgrade_2" -> "config.general.upgrade_2";
-            case "Upgrade_3" -> "config.general.upgrade_3";
-            default -> "config.recipe.title";
-        };
+        
+        // Handle generic keys
+        if (editingRecipeType.equals("table")) return "config.general.table_recipe";
+        if (editingRecipeType.equals("Upgrade_1")) return "config.general.upgrade_1";
+        if (editingRecipeType.equals("Upgrade_2")) return "config.general.upgrade_2";
+        if (editingRecipeType.equals("Upgrade_3")) return "config.general.upgrade_3";
+
+        // Try to derive the scroll title
+        String name = editingRecipeType;
+        if (name.startsWith("Scroll_")) {
+            name = name.substring("Scroll_".length());
+            // It will be something like "Lightning_Strike_I", replace underscores with spaces
+            name = name.replace("_", " ");
+            return "Scroll of " + name; // Fallback plain text if there's no specific key
+        }
+
+        return "config.recipe.title";
     }
     
     private void buildEnchantmentsTab(@Nonnull UICommandBuilder commandBuilder, @Nonnull UIEventBuilder eventBuilder) {
@@ -766,7 +778,18 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
         int index = 0;
         boolean hasPerfectParries = SimpleEnchanting.getInstance().isPerfectParriesModPresent();
 
-        for (String recipeName : workingConfig.scrollRecipes.keySet()) {
+        Set<String> allRecipeNames = new LinkedHashSet<>();
+        allRecipeNames.addAll(workingConfig.scrollRecipes.keySet());
+
+        for (EnchantmentType type : EnchantmentType.values()) {
+            if (!type.isBuiltIn() && type.getScrollDefinitions() != null) {
+                for (org.herolias.plugin.api.ScrollDefinition def : type.getScrollDefinitions()) {
+                    allRecipeNames.add(type.getScrollBaseName() + "_" + EnchantmentType.toRoman(def.getLevel()));
+                }
+            }
+        }
+
+        for (String recipeName : allRecipeNames) {
             // Filter out Riposte and Coup de Grâce recipes if the mod is missing
             if (!hasPerfectParries) {
                 if (recipeName.toLowerCase().contains("riposte") || recipeName.toLowerCase().contains("coup_de_grace")) {
@@ -774,7 +797,28 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
                 }
             }
 
+            // Verify that this recipe corresponds to a registered enchantment or is the cleansing scroll
+            boolean isValidRecipe = false;
+            if (recipeName.startsWith("Scroll_Cleansing")) {
+                isValidRecipe = true;
+            } else {
+                for (EnchantmentType type : EnchantmentType.values()) {
+                    if (recipeName.startsWith(type.getScrollBaseName() + "_")) {
+                        isValidRecipe = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!isValidRecipe) {
+                continue; // Skip orphan recipes from uninstalled addons
+            }
+
             List<EnchantingConfig.ConfigIngredient> ingredients = workingConfig.scrollRecipes.get(recipeName);
+            if (ingredients == null) {
+                ingredients = getDefaultAddonRecipe(recipeName);
+            }
+            if (ingredients == null) continue;
             
             // Find tier
             int tier = 1;
@@ -1013,7 +1057,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
      * Adds a new empty ingredient to the current recipe.
      */
     private void addNewIngredient() {
-        List<EnchantingConfig.ConfigIngredient> ingredients = getCurrentEditingIngredients();
+        List<EnchantingConfig.ConfigIngredient> ingredients = getCurrentEditingIngredients(true);
         if (ingredients == null) return;
         
         // Add a new ingredient with a default item
@@ -1061,16 +1105,51 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
 
     
     /**
+     * Helper to reliably fetch the default definition for an addon recipe.
+     */
+    private List<EnchantingConfig.ConfigIngredient> getDefaultAddonRecipe(String scrollItemId) {
+        for (EnchantmentType type : EnchantmentType.values()) {
+            if (!type.isBuiltIn() && type.getScrollDefinitions() != null) {
+                for (org.herolias.plugin.api.ScrollDefinition def : type.getScrollDefinitions()) {
+                    String id = type.getScrollBaseName() + "_" + org.herolias.plugin.enchantment.EnchantmentType.toRoman(def.getLevel());
+                    if (id.equals(scrollItemId)) {
+                        List<EnchantingConfig.ConfigIngredient> list = new ArrayList<>();
+                        for (org.herolias.plugin.api.ScrollDefinition.Ingredient ing : def.getRecipe()) {
+                            list.add(new EnchantingConfig.ConfigIngredient(ing.getItemId(), ing.getQuantity()));
+                        }
+                        list.add(new EnchantingConfig.ConfigIngredient(def.getCraftingTier()));
+                        return list;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private List<EnchantingConfig.ConfigIngredient> getCurrentEditingIngredients() {
+        return getCurrentEditingIngredients(false);
+    }
+
+    /**
      * Gets the ingredient list currently being edited (scroll, table, or upgrade).
      */
-    private List<EnchantingConfig.ConfigIngredient> getCurrentEditingIngredients() {
+    private List<EnchantingConfig.ConfigIngredient> getCurrentEditingIngredients(boolean createIfMissing) {
         // First check table/upgrade editing (priority)
         if (editingRecipeType != null) {
             return getEditingIngredients();
         }
         // Fall back to scroll recipe editing
         if (selectedRecipe != null) {
-            return workingConfig.scrollRecipes.get(selectedRecipe);
+            if (workingConfig.scrollRecipes.containsKey(selectedRecipe)) {
+                return workingConfig.scrollRecipes.get(selectedRecipe);
+            }
+            List<EnchantingConfig.ConfigIngredient> def = getDefaultAddonRecipe(selectedRecipe);
+            if (def != null) {
+                if (createIfMissing) {
+                    workingConfig.scrollRecipes.put(selectedRecipe, def);
+                }
+                return def;
+            }
         }
         return null;
     }
@@ -1079,7 +1158,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
      * Updates an ingredient's item ID at the specified index.
      */
     private void updateIngredient(int ingredientIndex, String newItemId) {
-        List<EnchantingConfig.ConfigIngredient> ingredients = getCurrentEditingIngredients();
+        List<EnchantingConfig.ConfigIngredient> ingredients = getCurrentEditingIngredients(true);
         if (ingredients == null) return;
         
         int dataIndex = 0;
@@ -1099,7 +1178,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
      * Updates an ingredient's amount at the specified index.
      */
     private void updateIngredientAmount(int ingredientIndex, int newAmount) {
-        List<EnchantingConfig.ConfigIngredient> ingredients = getCurrentEditingIngredients();
+        List<EnchantingConfig.ConfigIngredient> ingredients = getCurrentEditingIngredients(true);
         if (ingredients == null) return;
         
         int dataIndex = 0;
@@ -1133,6 +1212,11 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
             List<EnchantingConfig.ConfigIngredient> defaultRecipe = defaultConfig.scrollRecipes.get(recipeType);
             if (defaultRecipe != null) {
                 workingConfig.scrollRecipes.put(recipeType, new ArrayList<>(defaultRecipe));
+            } else {
+                List<EnchantingConfig.ConfigIngredient> addonDef = getDefaultAddonRecipe(recipeType);
+                if (addonDef != null) {
+                    workingConfig.scrollRecipes.remove(recipeType);
+                }
             }
         }
     }
@@ -1217,6 +1301,12 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
     
     private void updateRecipeTier(String recipeName, String tierValue) {
         List<EnchantingConfig.ConfigIngredient> ingredients = workingConfig.scrollRecipes.get(recipeName);
+        if (ingredients == null) {
+            ingredients = getDefaultAddonRecipe(recipeName);
+            if (ingredients != null) {
+                workingConfig.scrollRecipes.put(recipeName, ingredients);
+            }
+        }
         if (ingredients == null) return;
         
         try {
@@ -1253,6 +1343,12 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
                     }
                 }
                 updateRecipeTier(recipeName, String.valueOf(defaultTier));
+            } else {
+                List<EnchantingConfig.ConfigIngredient> addonDef = getDefaultAddonRecipe(recipeName);
+                if (addonDef != null) {
+                    workingConfig.scrollRecipes.remove(recipeName);
+                    markUnsavedChange();
+                }
             }
             return;
         }
@@ -1415,7 +1511,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
     }
     
     private void removeIngredient(int ingredientIndex) {
-        List<EnchantingConfig.ConfigIngredient> ingredients = getCurrentEditingIngredients();
+        List<EnchantingConfig.ConfigIngredient> ingredients = getCurrentEditingIngredients(true);
         if (ingredients == null) return;
         
         int dataIndex = 0;

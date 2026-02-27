@@ -33,6 +33,8 @@ public final class EnchantmentType {
     // Addon enchantment configuration (mutable, set by builder after construction)
     private java.util.List<org.herolias.plugin.api.ScrollDefinition> scrollDefinitions = java.util.List.of();
     private String craftingCategory; // e.g. "Enchanting_Melee"
+    private java.util.function.IntToDoubleFunction scaleFunction; // null = linear (level * multiplier)
+    private String walkthroughText; // custom walkthrough text from addon mods, null = use lang key / bonus desc
 
     // ============================== Built-in Enchantments ==============================
 
@@ -306,6 +308,37 @@ public final class EnchantmentType {
     /** Sets the crafting category. Called by EnchantmentBuilder. */
     public void setCraftingCategory(String category) { this.craftingCategory = category; }
 
+    /** Gets the custom scale function, or null if linear scaling. */
+    @Nullable public java.util.function.IntToDoubleFunction getScaleFunction() { return scaleFunction; }
+
+    /** Sets the custom scale function. Called by EnchantmentBuilder. */
+    public void setScaleFunction(java.util.function.IntToDoubleFunction scaleFunction) { this.scaleFunction = scaleFunction; }
+
+    /** Gets the custom walkthrough text, or null if using default fallback. */
+    @Nullable public String getWalkthroughText() { return walkthroughText; }
+
+    /** Sets custom walkthrough text. Called by EnchantmentBuilder. */
+    public void setWalkthroughText(String walkthroughText) { this.walkthroughText = walkthroughText; }
+
+    /**
+     * Computes the total scaled multiplier for a given level.
+     * <p>
+     * If a custom scale function was set via the builder, it is used.
+     * Otherwise falls back to linear scaling: {@code level * getEffectMultiplier()}.
+     * <p>
+     * Addon mods should call this method when computing effect values to
+     * respect the server admin's configured multiplier and the chosen scale curve.
+     *
+     * @param level the enchantment level (1-based)
+     * @return the total multiplier for this level
+     */
+    public double getScaledMultiplier(int level) {
+        if (scaleFunction != null) {
+            return scaleFunction.applyAsDouble(level);
+        }
+        return level * getEffectMultiplier();
+    }
+
     // ============================== Backward Compat Static Methods ==============================
 
     /**
@@ -378,10 +411,18 @@ public final class EnchantmentType {
 
     // ============================== Translation Keys ==============================
 
-    public String getNameKey() { return "enchantment." + id + ".name"; }
-    public String getDescriptionKey() { return "enchantment." + id + ".description"; }
-    public String getBonusTranslationKey() { return "enchantment." + id + ".bonus"; }
-    public String getWalkthroughKey() { return "enchantment." + id + ".walkthrough"; }
+    public String getNameKey() { return formatTranslationKey("name"); }
+    public String getDescriptionKey() { return formatTranslationKey("description"); }
+    public String getBonusTranslationKey() { return formatTranslationKey("bonus"); }
+    public String getWalkthroughKey() { return formatTranslationKey("walkthrough"); }
+
+    private String formatTranslationKey(String suffix) {
+        if (id.contains(":")) {
+            String[] parts = id.split(":", 2);
+            return parts[0] + ":enchantment." + parts[1] + "." + suffix;
+        }
+        return "enchantment." + id + "." + suffix;
+    }
 
     // ============================== Display Formatting ==============================
 
@@ -404,7 +445,7 @@ public final class EnchantmentType {
      */
     public String getBonusDescription(int level, String langCode, String clientLangCode) {
         if (level <= 0) return "";
-        double mult = getEffectMultiplier() * level;
+        double mult = getScaledMultiplier(level);
         float percentage = (float) (mult * 100);
 
         // Special handling for Eagle's Eye which scales differently
@@ -442,25 +483,35 @@ public final class EnchantmentType {
      * Gets the localized walkthrough description with dynamic config values.
      */
     public String getWalkthroughDescription(String langCode, String clientLangCode) {
-        String key = getWalkthroughKey();
         String template = null;
-        try {
-            org.herolias.plugin.SimpleEnchanting plugin = org.herolias.plugin.SimpleEnchanting.getInstance();
-            if (plugin != null) {
-                template = plugin.getLanguageManager().getRawMessage(key, langCode, clientLangCode);
-            }
-        } catch (Exception ignored) {}
 
-        // Fallback to existing description if walkthrough key is missing
-        if (template == null || template.equals(key)) {
+        // Priority 1: Custom walkthrough text set by addon mod via .walkthrough()
+        if (walkthroughText != null) {
+            template = walkthroughText;
+        }
+
+        // Priority 2: Localized walkthrough key from lang files
+        if (template == null) {
+            String key = getWalkthroughKey();
+            try {
+                org.herolias.plugin.SimpleEnchanting plugin = org.herolias.plugin.SimpleEnchanting.getInstance();
+                if (plugin != null) {
+                    String resolved = plugin.getLanguageManager().getRawMessage(key, langCode, clientLangCode);
+                    if (resolved != null && !resolved.equals(key)) {
+                        template = resolved;
+                    }
+                }
+            } catch (Exception ignored) {}
+        }
+
+        // Priority 3: Localized description key, then hardcoded description
+        if (template == null) {
             String descKey = getDescriptionKey();
             try {
                 org.herolias.plugin.SimpleEnchanting plugin = org.herolias.plugin.SimpleEnchanting.getInstance();
                 if (plugin != null) {
-                    template = plugin.getLanguageManager().getRawMessage(descKey, langCode, clientLangCode);
-                    if (template.equals(descKey)) {
-                        template = getDescription();
-                    }
+                    String resolved = plugin.getLanguageManager().getRawMessage(descKey, langCode, clientLangCode);
+                    template = (resolved != null && !resolved.equals(descKey)) ? resolved : getDescription();
                 }
             } catch (Exception ignored) {
                 template = getDescription();
@@ -468,7 +519,7 @@ public final class EnchantmentType {
         }
 
         // Replace {amount} with the per-level config value
-        double mult = getEffectMultiplier();
+        double mult = getScaledMultiplier(1);
         float percentage = (float) (mult * 100);
         if (template.contains("{amount}")) {
             template = template.replace("{amount}", String.valueOf(percentage));

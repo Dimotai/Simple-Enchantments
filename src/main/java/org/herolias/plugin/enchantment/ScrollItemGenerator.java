@@ -111,29 +111,67 @@ public class ScrollItemGenerator {
 
             String scrollBaseName = type.getScrollBaseName();
 
+            // Check if this enchantment has addon ScrollDefinitions
+            List<org.herolias.plugin.api.ScrollDefinition> addonScrollDefs = type.getScrollDefinitions();
+            boolean isAddon = addonScrollDefs != null && !addonScrollDefs.isEmpty();
+
             for (int level = 1; level <= type.getMaxLevel(); level++) {
                 String scrollItemId = scrollBaseName + "_" + EnchantmentType.toRoman(level);
 
-                List<ConfigIngredient> configRecipe = scrollRecipes.get(scrollItemId);
-                if (configRecipe == null) {
-                    LOGGER.atWarning().log("ScrollItemGenerator: No recipe for " + scrollItemId);
-                    continue;
-                }
-
-                // Extract tier and ingredients
-                int craftingTier = 1;
+                int craftingTier;
                 List<ConfigIngredient> ingredients = new ArrayList<>();
-                for (ConfigIngredient ci : configRecipe) {
-                    if (ci.UnlocksAtTier != null) {
-                        craftingTier = ci.UnlocksAtTier;
-                    } else {
+                String quality;
+                int itemLevel;
+                String[] craftingCategories;
+
+                if (isAddon) {
+                    // ─── Use ScrollDefinition from the builder API ───
+                    final int lvl = level;
+                    org.herolias.plugin.api.ScrollDefinition def = addonScrollDefs.stream()
+                            .filter(d -> d.getLevel() == lvl)
+                            .findFirst().orElse(null);
+                    if (def == null) {
+                        LOGGER.atWarning().log("ScrollItemGenerator: No ScrollDefinition for " + scrollItemId + " (level " + level + ")");
+                        continue;
+                    }
+
+                    craftingTier = def.getCraftingTier();
+                    quality = def.getQuality() != null ? def.getQuality() : "Uncommon";
+                    itemLevel = level;
+
+                    // Resolve crafting categories: use the definition's category, fall back to the type's category
+                    String cat = def.getCraftingCategory();
+                    if (cat == null) cat = type.getCraftingCategory();
+                    if (cat == null) cat = guessCraftingCategory(type);
+                    craftingCategories = new String[]{ cat };
+
+                    for (org.herolias.plugin.api.ScrollDefinition.Ingredient ing : def.getRecipe()) {
+                        ConfigIngredient ci = new ConfigIngredient();
+                        ci.item = ing.getItemId();
+                        ci.amount = ing.getQuantity();
                         ingredients.add(ci);
                     }
-                }
+                } else {
+                    // ─── Use config.scrollRecipes + BuiltinScrolls (built-in enchantments) ───
+                    List<ConfigIngredient> configRecipe = scrollRecipes.get(scrollItemId);
+                    if (configRecipe == null) {
+                        LOGGER.atWarning().log("ScrollItemGenerator: No recipe for " + scrollItemId);
+                        continue;
+                    }
 
-                String quality = BuiltinScrolls.getQuality(scrollItemId);
-                int itemLevel = BuiltinScrolls.getItemLevel(scrollItemId);
-                String[] craftingCategories = BuiltinScrolls.getCraftingCategories(scrollItemId);
+                    craftingTier = 1;
+                    for (ConfigIngredient ci : configRecipe) {
+                        if (ci.UnlocksAtTier != null) {
+                            craftingTier = ci.UnlocksAtTier;
+                        } else {
+                            ingredients.add(ci);
+                        }
+                    }
+
+                    quality = BuiltinScrolls.getQuality(scrollItemId);
+                    itemLevel = BuiltinScrolls.getItemLevel(scrollItemId);
+                    craftingCategories = BuiltinScrolls.getCraftingCategories(scrollItemId);
+                }
 
                 // 1. Interaction
                 String interactionId = "SE_Interaction_" + scrollItemId;
@@ -149,6 +187,20 @@ public class ScrollItemGenerator {
                 // 3. Item (with safe defaults — processConfig runs in Phase 2)
                 Item item = createScrollItem(scrollItemId, itemLevel, quality, rootPrimaryId, rootSecondaryId);
                 if (item != null) generatedItems.add(item);
+
+                // 3b. Register translations for addon scroll items
+                if (isAddon && item != null) {
+                    try {
+                        org.herolias.plugin.lang.LanguageManager langMgr = plugin.getLanguageManager();
+                        String roman = EnchantmentType.toRoman(level);
+                        String scrollName = "Scroll of " + type.getDisplayName() + " " + roman;
+                        String scrollDesc = type.getDescription();
+                        langMgr.putTranslation("items." + scrollItemId + ".name", scrollName);
+                        langMgr.putTranslation("items." + scrollItemId + ".description", scrollDesc);
+                    } catch (Exception e) {
+                        LOGGER.atWarning().log("ScrollItemGenerator: Failed to register translations for " + scrollItemId);
+                    }
+                }
 
                 // 4. Recipe
                 CraftingRecipe recipe = createScrollRecipe(scrollItemId, ingredients, craftingTier, craftingCategories);
