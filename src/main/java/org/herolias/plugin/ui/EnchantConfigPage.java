@@ -96,6 +96,9 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
 
         ENCHANTMENT_SECONDARY_MULTIPLIERS.put(EnchantmentType.FREEZE, "freezeDuration");
         SECONDARY_MULTIPLIER_LABELS.put("freezeDuration", "config.secondary.freeze_duration");
+
+        ENCHANTMENT_SECONDARY_MULTIPLIERS.put(EnchantmentType.POISON, "poisonDuration");
+        SECONDARY_MULTIPLIER_LABELS.put("poisonDuration", "config.secondary.poison_duration");
     }
     
     // Default config instance for reset functionality - uses values from EnchantingConfig.java
@@ -144,6 +147,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
         copy.lootingQuantityMultiplierPerLevel = original.lootingQuantityMultiplierPerLevel;
         copy.burnDuration = original.burnDuration;
         copy.freezeDuration = original.freezeDuration;
+        copy.poisonDuration = original.poisonDuration;
 
         copy.disableEnchantmentCrafting = original.disableEnchantmentCrafting;
         copy.returnEnchantmentOnCleanse = original.returnEnchantmentOnCleanse;
@@ -1257,6 +1261,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
             case "lootingQuantityMultiplierPerLevel" -> workingConfig.lootingQuantityMultiplierPerLevel != null ? workingConfig.lootingQuantityMultiplierPerLevel : 0.25;
             case "burnDuration" -> workingConfig.burnDuration;
             case "freezeDuration" -> workingConfig.freezeDuration;
+            case "poisonDuration" -> workingConfig.poisonDuration;
             default -> 0.0;
         };
     }
@@ -1295,6 +1300,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
                     case "lootingQuantityMultiplierPerLevel" -> workingConfig.lootingQuantityMultiplierPerLevel = Double.parseDouble(value);
                     case "burnDuration" -> workingConfig.burnDuration = Double.parseDouble(value);
                     case "freezeDuration" -> workingConfig.freezeDuration = Double.parseDouble(value);
+                    case "poisonDuration" -> workingConfig.poisonDuration = Double.parseDouble(value);
                     case "salvagerYieldsScroll" -> workingConfig.salvagerYieldsScroll = Boolean.parseBoolean(value);
                     case "showWelcomeMessage" -> workingConfig.showWelcomeMessage = Boolean.parseBoolean(value);
                 }
@@ -1388,6 +1394,7 @@ public class EnchantConfigPage extends InteractiveCustomUIPage<EnchantConfigPage
             case "lootingQuantityMultiplierPerLevel" -> String.valueOf(DEFAULT_CONFIG.lootingQuantityMultiplierPerLevel != null ? DEFAULT_CONFIG.lootingQuantityMultiplierPerLevel : 0.25);
             case "burnDuration" -> String.valueOf(DEFAULT_CONFIG.burnDuration);
             case "freezeDuration" -> String.valueOf(DEFAULT_CONFIG.freezeDuration);
+            case "poisonDuration" -> String.valueOf(DEFAULT_CONFIG.poisonDuration);
             case "returnEnchantmentOnCleanse" -> String.valueOf(DEFAULT_CONFIG.returnEnchantmentOnCleanse);
             case "disableEnchantmentCrafting" -> String.valueOf(DEFAULT_CONFIG.disableEnchantmentCrafting);
             case "salvagerYieldsScroll" -> String.valueOf(DEFAULT_CONFIG.salvagerYieldsScroll);

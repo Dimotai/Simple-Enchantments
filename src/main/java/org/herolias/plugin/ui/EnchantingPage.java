@@ -323,7 +323,7 @@ public class EnchantingPage extends InteractiveCustomUIPage<EnchantingPageEventD
                 commandBuilder.set("#ContentArea[0] #Desc.TextSpans", Message.raw(walkthroughDesc));
                 commandBuilder.set("#ContentArea[0] #DiscordBtn.Visible", false);
 
-                if (type.getOwnerModId() != null) {
+                if (type.getOwnerModId() != null || type.getOwnerModName() != null) {
                     String modDisplay = type.getOwnerModName() != null ? type.getOwnerModName() : type.getOwnerModId();
                     commandBuilder.set("#ContentArea[0] #ModNameLabel.Visible", true);
                     commandBuilder.set("#ContentArea[0] #ModNameLabel.TextSpans", Message.raw("Added by " + modDisplay));

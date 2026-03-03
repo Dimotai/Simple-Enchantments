@@ -141,6 +141,14 @@ public final class BuiltinScrolls {
         reg("Scroll_Waterbreathing_I",   "Uncommon", 1, "Enchanting_Armor");
         reg("Scroll_Waterbreathing_II",  "Rare",     2, "Enchanting_Armor");
         reg("Scroll_Waterbreathing_III", "Epic",     3, "Enchanting_Armor");
+
+        // ─── Poison (Melee + Ranged, Legendary) ───
+        reg("Scroll_Poison_I", "Legendary", 4, "Enchanting_Melee", "Enchanting_Ranged");
+
+        // ─── Environmental Protection (Armor) ───
+        reg("Scroll_Environmental_Protection_I",   "Uncommon", 1, "Enchanting_Armor");
+        reg("Scroll_Environmental_Protection_II",  "Rare",     2, "Enchanting_Armor");
+        reg("Scroll_Environmental_Protection_III", "Epic",     3, "Enchanting_Armor");
     }
 
     private static void reg(String id, String quality, int itemLevel, String... categories) {

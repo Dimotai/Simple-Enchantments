@@ -107,6 +107,11 @@ public class EnchantmentDamageSystem extends DamageEventSystem {
             applyArmorProtection(index, archetypeChunk, store, damage, EnchantmentType.RANGED_PROTECTION);
         }
 
+        // Apply Environmental Protection enchantment (defender - fire/lava/drowning/thorns/cactus)
+        if (damageCause != null && !damageCause.doesBypassResistances() && enchantmentManager.isEnvironmentalDamage(damageCause)) {
+            applyArmorProtection(index, archetypeChunk, store, damage, EnchantmentType.ENVIRONMENTAL_PROTECTION);
+        }
+
         // Apply Life Leech (melee only)
         applyLifeLeech(ctx, store, damage, commandBuffer);
 

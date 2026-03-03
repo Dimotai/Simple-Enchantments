@@ -1378,6 +1378,15 @@ public class EnchantmentManager {
         return checkDamageCause(cause, "Physical");
     }
 
+    public boolean isEnvironmentalDamage(@Nullable com.hypixel.hytale.server.core.modules.entity.damage.DamageCause cause) {
+        return checkDamageCause(cause, "Fire") ||
+               checkDamageCause(cause, "Lava") ||
+               checkDamageCause(cause, "Drowning") ||
+               checkDamageCause(cause, "Drown") ||
+               checkDamageCause(cause, "Thorns") ||
+               checkDamageCause(cause, "Cactus");
+    }
+
     /**
      * Checks if a damage cause is ranged (projectile or magic) — excludes melee physical damage.
      * Used by Ranged Protection enchantment.

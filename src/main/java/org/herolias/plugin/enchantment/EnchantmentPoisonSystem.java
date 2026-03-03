@@ -21,15 +21,14 @@ import javax.annotation.Nonnull;
 import java.util.Set;
 
 /**
- * ECS system that applies the Burn status effect when attacking with a Burn-enchanted weapon.
+ * ECS system that applies the Poison status effect when attacking with a Poison-enchanted weapon.
  * 
- * Effect: Applies the in-game "Burn" status effect to the target (fire visuals, fire damage over time)
- * Applicable to: Melee weapons
+ * Applicable to: Melee and Ranged weapons
  */
-public class EnchantmentBurnSystem extends DamageEventSystem {
+public class EnchantmentPoisonSystem extends DamageEventSystem {
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-    private static final String BURN_EFFECT_ID = "BurnEnchantment";
+    private static final String POISON_EFFECT_ID = "PoisonEnchantment";
     
     private final EnchantmentManager enchantmentManager;
     
@@ -37,9 +36,9 @@ public class EnchantmentBurnSystem extends DamageEventSystem {
         new SystemDependency(Order.AFTER, DamageSystems.ApplyDamage.class)
     );
 
-    public EnchantmentBurnSystem(EnchantmentManager enchantmentManager) {
+    public EnchantmentPoisonSystem(EnchantmentManager enchantmentManager) {
         this.enchantmentManager = enchantmentManager;
-        LOGGER.atInfo().log("EnchantmentBurnSystem initialized");
+        LOGGER.atInfo().log("EnchantmentPoisonSystem initialized");
     }
 
     @Override
@@ -63,46 +62,40 @@ public class EnchantmentBurnSystem extends DamageEventSystem {
         
         if (damage.getAmount() <= 0 || damage.isCancelled()) return;
 
-        if (damage.getCause() != null && "Fire".equalsIgnoreCase(damage.getCause().getId())) return;
+        if (damage.getCause() != null && "Poison".equalsIgnoreCase(damage.getCause().getId())) return;
 
-        // Check if this is reflected damage - if so, don't apply burn/weapon effects
         Boolean isReflection = damage.getIfPresentMetaObject(EnchantmentReflectionSystem.IS_REFLECTION);
         if (isReflection != null && isReflection) return;
         
-        // Use centralized damage context extraction
         EnchantmentManager.DamageContext ctx = enchantmentManager.getDamageContext(damage, commandBuffer);
         
-        int burnLevel = 0;
-        int lootingLevel = 0;
+        int poisonLevel = 0;
 
-        // 1. Check projectile data first (if applicable)
+        // 1. Check projectile data first (Ranged)
         if (ctx.hasProjectile()) {
             ProjectileEnchantmentData data = enchantmentManager.getProjectileEnchantmentData(ctx.projectileRef(), commandBuffer);
             if (data != null) {
-                burnLevel = data.getBurnLevel();
-                lootingLevel = data.getLootingLevel();
+                // HACK: As we didn't add poison explicitly to ProjectileEnchantmentData, we just read from the shooter's weapon directly
             }
         }
 
-        // 2. Check attacker's weapon (Melee or fallback for Ranged)
-        if (burnLevel <= 0 && ctx.hasAttacker()) {
+        // 2. Check attacker's weapon
+        if (ctx.hasAttacker()) {
             Entity attackerEntity = EntityUtils.getEntity(ctx.attackerRef(), commandBuffer);
             ItemStack weapon = enchantmentManager.getWeaponFromEntity(attackerEntity);
             
             if (weapon != null) {
-                burnLevel = enchantmentManager.getEnchantmentLevel(weapon, EnchantmentType.BURN);
-                lootingLevel = enchantmentManager.getEnchantmentLevel(weapon, EnchantmentType.LOOTING);
+                poisonLevel = enchantmentManager.getEnchantmentLevel(weapon, EnchantmentType.POISON);
             }
         }
         
-        if (burnLevel <= 0) return;
+        if (poisonLevel <= 0) return;
         
         Ref<EntityStore> targetRef = archetypeChunk.getReferenceTo(index);
         if (targetRef == null || !targetRef.isValid()) return;
         
-        // Use centralized status effect application
-        if (!enchantmentManager.applyStatusEffect(targetRef, BURN_EFFECT_ID, store, commandBuffer)) {
-            LOGGER.atWarning().log("Burn effect not found in asset map");
+        if (!enchantmentManager.applyStatusEffect(targetRef, POISON_EFFECT_ID, store, commandBuffer)) {
+            LOGGER.atWarning().log("Poison effect not found in asset map");
             return;
         }
         
@@ -111,14 +104,8 @@ public class EnchantmentBurnSystem extends DamageEventSystem {
              ItemStack weapon = enchantmentManager.getWeaponFromEntity(shooterEntity);
              if (weapon != null) {
                   com.hypixel.hytale.server.core.universe.PlayerRef playerRef = store.getComponent(ctx.attackerRef(), com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
-                  EnchantmentEventHelper.fireActivated(playerRef, weapon, EnchantmentType.BURN, burnLevel);
+                  EnchantmentEventHelper.fireActivated(playerRef, weapon, EnchantmentType.POISON, poisonLevel);
              }
-        }
-        
-        // Store enchantment data on the victim so we can attribute drops if they die from burn
-        com.hypixel.hytale.server.core.entity.UUIDComponent targetUuid = commandBuffer.getComponent(targetRef, com.hypixel.hytale.server.core.entity.UUIDComponent.getComponentType());
-        if (targetUuid != null) {
-            enchantmentManager.storeBurnEnchantments(targetUuid.getUuid(), burnLevel, lootingLevel);
         }
     }
 }

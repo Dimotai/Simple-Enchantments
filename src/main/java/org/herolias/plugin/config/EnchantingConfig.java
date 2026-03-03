@@ -54,6 +54,7 @@ public class EnchantingConfig {
     // ===== Effect Duration Settings =====
     public double burnDuration = 3.0; // In seconds
     public double freezeDuration = 5.0; // In seconds
+    public double poisonDuration = 4.0; // In seconds
 
     // ===== Other settings =====
     public boolean disableEnchantmentCrafting = false;
@@ -284,6 +285,12 @@ public class EnchantingConfig {
         addScrollRecipe("Scroll_Coup_De_Grace_I", 1, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Plant_Crop_Stamina2", 3, "Ingredient_Crystal_Yellow", 15, "Ingredient_Void_Essence", 10);
         addScrollRecipe("Scroll_Coup_De_Grace_II", 2, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Plant_Crop_Stamina2", 5, "Ingredient_Crystal_Yellow", 20, "Ingredient_Void_Essence", 15);
         addScrollRecipe("Scroll_Coup_De_Grace_III", 3, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Plant_Crop_Stamina2", 7, "Ingredient_Crystal_Yellow", 25, "Ingredient_Void_Essence", 20);
+
+        addScrollRecipe("Scroll_Poison_I", 4, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Water_Essence", 30, "Ingredient_Crystal_Green", 20, "Plant_Crop_Mushroom_Poison", 15);
+
+        addScrollRecipe("Scroll_Environmental_Protection_I", 1, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Life_Essence", 10, "Ingredient_Fire_Essence", 5, "Ingredient_Water_Essence", 5);
+        addScrollRecipe("Scroll_Environmental_Protection_II", 2, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Life_Essence", 20, "Ingredient_Fire_Essence", 10, "Ingredient_Water_Essence", 10);
+        addScrollRecipe("Scroll_Environmental_Protection_III", 3, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Life_Essence", 30, "Ingredient_Fire_Essence", 15, "Ingredient_Water_Essence", 15);
 
         if (enchantingTableRecipe == null) {
             enchantingTableRecipe = new ArrayList<>();

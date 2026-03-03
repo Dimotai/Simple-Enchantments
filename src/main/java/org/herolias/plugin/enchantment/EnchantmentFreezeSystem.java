@@ -102,13 +102,36 @@ public class EnchantmentFreezeSystem extends DamageEventSystem {
         // Use centralized status effect application
         if (!enchantmentManager.applyStatusEffect(targetRef, FREEZE_EFFECT_ID, store, commandBuffer)) {
             LOGGER.atWarning().log("Freeze effect " + FREEZE_EFFECT_ID + " not found in asset map");
-        } else if (ctx.hasAttacker()) {
-             Entity shooterEntity = EntityUtils.getEntity(ctx.attackerRef(), commandBuffer);
-             ItemStack weapon = enchantmentManager.getWeaponFromEntity(shooterEntity);
-             if (weapon != null) {
-                  com.hypixel.hytale.server.core.universe.PlayerRef playerRef = store.getComponent(ctx.attackerRef(), com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
-                  EnchantmentEventHelper.fireActivated(playerRef, weapon, EnchantmentType.FREEZE, freezeLevel);
-             }
+        } else {
+            // Check target's Environment Protection level and apply speed buff respectively
+            Entity targetEntity = EntityUtils.getEntity(index, archetypeChunk);
+            if (targetEntity instanceof LivingEntity targetLiving) {
+                Inventory targetInventory = targetLiving.getInventory();
+                if (targetInventory != null) {
+                    com.hypixel.hytale.server.core.inventory.container.ItemContainer armorContainer = targetInventory.getArmor();
+                    int totalEnvProtection = 0;
+                    for (short i = 0; i < armorContainer.getCapacity(); i++) {
+                        ItemStack armorPiece = armorContainer.getItemStack(i);
+                        if (armorPiece != null && !armorPiece.isEmpty()) {
+                            totalEnvProtection += enchantmentManager.getEnchantmentLevel(armorPiece, EnchantmentType.ENVIRONMENTAL_PROTECTION);
+                        }
+                    }
+                    if (totalEnvProtection > 0) {
+                        int buffLevel = Math.min(12, totalEnvProtection);
+                        String buffEffectId = "EnvProtectionSpeedBuff_" + buffLevel;
+                        enchantmentManager.applyStatusEffect(targetRef, buffEffectId, store, commandBuffer);
+                    }
+                }
+            }
+
+            if (ctx.hasAttacker()) {
+                 Entity shooterEntity = EntityUtils.getEntity(ctx.attackerRef(), commandBuffer);
+                 ItemStack weapon = enchantmentManager.getWeaponFromEntity(shooterEntity);
+                 if (weapon != null) {
+                      com.hypixel.hytale.server.core.universe.PlayerRef playerRef = store.getComponent(ctx.attackerRef(), com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+                      EnchantmentEventHelper.fireActivated(playerRef, weapon, EnchantmentType.FREEZE, freezeLevel);
+                 }
+            }
         }
     }
 }

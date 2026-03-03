@@ -1,0 +1,31 @@
+{
+    "ApplicationEffects": {
+        "EntityBottomTint": "#000000",
+        "EntityTopTint": "#008000",
+        "EntityAnimationId": "Hurt",
+        "WorldSoundEventId": "SFX_Effect_Poison_World",
+        "LocalSoundEventId": "SFX_Effect_Poison_Local",
+        "Particles": [
+            {
+                "SystemId": "Effect_Poison"
+            }
+        ]
+    },
+    "DamageCalculatorCooldown": 1,
+    "DamageCalculator": {
+        "BaseDamage": {
+            "Poison": 3
+        }
+    },
+    "DamageEffects": {
+        "WorldSoundEventId": "SFX_Effect_Poison_World",
+        "PlayerSoundEventId": "SFX_Effect_Poison_Local"
+    },
+    "OverlapBehavior": "Overwrite",
+    "RemovalBehavior": "Duration",
+    "Infinite": false,
+    "Debuff": true,
+    "StatusEffectIcon": "UI/StatusEffects/Poison.png",
+    "Duration": 4,
+    "DeathMessageKey": "server.general.deathCause.poison"
+}

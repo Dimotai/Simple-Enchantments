@@ -181,15 +181,25 @@ public final class EnchantmentType {
             ItemCategory.MELEE_WEAPON, ItemCategory.RANGED_WEAPON,
             ItemCategory.STAFF, ItemCategory.STAFF_MANA, ItemCategory.STAFF_ESSENCE);
 
-    public static final EnchantmentType RIPOSTE = builtin("riposte", "Riposte",
+    public static final EnchantmentType RIPOSTE = builtinCollab("riposte", "Riposte",
             "Increases counter attack damage", 3, false, false, 0.10,
-            "Counter attack damage increased by {amount}%",
+            "Counter attack damage increased by {amount}%", "Perfect Parries",
             ItemCategory.MELEE_WEAPON);
 
-    public static final EnchantmentType COUP_DE_GRACE = builtin("coup_de_grace", "Coup de Grâce",
+    public static final EnchantmentType COUP_DE_GRACE = builtinCollab("coup_de_grace", "Coup de Grâce",
             "Increases damage to stunned enemies", 3, false, false, 0.15,
-            "Damage to stunned enemies increased by {amount}%",
+            "Damage to stunned enemies increased by {amount}%", "Perfect Parries",
             ItemCategory.MELEE_WEAPON);
+
+    public static final EnchantmentType POISON = builtin("poison", "Poison",
+            "Poisons targets on hit", 1, false, true, 3.0,
+            "Poisons targets on hit",
+            ItemCategory.MELEE_WEAPON, ItemCategory.RANGED_WEAPON);
+
+    public static final EnchantmentType ENVIRONMENTAL_PROTECTION = builtin("environmental_protection", "Env. Protection",
+            "Reduces environmental damage and alters status effects", 3, false, false, 0.04,
+            "Environmental damage reduced by {amount}%",
+            ItemCategory.ARMOR);
 
     // ============================== Static Initialization ==============================
 
@@ -197,6 +207,7 @@ public final class EnchantmentType {
         // Register built-in conflict pairs
         EnchantmentRegistry registry = EnchantmentRegistry.getInstance();
         registry.addConflict("burn", "freeze");
+        registry.addConflict("burn", "poison");
         registry.addConflict("pick_perfect", "fortune");
         registry.addConflict("pick_perfect", "smelting");
         registry.addConflict("reflection", "absorption");
@@ -210,7 +221,7 @@ public final class EnchantmentType {
     private EnchantmentType(String id, String displayName, String description,
                             int maxLevel, boolean requiresDurability, boolean isLegendary,
                             double defaultMultiplierPerLevel, String bonusDescriptionTemplate,
-                            String scrollBaseName, ItemCategory... categories) {
+                            String scrollBaseName, String ownerModName, ItemCategory... categories) {
         this.id = id;
         this.displayName = displayName;
         this.description = description;
@@ -219,7 +230,7 @@ public final class EnchantmentType {
         this.isLegendary = isLegendary;
         this.applicableCategories = Set.of(categories);
         this.ownerModId = null; // built-in
-        this.ownerModName = null; // built-in
+        this.ownerModName = ownerModName; // built-in or collab
         this.defaultMultiplierPerLevel = defaultMultiplierPerLevel;
         this.bonusDescriptionTemplate = bonusDescriptionTemplate;
         this.scrollBaseName = scrollBaseName;
@@ -260,7 +271,7 @@ public final class EnchantmentType {
                                            double defaultMultiplier, String bonusTemplate,
                                            ItemCategory... categories) {
         EnchantmentType type = new EnchantmentType(id, displayName, description, maxLevel,
-                requiresDurability, isLegendary, defaultMultiplier, bonusTemplate, null, categories);
+                requiresDurability, isLegendary, defaultMultiplier, bonusTemplate, null, null, categories);
         EnchantmentRegistry.getInstance().register(type);
         return type;
     }
@@ -270,7 +281,17 @@ public final class EnchantmentType {
                                                        double defaultMultiplier, String bonusTemplate,
                                                        String scrollBaseName, ItemCategory... categories) {
         EnchantmentType type = new EnchantmentType(id, displayName, description, maxLevel,
-                requiresDurability, isLegendary, defaultMultiplier, bonusTemplate, scrollBaseName, categories);
+                requiresDurability, isLegendary, defaultMultiplier, bonusTemplate, scrollBaseName, null, categories);
+        EnchantmentRegistry.getInstance().register(type);
+        return type;
+    }
+
+    private static EnchantmentType builtinCollab(String id, String displayName, String description,
+                                                 int maxLevel, boolean requiresDurability, boolean isLegendary,
+                                                 double defaultMultiplier, String bonusTemplate,
+                                                 String collabModName, ItemCategory... categories) {
+        EnchantmentType type = new EnchantmentType(id, displayName, description, maxLevel,
+                requiresDurability, isLegendary, defaultMultiplier, bonusTemplate, null, collabModName, categories);
         EnchantmentRegistry.getInstance().register(type);
         return type;
     }

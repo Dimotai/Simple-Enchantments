@@ -82,7 +82,7 @@ public class ScrollDescriptionManager {
 
                     // Append addon attribution for non-built-in enchantments
                     if (dynamicDescription != null && !dynamicDescription.isEmpty()
-                            && type.getOwnerModId() != null) {
+                            && (type.getOwnerModId() != null || type.getOwnerModName() != null)) {
                         String modDisplay = type.getOwnerModName() != null ? type.getOwnerModName() : type.getOwnerModId();
                         dynamicDescription += "\n\n<color is=\"#AAAAAA\">Added by " + modDisplay + "</color>";
                     }

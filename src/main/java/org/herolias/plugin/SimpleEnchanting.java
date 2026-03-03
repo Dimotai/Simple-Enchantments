@@ -20,6 +20,7 @@ import org.herolias.plugin.enchantment.EnchantmentStateTransferSystem;
 import org.herolias.plugin.enchantment.EnchantmentFeatherFallingSystem;
 import org.herolias.plugin.enchantment.EnchantmentWaterbreathingSystem;
 import org.herolias.plugin.enchantment.EnchantmentBurnSystem;
+import org.herolias.plugin.enchantment.EnchantmentPoisonSystem;
 import org.herolias.plugin.enchantment.EnchantmentFreezeSystem;
 import org.herolias.plugin.enchantment.EnchantmentBurnSmeltingSystem;
 import org.herolias.plugin.enchantment.EnchantmentEternalShotSystem;
@@ -300,6 +301,8 @@ public class SimpleEnchanting extends JavaPlugin {
             LOGGER.atInfo().log("Registered EnchantmentWaterbreathingSystem with ECS");
             this.getEntityStoreRegistry().registerSystem(new EnchantmentBurnSystem(enchantmentManager));
             LOGGER.atInfo().log("Registered EnchantmentBurnSystem with ECS");
+            this.getEntityStoreRegistry().registerSystem(new EnchantmentPoisonSystem(enchantmentManager));
+            LOGGER.atInfo().log("Registered EnchantmentPoisonSystem with ECS");
             this.getEntityStoreRegistry().registerSystem(new EnchantmentFreezeSystem(enchantmentManager));
             LOGGER.atInfo().log("Registered EnchantmentFreezeSystem with ECS");
             this.getEntityStoreRegistry().registerSystem(new EnchantmentBurnSmeltingSystem(enchantmentManager));

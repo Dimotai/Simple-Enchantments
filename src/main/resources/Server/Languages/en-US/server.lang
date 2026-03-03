@@ -258,6 +258,26 @@ items.Scroll_ElementalHeart_I.description = Elemental Staffs do not consume esse
 
 
 
+items.Scroll_Poison_I.name = Scroll of Poison
+
+items.Scroll_Poison_I.description = Poisons targets on hit for 3 damage per second. Not combinable with Burn.
+
+
+
+items.Scroll_Environmental_Protection_I.name = Scroll of Environmental Protection I
+
+items.Scroll_Environmental_Protection_I.description = Reduces environmental damage by 4% per armor piece.
+
+items.Scroll_Environmental_Protection_II.name = Scroll of Environmental Protection II
+
+items.Scroll_Environmental_Protection_II.description = Reduces environmental damage by 8% per armor piece.
+
+items.Scroll_Environmental_Protection_III.name = Scroll of Environmental Protection III
+
+items.Scroll_Environmental_Protection_III.description = Reduces environmental damage by 12% per armor piece.
+
+
+
 benchCategories.enchantingStaff = Magic
 
 benchCategories.enchantingShield = Shield
@@ -466,6 +486,18 @@ enchantment.fast_swim.description = Increases swim speed by 25%.
 
 
 
+enchantment.poison.name = Poison
+
+enchantment.poison.description = Poisons targets on hit for 3 damage per second. Not combinable with Burn.
+
+
+
+enchantment.environmental_protection.name = Environmental Protection
+
+enchantment.environmental_protection.description = Reduces environmental damage by 4% per armor piece.
+
+
+
 items.Scroll_Night_Vision_I.name = Scroll of Night Vision
 
 items.Scroll_Night_Vision_I.description = Enhances visibility in dark environments such as caves, nighttime, and underwater.
@@ -579,6 +611,8 @@ enchantment.ranged_protection.bonus = Projectile/magic damage reduced by {amount
 enchantment.frenzy.bonus = Ability charge speed increased by {amount}%
 enchantment.riposte.bonus = Counter attack damage increased by {amount}%
 enchantment.coup_de_grace.bonus = Damage to stunned enemies increased by {amount}%
+enchantment.poison.bonus = Poisons targets on hit
+enchantment.environmental_protection.bonus = Environmental damage reduced by {amount}%
 
 # Config UI
 config.title = Enchantment Configuration
@@ -620,6 +654,7 @@ config.secondary.range_speed_bonus = Range/Speed Bonus
 config.secondary.quantity_bonus = Quantity Bonus
 config.secondary.burn_duration = Burn Duration
 config.secondary.freeze_duration = Freeze Duration
+config.secondary.poison_duration = Poison Duration
 
 config.recipe.active_title = {0} - Ingredients
 config.recipe.crafting_tier = Crafting Tier
@@ -694,6 +729,8 @@ enchantment.ranged_protection.walkthrough = Reduces incoming projectile and magi
 enchantment.frenzy.walkthrough = Increases signature charge rate by {amount}% per level. Applies to all weapons and staffs.
 enchantment.riposte.walkthrough = This is a collab Enchantment with the Perfect Parries mod and will only work if both mods are installed.\n\nIncreases counter attack damage by {amount}% per level. Applies to melee weapons.
 enchantment.coup_de_grace.walkthrough = This is a collab Enchantment with the Perfect Parries mod and will only work if both mods are installed.\n\nIncreases damage to stunned enemies by {amount}% per level. Applies to melee weapons.
+enchantment.poison.walkthrough = Poisons targets on hit. Applies to melee and ranged weapons. Not combinable with Burn.
+enchantment.environmental_protection.walkthrough = Reduces incoming environmental damage (fire, lava, drowning, cacti) by {amount}% per armor piece per level, and proportionally mitigates the slow severity of the Freeze enchantment. Applies to armor.
 
 
 tooltip.enchantments = Enchantments:
