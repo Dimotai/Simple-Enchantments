@@ -301,9 +301,9 @@ public class EnchantingConfig {
 
         addScrollRecipe("Scroll_Poison_I", 4, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Sac_Venom", 25, "Ingredient_Crystal_Green", 30, "Plant_Crop_Mushroom_Cap_Green", 20);
 
-        addScrollRecipe("Scroll_Environmental_Protection_I", 1, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Life_Essence", 10, "Ingredient_Fire_Essence", 5, "Ingredient_Water_Essence", 5);
-        addScrollRecipe("Scroll_Environmental_Protection_II", 2, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Life_Essence", 20, "Ingredient_Fire_Essence", 10, "Ingredient_Water_Essence", 10);
-        addScrollRecipe("Scroll_Environmental_Protection_III", 3, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Life_Essence", 30, "Ingredient_Fire_Essence", 15, "Ingredient_Water_Essence", 15);
+        addScrollRecipe("Scroll_Environmental_Protection_I", 1, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Crystal_Blue", 10, "Ingredient_Fire_Essence", 5, "Plant_Crop_Mushroom_Boomshroom_Small", 5);
+        addScrollRecipe("Scroll_Environmental_Protection_II", 2, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Crystal_Blue", 15, "Ingredient_Fire_Essence", 10, "Plant_Crop_Mushroom_Boomshroom_Small", 10);
+        addScrollRecipe("Scroll_Environmental_Protection_III", 3, "Ingredient_Fabric_Scrap_Cindercloth", 5, "Ingredient_Crystal_Blue", 25, "Ingredient_Fire_Essence", 20, "Plant_Crop_Mushroom_Boomshroom_Small", 15);
 
         if (enchantingTableRecipe == null) {
             enchantingTableRecipe = new ArrayList<>();

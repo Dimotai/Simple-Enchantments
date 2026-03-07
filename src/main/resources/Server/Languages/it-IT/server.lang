@@ -670,11 +670,6 @@ enchantment.coup_de_grace.walkthrough = Questo è un Incantesimo in collaborazio
 
 tooltip.enchantments = Incantesimi:
 
-customUI.enchantScrollPage.current = Attuale:
-customUI.enchantScrollPage.apply = Applica:
-customUI.enchantScrollPage.upgrade = Potenzia:
-customUI.cleansingScrollPage.enchantment.singular = incantesimo
-customUI.cleansingEnchantmentPage.clickToRemove = Clicca per rimuovere
 
 items.Scroll_Poison_I.name = Pergamena del Veleno
 
