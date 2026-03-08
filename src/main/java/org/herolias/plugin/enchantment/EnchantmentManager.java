@@ -106,7 +106,8 @@ public class EnchantmentManager {
      * Calculates the drop chance multiplier based on Looting level.
      */
     public double calculateLootingChanceMultiplier(int lootingLevel) {
-        return calculateLootingMultiplier(lootingLevel, getConfig().lootingChanceMultiplierPerLevel);
+        double chanceMultiplier = getConfig().enchantmentMultipliers.getOrDefault("looting", 0.25);
+        return calculateLootingMultiplier(lootingLevel, chanceMultiplier);
     }
 
     /**
@@ -791,7 +792,8 @@ public class EnchantmentManager {
 
         if (eaglesEyeLevel > 0 && distance > 0.0) {
             double cappedDistance = Math.min(distance, EAGLES_EYE_MAX_DISTANCE);
-            double bonus = cappedDistance * config.eaglesEyeDistanceBonusPerLevel * eaglesEyeLevel;
+            double defaultBonus = config.enchantmentMultipliers.getOrDefault("eagles_eye", 0.005);
+            double bonus = cappedDistance * defaultBonus * eaglesEyeLevel;
             multiplier += bonus;
         }
 

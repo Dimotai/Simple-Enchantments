@@ -390,12 +390,15 @@ public class SimpleEnchanting extends JavaPlugin {
         this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, event -> {
             Player player = event.getPlayer();
             if (player.getWorld() == null || player.getReference() == null) return;
-            com.hypixel.hytale.server.core.universe.PlayerRef playerRef = player.getWorld().getEntityStore().getStore().getComponent(player.getReference(), com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
-            if (playerRef != null) {
-                String langCode = userSettingsManager.getLanguage(playerRef.getUuid());
-                languageManager.sendUpdatePacket(playerRef, langCode);
-                org.herolias.plugin.enchantment.ScrollDescriptionManager.sendUpdatePacket(playerRef);
-            }
+            
+            player.getWorld().execute(() -> {
+                com.hypixel.hytale.server.core.universe.PlayerRef playerRef = player.getWorld().getEntityStore().getStore().getComponent(player.getReference(), com.hypixel.hytale.server.core.universe.PlayerRef.getComponentType());
+                if (playerRef != null) {
+                    String langCode = userSettingsManager.getLanguage(playerRef.getUuid());
+                    languageManager.sendUpdatePacket(playerRef, langCode);
+                    org.herolias.plugin.enchantment.ScrollDescriptionManager.sendUpdatePacket(playerRef);
+                }
+            });
         });
         LOGGER.atInfo().log("Registered ScrollDescriptionManager listener");
 
