@@ -5,7 +5,6 @@ Decompile_API/
 HytaleServer_decompiled/
 tools/
 HytaleServer.jar
-decompiled/
 
 ### Gradle ###
 .gradle
