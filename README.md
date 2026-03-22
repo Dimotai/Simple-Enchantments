@@ -448,14 +448,16 @@ The mod bundles a complete asset pack containing:
 ## Contributing
 
 ### Contribution Guidelines
-Please do not add new features or enchantments without discussing it with the team. Generally this is my and Soraths passionate hobby project, and we want to keep it that way.
+Please do not add new features or enchantments without discussing it with the team. Generally, this is a passionate hobby project for Sorath and me, and we want to keep it that way.
 
 But we are absolutely open to smaller contributions like bug fixes, performance improvements, and translations.
 Please open a pull request for that or write me up on [Discord](https://discord.com/users/herolias).
+Pull requests should be made to the `dev` branch. It has the latest changes, please check if your changes are already implemented there before working on a PR. 
 
 ### Contributors
 Huge thanks to Thanoz, Samu3k, and Ensō for helping improving the translations!
 
+Huge thanks to Dimotai for helping to improve the `EnchantmentDynamicEffects` class!
 
 ---
 
